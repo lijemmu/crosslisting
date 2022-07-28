@@ -3,7 +3,7 @@ __pycache__
 .idea
 flasksite.egg-info
 venv
-.env
+env
 config.py
 .codio
 flasksite/__init__.pyc
