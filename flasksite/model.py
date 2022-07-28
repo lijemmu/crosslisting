@@ -23,7 +23,7 @@ class Listing(db.Model):
     username = db.Column(db.String(20), nullable=False)
     profile_pic = db.Column(db.String(20), nullable=False, default='default.png')
     title = db.Column(db.String(20), nullable=False)
-    description = db.Column(db.String(20), nullable=False)
+    description = db.Column(db.Text(), nullable=False)
 
     def __str__(self):
         return f"Post('{self.username}', '{self.title}', '{self.profile_pic}','{self.description}')"

@@ -13,6 +13,7 @@ bcrypt
 Flask-Bcrypt
 Flask-Login
 SQLAlchemy
+psycopg2
 WTForms
 flask_sqlalchemy
 pytest

@@ -94,8 +94,8 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route("/new_post", methods=['GET', 'POST'])
-def new_post():
+@app.route("/new_listing", methods=['GET', 'POST'])
+def new_listing():
     form = ListingForm()
     print(current_user.username)
     print(Listing.query.all())
