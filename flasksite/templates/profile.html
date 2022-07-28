@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <head>
+        <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js">
+        </script>
+    </head>
+    <body>
+    <div class="content-section">
+
+        <div class="d-flex align-items-center">
+            <div class="flex-shrink-8">
+                <img class="rounded-circle account-img" src="{{ profile_pic }}">
+            </div>
+            <div class="flex-grow-1 ms-3">
+                <h2>{{ subtitle }}</h2>
+                <h3 class="account-heading">{{ user.username }}</h3>
+                <p class="text-secondary">{{ user.email }}</p>
+
+            </div>
+        </div>
+    </div>
+    </body>
+{% endblock content %}

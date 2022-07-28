@@ -1,0 +1,116 @@
+body {
+  background: #fafafa;
+  color: #333333;
+  margin-top: 5rem;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  color: #444444;
+}
+
+.total-solved{
+  text-align:right;
+  color: darkblue;
+  font-weight: bold;
+  
+}
+
+.bg-steel {
+  background-color: #fff;
+}
+
+.list-group-item {
+  margin-bottom: 1em;
+}
+
+
+.site-header .navbar-nav .nav-link {
+  color: #0b0c0d;
+}
+
+.site-header .navbar-nav .nav-link:hover {
+  color: #bebebe;
+}
+
+.site-header .navbar-nav .nav-link.active {
+  font-weight: 500;
+}
+
+#title {
+  font-family: 'DM Sans';, sans-serif;
+  font-weight: bold;
+  font-size: 2em;
+  color: #000;
+}
+
+.content-section {
+  background: #ffffff;
+  padding: 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+
+}
+
+.article-title {
+  color: #444444;
+}
+
+a.article-title:hover {
+  color: #428bca;
+  text-decoration: none;
+}
+
+.article-content {
+  white-space: pre-line;
+}
+
+.article-img {
+  height: 65px;
+  width: 65px;
+  margin-right: 16px;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+.article-svg {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.account-heading {
+  font-size: 2.5rem;
+}
+
+.form-group {
+  padding: 10px 0;
+}
+
+h4{
+  padding: 5px;
+  text-align: center;
+  color: #428bca;
+  padding-top: 30px;
+}
+
+th,td{
+  padding: 10px;
+}
