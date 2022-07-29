@@ -1,4 +1,134 @@
 {% extends "layout.html" %}
 {% block content %}
-
+<head>
+    <title>Tanning Scheduler</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='styleprofile.css') }}">
+    </head>
+    <body>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="container bootstrap snippets bootdey">
+    <div class="row">
+      <div class="profile-nav col-md-3">
+          <div class="panel">
+              <div class="user-heading round">
+                  <a href="#">
+                      <img src="https://media-exp1.licdn.com/dms/image/C4D03AQGIrSyrbiMfrQ/profile-displayphoto-shrink_200_200/0/1639679880360?e=2147483647&v=beta&t=_yPasRpB16oQBiY-a1riP4a325E6YA1ZcpBEQbw6-7o" alt="">
+                  </a>
+                  <h1>Brayan Pichardo</h1>
+                  <p>example@gmail.com</p>
+              </div>
+    
+          </div>
+      </div>
+      <div class="profile-info col-md-9">
+          <div class="panel">
+              <div class="bio-graph-heading">
+                  I like dogs. My favorite movie is Ponyo.
+              </div>
+              <div class="panel-body bio-graph-info">
+                  <h1>Bio Graph</h1>
+                  <div class="row">
+                      <div class="bio-row">
+                          <p><span>First Name </span>: Name</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Last Name </span>: Last name</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Country </span>: ???</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Birthday</span>: 14 July 2001</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Occupation </span>: UI Designer</p>
+                      </div>
+                      <div class="bio-row">
+                          <p><span>Email </span>: example@gmail.com</p>
+                      </div>
+    
+                  </div>
+              </div>
+          </div>
+          <div>
+              <div class="row">
+                  <div class="col-md-6">
+                      <div class="panel">
+                          <div class="panel-body">
+                              <div class="bio-chart">
+                                  <div style="display:inline;width:100px;height:100px;"><canvas width="100" height="100px"></canvas><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/2560px-EBay_logo.svg.png" class="knob" data-width="100" data-height="100" data-displayprevious="true" data-thickness=".2" value="35" data-fgcolor="#e06b7d" data-bgcolor="#e8e8e8" style="width: 54px; height: 33px; position: absolute; vertical-align: middle; margin-top: 33px; margin-left: -77px; border: 0px; font-weight: bold; font-style: normal; font-variant: normal; font-stretch: normal; font-size: 20px; line-height: normal; font-family: Arial; text-align: center; color: rgb(224, 107, 125); padding: 0px; -webkit-appearance: none; background: none;"></div>
+                              </div>
+                              <div class="bio-desk">
+                                  <h4 class="red"> Ebay </h4>
+                                  <p>San Jose, CA</p>
+    
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                      <div class="panel">
+                          <div class="panel-body">
+                              <div class="bio-chart">
+                                  <div style="display:inline;width:100px;height:100px;"><canvas width="100" height="100px"></canvas><img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/20/MercadoLibre.svg/1200px-MercadoLibre.svg.png" class="knob" data-width="100" data-height="100" data-displayprevious="true" data-thickness=".2" value="63" data-fgcolor="#4CC5CD" data-bgcolor="#e8e8e8" style="width: 54px; height: 33px; position: absolute; vertical-align: middle; margin-top: 33px; margin-left: -77px; border: 0px; font-weight: bold; font-style: normal; font-variant: normal; font-stretch: normal; font-size: 20px; line-height: normal; font-family: Arial; text-align: center; color: rgb(76, 197, 205); padding: 0px; -webkit-appearance: none; background: none;"></div>
+                              </div>
+                              <div class="bio-desk">
+                                  <h4 class="terques">Mercando Libre </h4>
+                                  <p>Buenos Aires, Argentina</p>
+    
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                      <div class="panel">
+                          <div class="panel-body">
+                              <div class="bio-chart">
+                                  <div style="display:inline;width:100px;height:100px;"><canvas width="100" height="100px"></canvas><img src="https://shippingeasy.com/wp-content/uploads/2019/02/Bonanza-Logo.png" class="knob" data-width="100" data-height="100" data-displayprevious="true" data-thickness=".2" value="75" data-fgcolor="#96be4b" data-bgcolor="#e8e8e8" style="width: 54px; height: 33px; position: absolute; vertical-align: middle; margin-top: 33px; margin-left: -77px; border: 0px; font-weight: bold; font-style: normal; font-variant: normal; font-stretch: normal; font-size: 20px; line-height: normal; font-family: Arial; text-align: center; color: rgb(150, 190, 75); padding: 0px; -webkit-appearance: none; background: none;"></div>
+                              </div>
+                              <div class="bio-desk">
+                                  <h4 class="green"> Bonanza</h4>
+                                  <p>Seattle, WA</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                      <div class="panel">
+                          <div class="panel-body">
+                              <div class="bio-chart">
+                                  <div style="display:inline;width:100px;height:100px;"><canvas width="100" height="100px"></canvas><img src="https://1000logos.net/wp-content/uploads/2021/04/AliExpress-logo.png" class="knob" data-width="100" data-height="100" data-displayprevious="true" data-thickness=".2" value="75" data-fgcolor="#96be4b" data-bgcolor="#e8e8e8" style="width: 54px; height: 33px; position: absolute; vertical-align: middle; margin-top: 33px; margin-left: -77px; border: 0px; font-weight: bold; font-style: normal; font-variant: normal; font-stretch: normal; font-size: 20px; line-height: normal; font-family: Arial; text-align: center; color: rgb(150, 190, 75); padding: 0px; -webkit-appearance: none; background: none;"></div>
+                              </div>
+                              <div class="bio-desk">
+                                  <h4 class="green"> Aliexpress</h4>
+                                  <p>Hangzhou, China</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                      <div class="panel">
+                          <div class="panel-body">
+                              <div class="bio-chart">
+                                  <div style="display:inline;width:100px;height:100px;"><canvas width="100" height="100px"></canvas><img src="https://1000logos.net/wp-content/uploads/2017/12/Etsy-emblem.jpg"class="knob" data-width="100" data-height="100" data-displayprevious="true" data-thickness=".2" value="50" data-fgcolor="#cba4db" data-bgcolor="#e8e8e8" style="width: 54px; height: 33px; position: absolute; vertical-align: middle; margin-top: 33px; margin-left: -77px; border: 0px; font-weight: bold; font-style: normal; font-variant: normal; font-stretch: normal; font-size: 20px; line-height: normal; font-family: Arial; text-align: center; color: rgb(203, 164, 219); padding: 0px; -webkit-appearance: none; background: none;"></div>
+                              </div>
+                              <div class="bio-desk">
+                                  <h4 class="purple">Etsy</h4>
+                                  <p>brooklyn, new york</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    </div>
+    
+    
+    </body>
 {% endblock content %}
