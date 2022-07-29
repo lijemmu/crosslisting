@@ -4,16 +4,19 @@ body {
   margin-top: 5rem;
 }
 
-
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: #444444;
 }
 
-.total-solved{
-  text-align:right;
+.total-solved {
+  text-align: right;
   color: darkblue;
   font-weight: bold;
-  
 }
 
 .bg-steel {
@@ -23,7 +26,6 @@ h1, h2, h3, h4, h5, h6 {
 .list-group-item {
   margin-bottom: 1em;
 }
-
 
 .site-header .navbar-nav .nav-link {
   color: #0b0c0d;
@@ -38,7 +40,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #title {
-  font-family: 'DM Sans';, sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: bold;
   font-size: 2em;
   color: #000;
@@ -50,7 +52,6 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid #dddddd;
   border-radius: 3px;
   margin-bottom: 20px;
-
 }
 
 .article-title {
@@ -75,7 +76,7 @@ a.article-title:hover {
 .article-metadata {
   padding-bottom: 1px;
   margin-bottom: 4px;
-  border-bottom: 1px solid #e3e3e3
+  border-bottom: 1px solid #e3e3e3;
 }
 
 .article-metadata a:hover {
@@ -104,13 +105,14 @@ a.article-title:hover {
   padding: 10px 0;
 }
 
-h4{
+h4 {
   padding: 5px;
   text-align: center;
   color: #428bca;
   padding-top: 30px;
 }
 
-th,td{
+th,
+td {
   padding: 10px;
 }
