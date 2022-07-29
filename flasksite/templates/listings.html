@@ -2,23 +2,34 @@
 {% block content %}
     <div class="content-section">
         <h2>My Listings</h2>
-        {% for i in range(3) %}
-        <div class="row">
-            {% for i in range(3) %}
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            Title
-                        </h5>
-                        <div class="card-text">
-                            This is some text that serves as a description.
+        <!--<div class="container">-->
+            <div class="row d-flex">
+                {% for i in range(9) %}
+                <div class="col-md-6 col-lg-4 mb-3 flex-row align-items-stretch">
+                    <div class="card">
+                        <img src="https://via.placeholder.com/150" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                Title
+                            </h5>
+                            <div class="card-text">
+                                This is some text that serves as a description.
+                            </div>
+                            <div class="dropdown">
+
+                            </div>
+                            <div class="dropdown text-end card-img-overlay">
+                                <button class="btn btn-light" data-bs-toggle="dropdown">&vellip;</button>
+                                <div class="dropdown-menu">
+                                    <a href="#" class="dropdown-item">Edit</a>
+                                    <a href="#" class="dropdown-item">Delete</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-        {% endfor %}
+        <!--</div>-->
     </div>
 {% endblock %}
