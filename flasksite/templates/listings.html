@@ -1,35 +1,38 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
-        <h2>My Listings</h2>
-        <!--<div class="container">-->
-            <div class="row d-flex">
-                {% for i in range(9) %}
-                <div class="col-md-6 col-lg-4 mb-3 flex-row align-items-stretch">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/150" class="card-img-top">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                Title
-                            </h5>
-                            <div class="card-text">
-                                This is some text that serves as a description.
-                            </div>
-                            <div class="dropdown">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>My Listings</h2>
+            <span class="text-end">
+                <button class="btn btn-primary">Create Listing</button>
+            </span>
+        </div>
+        <div class="row d-flex">
+            {% for i in range(9) %}
+            <div class="col-md-6 col-lg-4 mb-3 flex-row align-items-stretch">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Title
+                        </h5>
+                        <div class="card-text">
+                            This is some text that serves as a description.
+                        </div>
+                        <div class="dropdown">
 
-                            </div>
-                            <div class="dropdown text-end card-img-overlay">
-                                <button class="btn btn-light" data-bs-toggle="dropdown">&vellip;</button>
-                                <div class="dropdown-menu">
-                                    <a href="#" class="dropdown-item">Edit</a>
-                                    <a href="#" class="dropdown-item">Delete</a>
-                                </div>
+                        </div>
+                        <div class="dropdown text-end card-img-overlay">
+                            <button class="btn btn-light" data-bs-toggle="dropdown">&vellip;</button>
+                            <div class="dropdown-menu">
+                                <a href="#" class="dropdown-item">Edit</a>
+                                <a href="#" class="dropdown-item">Delete</a>
                             </div>
                         </div>
                     </div>
-                    </div>
-                {% endfor %}
-            </div>
-        <!--</div>-->
+                </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
