@@ -47,9 +47,11 @@ class RegistrationForm(FlaskForm):
     unit_type = SelectField('Unit Type', choices=unit_types_list)
     unit_number = StringField('Unit Number')
     city = StringField('City', validators=[DataRequired()])
-    state = SelectField('State/Province', choices=[], validators=[NoneOf("- Select -", message="This field is required.")])
+    state = SelectField('State/Province', choices=[], validators=[NoneOf("- Select -",
+                                                                         message="This field is required.")])
     zipcode = StringField('Zipcode', validators=[DataRequired()])
-    country = SelectField('Country', choices=["- Select -"] + country.get_countries(), validators=[NoneOf("- Select -", message="This field is required.")])
+    country = SelectField('Country', choices=["- Select -"] + country.get_countries(),
+                          validators=[NoneOf("- Select -", message="This field is required.")])
 
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])

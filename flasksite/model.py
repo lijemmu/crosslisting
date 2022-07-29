@@ -23,8 +23,9 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(60), nullable=False)
 
     def __repr__(self):
-        return f"User('{self.first_name}', '{self.last_name}', '{self.email}', '{self.street_address}', '{self.address_line2}', " \
-               f"'{self.city}', '{self.state}', '{self.zipcode}', '{self.country}', '{self.profile_pic}', '{self.password_hash}')"
+        return f"User('{self.first_name}', '{self.last_name}', '{self.email}', '{self.street_address}', " \
+               f"'{self.address_line2}', '{self.city}', '{self.state}', '{self.zipcode}', '{self.country}', " \
+               f"'{self.profile_pic}', '{self.password_hash}')"
 
 
 class Listing(db.Model):
