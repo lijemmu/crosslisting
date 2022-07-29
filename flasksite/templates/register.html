@@ -1,74 +1,158 @@
 {% extends "layout.html" %}
 {% block content %}
 
-  <div class="content-section">
-    <h2>Register</h2>
+    <div class="content-section">
+        <h2>Register</h2>
 
 
-    <form method="POST" action="{{ url_for('register') }}">
-      {{ register_form.hidden_tag() }}
-     
-      <fieldset class="form-group">
-        <div class="form-group">
-          {{ register_form.username.label(class="form-control-label") }}
-          {% if register_form.username.errors %}
-            {{ register_form.username(class="form-control form-control-lg is-invalid") }}
-            <div class="invalid-feedback">
-              {% for error in register_form.username.errors %}
-                <span>{{error}}</span>
-              {% endfor %}
+        <form method="POST" action="{{ url_for('register') }}">
+            {{ register_form.hidden_tag() }}
+
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{ register_form.username.label(class="form-control-label") }}
+                    {% if register_form.username.errors %}
+                        {{ register_form.username(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.username(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.email.label(class="form-control-label") }}
+                    {% if register_form.email.errors %}
+                        {{ register_form.email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.street_address.label(class="form-control-label") }}
+                    {% if register_form.street_address.errors %}
+                        {{ register_form.street_address(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.street_address.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.street_address(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.unit_type.label(class="form-control-label") }}
+                    {% if register_form.unit_type.errors %}
+                        {{ register_form.unit_type(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.unit_type.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.unit_type(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.unit_number.label(class="form-control-label") }}
+                    {% if register_form.unit_number.errors %}
+                        {{ register_form.unit_number(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.unit_number.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.unit_number(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.city.label(class="form-control-label") }}
+                    {% if register_form.city.errors %}
+                        {{ register_form.city(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.city.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.city(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.state.label(class="form-control-label") }}
+                    {% if register_form.state.errors %}
+                        {{ register_form.state(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.state.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.state(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.zipcode.label(class="form-control-label") }}
+                    {% if register_form.zipcode.errors %}
+                        {{ register_form.zipcode(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.zipcode.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.zipcode(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.password.label(class="form-control-label") }}
+                    {% if register_form.password.errors %}
+                        {{ register_form.password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ register_form.confirm_password.label(class="form-control-label") }}
+                    {% if register_form.confirm_password.errors %}
+                        {{ register_form.confirm_password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in register_form.confirm_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ register_form.confirm_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ register_form.submit(class="btn btn-primary") }}
             </div>
-          {% else %}
-            {{ register_form.username(class="form-control form-control-lg") }}
-          {% endif %}
-        </div>
-
-        <div class="form-group">
-          {{ register_form.email.label(class="form-control-label") }}
-            {% if register_form.email.errors %}
-              {{ register_form.email(class="form-control form-control-lg is-invalid") }}
-              <div class="invalid-feedback">
-                {% for error in register_form.email.errors%}
-                  <span>{{error}}</span>
-                {% endfor %}
-              </div>
-            {% else %}
-              {{ register_form.email(class="form-control form-control-lg") }}
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-          {{ register_form.password.label(class="form-control-label") }}
-            {% if register_form.password.errors %}
-              {{ register_form.password(class="form-control form-control-lg is-invalid") }}
-              <div class="invalid-feedback">
-                {% for error in register_form.password.errors%}
-                    <span>{{error}}</span>
-                {% endfor %}
-              </div>
-            {% else %}
-              {{ register_form.password(class="form-control form-control-lg") }}
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-          {{ register_form.confirm_password.label(class="form-control-label") }}
-            {% if register_form.confirm_password.errors %}
-              {{ register_form.confirm_password(class="form-control form-control-lg is-invalid") }}
-              <div class="invalid-feedback">
-                {% for error in register_form.confirm_password.errors%}
-                  <span>{{error}}</span>
-                {% endfor %}
-              </div>
-            {% else %}
-              {{ register_form.confirm_password(class="form-control form-control-lg") }}
-            {% endif %}
-        </div>
-      </fieldset>
-      <div class="form-group"> 
-        {{ register_form.submit(class="btn btn-primary") }}
-      </div>
-    </form>
-  </div>
+        </form>
+    </div>
 {% endblock content %}
               

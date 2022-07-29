@@ -10,13 +10,16 @@ from flasksite import app, bcrypt, db
 from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
+from flasksite.api import ebay_api
 from flasksite.model import User, Listing
+
+import ebay_rest.a_p_i as ebay
+from ebay_rest import Error
 
 
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
 def home():
-
     return render_template('home.html', subtitle="Catalog")
 
 
@@ -46,10 +49,22 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
 
-    #   github_form = GitHubForm()
     reg_form = RegistrationForm()
     if reg_form.validate_on_submit():
-        user = User(username=reg_form.username.data, email=reg_form.email.data, password_hash=hash_pass(reg_form.password.data))
+        full_address = f"{reg_form.street_address.data}, {reg_form.unit_type.data} {reg_form.unit_number.data}, \
+                        {reg_form.city.data}, {reg_form.state.data} {reg_form.zipcode.data}"
+        address_line2 = f"{reg_form.unit_type.data} {reg_form.unit_number.data}"
+        if "- Select " in address_line2:  # when address line 2 isn't filled out in the form
+            user = User(username=reg_form.username.data, email=reg_form.email.data,
+                        street_address=reg_form.street_address.data, city=reg_form.city.data,
+                        state=reg_form.state.data, zipcode=reg_form.zipcode.data,
+                        password_hash=hash_pass(reg_form.password.data))
+        else:
+            user = User(username=reg_form.username.data, email=reg_form.email.data,
+                        street_address=reg_form.street_address.data, address_line2=address_line2,
+                        city=reg_form.city.data, state=reg_form.state.data, zipcode=reg_form.zipcode.data,
+                        password_hash=hash_pass(reg_form.password.data))
+
         db.session.add(user)
         db.session.commit()
         login_user(user)
@@ -95,18 +110,79 @@ def logout():
 
 
 @app.route("/new_listing", methods=['GET', 'POST'])
+@login_required
 def new_listing():
     form = ListingForm()
-    print(current_user.username)
+    # print(current_user.username)
     print(Listing.query.all())
     if form.validate_on_submit():
         listing = Listing(username=current_user.username, profile_pic=current_user.profile_pic, title=form.title.data,
-                    description=form.content.data)
+                          description=form.content.data)
         print(listing)
+        # ebay_init(form)
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('home'))
     return render_template('new_listing.html', listing_form=form)
+
+
+def ebay_init(listing_form):
+    try:
+        api = ebay.API(application='sandbox_1', user='sandbox_1', header='US')
+    except Error as error:
+        print(f'Error {error.number} is {error.reason}  {error.detail}.\n')
+    else:
+
+        # item_data = set_item_data()
+
+        # sku = scraper.get_sku()
+
+        offer_data = {
+            "sku": listing_form.sku.data,
+            "marketplaceId": "EBAY_US",
+            "format": "FIXED_PRICE",
+            "availableQuantity": listing_form.quantity.data,
+            "categoryId": "30120",
+            "listingDescription": listing_form.content.data,
+            "listingPolicies": {
+                "fulfillmentPolicyId": "3*********0",
+                "paymentPolicyId": "3*********0",
+                "returnPolicyId": "3*********0"
+            },
+            "pricingSummary": {
+                "price": {
+                    "currency": "USD",
+                    "value": listing_form.price.data
+                }
+            },
+            "quantityLimitPerBuyer": 1,
+            "includeCatalogProductDetails": True,
+        }
+
+        merchant_location_data = {
+            "location": {
+                "address": {
+                    "addressLine1": "625 6th Ave",
+                    "addressLine2": "Fl 2",
+                    "city": "New York",
+                    "stateOrProvince": "NY",
+                    "postalCode": "10011",
+                    "country": "US"
+                }
+            },
+            "locationInstructions": "Items ship from here.",
+            "name": "Cell Phone Vendor 6th Ave",
+            "merchantLocationStatus": "ENABLED",
+            "locationTypes": [
+                "STORE"
+            ]
+        }
+        merchant_loc_key = 'NYCLOC6TH'
+
+        # ebay_api.create_listing(api, sku, item_data, offer_data, merchant_location_data, merchant_loc_key)
+        # sql.prompt_user()
+        # Uncomment line below to clear all inventory items, locations, listings, and clear the database
+        # ebay_api.clear_entities(api
 
 
 @app.route("/profile")
@@ -116,7 +192,6 @@ def profile():
 
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
-
 
     return render_template("profile.html", subtitle=subtitle, user=user)
 

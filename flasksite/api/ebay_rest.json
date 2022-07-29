@@ -1,0 +1,83 @@
+{
+    "***_instructions_***": {
+        "01": "The ebay_rest module needs your eBay credentials.",
+        "02": "Copy this file to your working folder and name it ebay_rest.json.",
+        "03": "As you create and get, replace the placeholders in the two sections that follow.",
+        "04": "Create a developer account - https://developer.ebay.com/api-docs/static/creating-edp-account.html",
+        "05": "Get your OAuth credentials - https://developer.ebay.com/api-docs/static/oauth-credentials.html",
+        "06": "Get your redirect_uri value - https://developer.ebay.com/api-docs/static/oauth-redirect-uri.html",
+        "07": "Create production and sandbox logins at your eBay country-specific marketplace, e.g. https://www.ebay.com & https://sandbox.ebay.com.",
+        "08": "Except for production users, scopes will be auto-discovered.",
+        "09": "If the token and token_expiry are empty, they will be auto-generated."
+    },
+    "applications": {
+        "production_1": {
+            "app_id": "placeholder-placeholder-PRD-placeholder-placeholder",
+            "cert_id": "PRD-placeholder-placeholder-placeholder-placeholder-placeholder",
+            "dev_id": "placeholder-placeholder-placeholder-placeholder-placeholder",
+            "redirect_uri": "placeholder-placeholder-placeholder-placeholder"
+        },
+        "sandbox_1": {
+            "app_id": "AlbertTe-Resellin-SBX-db14cffb5-cfd1ac3b",
+            "cert_id": "SBX-b14cffb5e502-9d55-4736-8403-4947",
+            "dev_id": "85b11c14-7d19-40e2-8452-afd0f7687b58",
+            "redirect_uri": "Albert_Terc-AlbertTe-Resell-zeijgqsp"
+        }
+    },
+    "users": {
+        "production_1": {
+            "email_or_username": "<production-username>",
+            "password": "<production-user-password>",
+            "scopes": [
+                "https://api.ebay.com/oauth/api_scope",
+                "https://api.ebay.com/oauth/api_scope/sell.inventory",
+                "https://api.ebay.com/oauth/api_scope/sell.marketing",
+                "https://api.ebay.com/oauth/api_scope/sell.account",
+                "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
+            ],
+            "refresh_token": "",
+            "refresh_token_expiry": ""
+        },
+        "sandbox_1": {
+            "email_or_username": "testuser_albyt",
+            "password": "rRQkn@@hk5Xi",
+            "refresh_token": "",
+            "refresh_token_expiry": ""
+        }
+    },
+    "headers": {
+        "ENCA": {
+            "accept_language": "en-CA",
+            "affiliate_campaign_id": "",
+            "affiliate_reference_id": "",
+            "content_language": "en-CA",
+            "country" : "CA",
+            "currency": "CAD",
+            "device_id": "",
+            "marketplace_id": "EBAY_ENCA",
+            "zip": "K1M 1M4"
+        },
+        "GB": {
+            "accept_language": "en-GB",
+            "affiliate_campaign_id": "",
+            "affiliate_reference_id": "",
+            "content_language": "en-GB",
+            "country" : "GB",
+            "currency": "GBP",
+            "device_id": "",
+            "marketplace_id": "EBAY_GB",
+            "zip": "SW1A 1AA"
+        },
+        "US": {
+            "accept_language": "en-US",
+            "affiliate_campaign_id": "",
+            "affiliate_reference_id": "",
+            "content_language": "en-US",
+            "country": "US",
+            "currency": "USD",
+            "device_id": "",
+            "marketplace_id": "EBAY_US",
+            "zip": "20500"
+        }
+    }
+}

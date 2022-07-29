@@ -25,7 +25,7 @@
         <div class="collapse navbar-collapse" id="navbarToggle">
           <div class="navbar-nav me-auto">
             <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-            <a class="nav-item nav-link" href="{{ url_for('profile') }}">Profile</a>
+{#            <a class="nav-item nav-link" href="{{ url_for('profile') }}">Profile</a>#}
             <form method="POST" action="{{ url_for('search')}}" class="d-flex">
               {{ form.hidden_tag() }}
               <div class="input-group ms-2">
@@ -43,6 +43,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
                     <li><a class="dropdown-item" href="{{ url_for('new_listing') }}">Create New Listing</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
                 </ul>
               </li>
