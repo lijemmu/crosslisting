@@ -1,7 +1,7 @@
 from urllib.parse import urlparse, urljoin
 
 import sqlalchemy.exc
-from flask import render_template, url_for, flash, redirect, request, session, g, abort
+from flask import render_template, url_for, flash, redirect, request, session, g, abort, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from sqlalchemy import or_
 
@@ -12,6 +12,7 @@ from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.api import ebay_api
 from flasksite.model import User, Listing
+from flasksite.api import country
 
 import ebay_rest.a_p_i as ebay
 from ebay_rest import Error
@@ -50,27 +51,43 @@ def register():
         return redirect(url_for('home'))
 
     reg_form = RegistrationForm()
+
+    try:
+        reg_form.state.choices = country.get_states(reg_form.country.data)
+    except KeyError:
+        reg_form.state.choices = ["- Select -"]
+
+
     if reg_form.validate_on_submit():
         full_address = f"{reg_form.street_address.data}, {reg_form.unit_type.data} {reg_form.unit_number.data}, \
-                        {reg_form.city.data}, {reg_form.state.data} {reg_form.zipcode.data}"
+                        {reg_form.city.data}, {reg_form.state.data} {reg_form.zipcode.data}, {reg_form.country.data}"
         address_line2 = f"{reg_form.unit_type.data} {reg_form.unit_number.data}"
-        if "- Select " in address_line2:  # when address line 2 isn't filled out in the form
-            user = User(username=reg_form.username.data, email=reg_form.email.data,
+        if "- Select -" in address_line2:  # when address line 2 isn't filled out in the form
+            user = User(first_name=reg_form.first_name.data, last_name=reg_form.last_name.data,
+                        email=reg_form.email.data,
                         street_address=reg_form.street_address.data, city=reg_form.city.data,
-                        state=reg_form.state.data, zipcode=reg_form.zipcode.data,
+                        state=reg_form.state.data, zipcode=reg_form.zipcode.data, country=reg_form.country.data,
                         password_hash=hash_pass(reg_form.password.data))
         else:
-            user = User(username=reg_form.username.data, email=reg_form.email.data,
+            user = User(first_name=reg_form.first_name.data, last_name=reg_form.last_name.data,
+                        email=reg_form.email.data,
                         street_address=reg_form.street_address.data, address_line2=address_line2,
-                        city=reg_form.city.data, state=reg_form.state.data, zipcode=reg_form.zipcode.data,
+                        city=reg_form.city.data,
+                        state=reg_form.state.data, zipcode=reg_form.zipcode.data, country=reg_form.country.data,
                         password_hash=hash_pass(reg_form.password.data))
 
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        flash(f'Account created for {reg_form.username.data}!', 'success')
+        flash(f'Account created for {reg_form.first_name.data} {reg_form.last_name.data}!', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', register_form=reg_form)
+
+
+@app.route("/register/<my_country>")
+def state(my_country):
+    states = country.get_states(my_country)
+    return jsonify({"states": states})
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -83,9 +100,9 @@ def login():
     login_form = LoginForm()
     # reg_form = RegistrationForm()
     if login_form.validate_on_submit():
-        given_user = login_form.existing_user.data  # form inputs
+        given_user = login_form.existing_email.data  # form inputs
         given_pass = login_form.existing_pass.data
-        user_obj = User.query.filter_by(username=given_user).first()
+        user_obj = User.query.filter_by(email=given_user).first()
 
         if user_obj and bcrypt.check_password_hash(user_obj.password_hash, given_pass):
             login_user(user_obj)
@@ -96,10 +113,10 @@ def login():
             if not is_safe_url(next_url):
                 return abort(400)
 
-            flash(f'Successfully logged in as {login_form.existing_user.data}!', 'success')
+            flash(f'Successfully logged in as {login_form.existing_email.data}!', 'success')
             return redirect(next_url or url_for('home'))
         else:
-            flash(f'Invalid username and/or password', 'danger')
+            flash(f'Invalid email and/or password', 'danger')
     return render_template('login.html', title="Login", login_form=login_form)
 
 

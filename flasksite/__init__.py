@@ -14,6 +14,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         SECRET_KEY='063b5d59f24fbf66d126cfb5e661902f',
+        # SQLALCHEMY_DATABASE_URI="postgresql://dglsqplgywpefv:cdfbde81aa3b4eeae18da2824f5ae9f694f4675782fe1ae8eaa05758b4bab0d9@ec2-34-235-31-124.compute-1.amazonaws.com:5432/d3kr000jh54q12",
         SQLALCHEMY_DATABASE_URI="postgresql://postgres:Crosslisting2!@localhost:5432/postgres"
         # GITHUB_CLIENT_ID=config.CLIENT_ID,
         # GITHUB_CLIENT_SECRET=config.CLIENT_SECRET

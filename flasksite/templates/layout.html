@@ -39,7 +39,7 @@
             {% if current_user.is_authenticated %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Welcome, {{ current_user.username }}
+                    Welcome, {{ current_user.first_name }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
                     <li><a class="dropdown-item" href="{{ url_for('new_listing') }}">Create New Listing</a></li>
