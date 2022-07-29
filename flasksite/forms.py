@@ -20,8 +20,6 @@ class RegistrationForm(FlaskForm):
         user_obj = User.query.filter_by(username=username.data).first()
         if user_obj:
             raise ValidationError("Username already in use.")
-        if requests.get(" https://leetcode.com/" + username.data).status_code == 404:
-            raise ValidationError("Leetcode ID does not exists. Please enter a valid Leetcode ID")
 
     def validate_email(self, email):
         user_obj = User.query.filter_by(email=email.data).first()
