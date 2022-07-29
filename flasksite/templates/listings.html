@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <h2>My Listings</h2>
+        {% for i in range(3) %}
+        <div class="row">
+            {% for i in range(3) %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Title
+                        </h5>
+                        <div class="card-text">
+                            This is some text that serves as a description.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

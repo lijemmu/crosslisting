@@ -120,6 +120,10 @@ def profile():
 
     return render_template("profile.html", subtitle=subtitle, user=user)
 
+@app.route("/listings")
+def listings():
+    return render_template("listings.html")
+
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
