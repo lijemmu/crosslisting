@@ -5,9 +5,10 @@
         <script type="text/javascript"
                 src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js">
         </script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">
     </head>
     <body>
-    <div class="content-section">
+    <!-- <div class="content-section">
 
         <div class="d-flex align-items-center">
             <div class="flex-shrink-8">
@@ -20,6 +21,34 @@
 
             </div>
         </div>
+    </div> -->
+    
+    <!-- My Profile -->
+    <div class="container">
+        <h5 class="align-baseline mt-5 ml-2" id="my-profile">My Profile</h5>
+    </div>
+
+    <!-- picture, rating, description -->
+    <div class="container">
+        <div class="container">
+            <div class="flex-shrink-8" id="pic-div">
+                <img id="act-img" class="rounded-circle account-img mt-5" src="https://images.unsplash.com/photo-1544502062-f82887f03d1c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8MXx8fGVufDB8fHx8&auto=format&fit=crop&w=900&q=60">
+                <h3 id="name" class="account-heading mt-3">{{ user.username }}</h3>
+            </div>
+        </div>
+
+        <div class="container">
+            <ul class="list-group list-group-horizontal gap-3 offset-md-2 mt-3">
+                <img src="../static/img/star.svg" alt="">
+                <img src="../static/img/star.svg" alt="">
+                <img src="../static/img/star.svg" alt="">
+                <img src="../static/img/star.svg" alt="">
+
+            </ul>
+            
+        </div>
+
+
     </div>
     </body>
 {% endblock content %}
