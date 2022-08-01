@@ -42,6 +42,8 @@
                     Welcome, {{ current_user.username }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                   
+                   
                     <li><a class="dropdown-item" href="{{ url_for('new_listing') }}">Create New Listing</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
                 </ul>
@@ -57,6 +59,8 @@
     </nav>
   </header>
 
+
+
   <main role="main" class="container">
     {% with messages = get_flashed_messages(with_categories=True) %}
       {% if messages %}
@@ -70,7 +74,15 @@
         <!-- <h1>This shows up on every page</h1>  -->
         {% block content %}{% endblock %}
   </main>
+  <!-- JQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  <!-- font awesome -->
+  <script src="https://kit.fontawesome.com/a52414976d.js" crossorigin="anonymous"></script>
 </body>
+
+{% block script %}{% endblock %}
 
 </html>

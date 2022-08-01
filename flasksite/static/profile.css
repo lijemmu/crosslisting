@@ -1,0 +1,46 @@
+#my-profile {
+    margin-left: -3%;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 58px;
+
+}
+
+#pic-div {
+    margin-left: 5rem !important;
+}
+
+#act-img {
+    height: 15rem;
+    width: 15rem;
+    margin-right: 0%;
+    margin-bottom: 0%;
+}
+
+#name {
+    margin-left: 3.5rem;
+}
+
+#left-side {
+    margin-left: 50rem;
+    margin-top: -40rem;
+}
+
+#edit-btn {
+    margin-left: 18rem;
+}
+
+#btn-grp {
+    margin-left: -7rem;
+}
+
+#selling-btn {
+    margin-left: -5rem;
+}
+
+#left-btm-grp {
+    margin-top: 8rem;
+}
