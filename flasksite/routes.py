@@ -94,8 +94,8 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route("/new_listing", methods=['GET', 'POST'])
-def new_listing():
+@app.route("/listings", methods=['GET', 'POST'])
+def listings():
     form = ListingForm()
     #print(current_user.username)
     print(Listing.query.all())
@@ -106,7 +106,7 @@ def new_listing():
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('home'))
-    return render_template('new_listing.html', listing_form=form)
+    return render_template('listings.html', listing_form=form)
 
 
 @app.route("/profile")
@@ -120,9 +120,11 @@ def profile():
 
     return render_template("profile.html", subtitle=subtitle, user=user)
 
+'''
 @app.route("/listings")
 def listings():
     return render_template("listings.html")
+'''
 
 
 def is_safe_url(target):
