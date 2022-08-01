@@ -223,6 +223,7 @@ def add_description(product_id, description):
     return response.json()
 
 
+
 #prepare_body_tech("MacBook pro 2021 Apple", "New, ready to use", 6000, 3,"new", "6 meses", "Apple", "MacBook", "2021", "Black", "macOS", "Apple")
 
 
