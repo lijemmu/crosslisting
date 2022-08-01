@@ -16,7 +16,6 @@ from flasksite.model import User, Listing
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
 def home():
-
     return render_template('home.html', subtitle="Catalog")
 
 
@@ -49,7 +48,8 @@ def register():
     #   github_form = GitHubForm()
     reg_form = RegistrationForm()
     if reg_form.validate_on_submit():
-        user = User(username=reg_form.username.data, email=reg_form.email.data, password_hash=hash_pass(reg_form.password.data))
+        user = User(username=reg_form.username.data, email=reg_form.email.data,
+                    password_hash=hash_pass(reg_form.password.data))
         db.session.add(user)
         db.session.commit()
         login_user(user)
@@ -101,7 +101,7 @@ def new_listing():
     print(Listing.query.all())
     if form.validate_on_submit():
         listing = Listing(username=current_user.username, profile_pic=current_user.profile_pic, title=form.title.data,
-                    description=form.content.data)
+                          description=form.content.data)
         print(listing)
         db.session.add(listing)
         db.session.commit()
@@ -117,8 +117,7 @@ def profile():
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
 
-
-    return render_template("profile.html", subtitle=subtitle, user=user)
+    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic)
 
 
 def is_safe_url(target):

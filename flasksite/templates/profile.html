@@ -1,103 +1,173 @@
 {% extends "layout.html" %}
 {% block content %}
 
-    <head>
-        <script type="text/javascript"
-                src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js">
-        </script>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">
-    </head>
-    <body>
-    <!-- <div class="content-section">
 
-        <div class="d-flex align-items-center">
-            <div class="flex-shrink-8">
-                <img class="rounded-circle account-img" src="{{ profile_pic }}">
+<div class="content-section">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col">
+                <h1 class="account-heading">My Profile</h1>
             </div>
-            <div class="flex-grow-1 ms-3">
-                <h2>{{ subtitle }}</h2>
-                <h3 class="account-heading">{{ user.username }}</h3>
-                <p class="text-secondary">{{ user.email }}</p>
-
+            <div class="col-auto">
+                <button type="button" class="btn rounded-pill btn-outline-secondary ">Edit Profile</button>
             </div>
         </div>
-    </div> -->
-    
-    <!-- My Profile -->
-    <div class="container">
-        <div class="row">
-            <div class="col">
 
-                <div class="container px-4">
-                        <h5 class="align-baseline mt-5 ml-2" id="my-profile">My Profile</h5>      
-                </div>
-   
-        
-                <!-- picture, rating, description -->
-                <div class="container mr-auto">
-                <div class="row align-item-start">
-                    <div class="col container">
-                        <div class="flex-shrink-8" id="pic-div">
-                            <img id="act-img" class="rounded-circle account-img mt-5" src="https://estrellapediatrics.com/wp-content/uploads/2018/04/silhouette.png">
-                            <h3 id="name" class="account-heading mt-3">{{ user.username }}</h3>
-                        </div>
-                    </div>
-            
-                    <div class="container">
-                        <ul class="list-group list-group-horizontal gap-3 offset-md-2 mt-3">
-                            <img src="../static/img/star.svg" alt="">
-                            <img src="../static/img/star.svg" alt="">
-                            <img src="../static/img/star.svg" alt="">
-                            <img src="../static/img/star.svg" alt="">
-            
-                        </ul>
-                    </div>
-            
-                    <div class="card offset-md-1 mt-3" style="width: 25rem;">
+        <div class="row">
+
+            <div class="d-flex flex-column justify-content-center align-items-start text-center col ms-5">
+                <div class="card-container">
+                   <img class="rounded-circle account-img" src="{{ profile_pic }}">
+                    <h2>First {{ user.username }}</h2>
+                    <p>{{ user.email }}</p>
+                    <div class="card" style="width: 25rem;">
                         <div class="card-body">
-                          <h5 class="card-title text-center">Description</h5>
-                          <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                            Molestiae tempora unde impedit est ullam quae, vel esse et placeat, 
+                            <h5 class="card-title text-center">Description</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Molestiae tempora unde impedit est ullam quae, vel esse et placeat,
                             beatae repellendus voluptatum iusto aliquid fugiat sint odio harum incidunt sed!.</p>
                         </div>
-                      </div>
-                </div>
-                </div>
-                            
-            </div>
-
-
-
-        </div>
-
-        <div id="left-side" class="container col">
-            <button id="edit-btn" type="button" class="btn btn-secondary rounded-pill btn-lg">Edit Profile</button>
-
-            <div id="left-btm-grp" class="container">
-                <h6 id="selling-btn">Selling on</h6>
-                <div id="btn-grp" class="container mt-5 overflow-hidden">
-                    <div class="row gy-5">
-                      <div class="col-6">
-                        <button type="button" class="btn btn-secondary btn-lg rounded-pill">Ebay</button>
-                      </div>
-                      <div class="col-6">
-                        <button type="button" class="btn btn-secondary btn-lg rounded-pill">Mercado Libre</button>
-                      </div>
-                      <div class="col-6">
-                        <button type="button" class="btn btn-secondary btn-lg rounded-pill">Etsy</button>
-                      </div>
-                      <div class="col-6">
-                        <button type="button" class="btn btn-secondary btn-lg rounded-pill">Ali - express</button>
-                      </div>
                     </div>
-                  </div>
+                </div>
             </div>
 
+            <div class="col">
+                <h2>Selling On</h2>
+                <div class="justify-content-between">
+                    <div class="row">
+                        <div class="col-5 d-grid gap-3">
+                            <button class="btn btn-outline-success rounded-pill">Ebay</button>
+                            <button class="btn btn-outline-success rounded-pill">Mercado Libre</button>
+                        </div>
+                        <div class="col-5 d-grid gap-3">
+                            <button class="btn btn-outline-success rounded-pill">Etsy</button>
+                            <button class="btn btn-outline-success rounded-pill">AliExpress</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-
-
     </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--    <head>-->
+<!--        <script type="text/javascript"-->
+<!--                src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js">-->
+<!--        </script>-->
+<!--        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">-->
+<!--    </head>-->
+<!--    <body>-->
+
+    
+    <!-- My Profile -->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col">-->
+
+<!--                <div class="container px-4">-->
+<!--                    <h5 class="align-baseline mt-5 ml-2" id="my-profile">My Profile</h5>      -->
+<!--                </div>-->
+<!--   -->
+<!--        -->
+<!--                &lt;!&ndash; picture, rating, description &ndash;&gt;-->
+<!--                <div class="container mr-auto">-->
+<!--                <div class="row align-item-start">-->
+<!--                    <div class="col container">-->
+<!--                        <div class="flex-shrink-8" id="pic-div">-->
+<!--                            <img id="act-img" class="rounded-circle account-img mt-5" src="https://estrellapediatrics.com/wp-content/uploads/2018/04/silhouette.png">-->
+<!--                            <h3 id="name" class="account-heading mt-3">{{ user.username }}</h3>-->
+<!--                        </div>-->
+<!--                   -->
+<!--                        <div class="container">-->
+<!--                            <ul class="list-group list-group-horizontal gap-3 offset-md-2 mt-3">-->
+<!--                                    <h3  class="mt-3">{{ user.email }}</h3>-->
+<!--&lt;!&ndash;                                <img src="../static/img/star.svg" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <img src="../static/img/star.svg" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <img src="../static/img/star.svg" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <img src="../static/img/star.svg" alt="">&ndash;&gt;-->
+<!--&lt;!&ndash;                &ndash;&gt;-->
+<!--                            </ul>-->
+<!--                        </div>-->
+
+<!--                        <div id="description" class="card offset-md-1 mt-3 justify-content-center" style="width: 25rem;">-->
+<!--                            <div class="card-body">-->
+<!--                              <h5 class="card-title text-center">Description</h5>-->
+<!--                              <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. -->
+<!--                                Molestiae tempora unde impedit est ullam quae, vel esse et placeat, -->
+<!--                                beatae repellendus voluptatum iusto aliquid fugiat sint odio harum incidunt sed!.</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                   -->
+<!--                    </div>-->
+<!--            -->
+
+<!--            -->
+
+
+
+<!--                </div>-->
+<!--                </div>-->
+<!--                </div>-->
+<!--                            -->
+<!--            </div>-->
+
+
+
+<!--        </div>-->
+
+<!--        <div id="left-side" class="container col">-->
+<!--            <button id="edit-btn" type="button" class="btn btn-secondary rounded-pill btn-lg">Edit Profile</button>-->
+
+<!--            <div id="left-btm-grp" class="container">-->
+<!--                <h6 id="selling-btn">Selling on</h6>-->
+<!--                <div id="btn-grp" class="container mt-5 overflow-hidden">-->
+<!--                    <div class="row gy-5">-->
+<!--                      <div class="col-6">-->
+<!--                        <button type="button" class="btn btn-secondary btn-lg rounded-pill">Ebay</button>-->
+<!--                      </div>-->
+<!--                      <div class="col-6">-->
+<!--                        <button type="button" class="btn btn-secondary btn-lg rounded-pill">Mercado Libre</button>-->
+<!--                      </div>-->
+<!--                      <div class="col-6">-->
+<!--                        <button type="button" class="btn btn-secondary btn-lg rounded-pill">Etsy</button>-->
+<!--                      </div>-->
+<!--                      <div class="col-6">-->
+<!--                        <button type="button" class="btn btn-secondary btn-lg rounded-pill">Ali - express</button>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--            </div>-->
+
+<!--        </div>-->
+
+
+
+<!--    </div>-->
 
 
     <!-- <div class="container ml-auto">
@@ -110,5 +180,5 @@
 
     <!-- Edit button and  -->
 
-    </body>
+<!--    </body>-->
 {% endblock content %}
