@@ -4,7 +4,7 @@
         <div class="d-flex justify-content-between mb-4">
             <h2>My Listings</h2>
             <span class="text-end">
-                <button class="btn btn-primary">Create Listing</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#listing-modal">Create Listing</button>
             </span>
         </div>
         <div class="row d-flex">
@@ -35,4 +35,54 @@
             {% endfor %}
         </div>
     </div>
+
+    <div class="modal fade" id="listing-modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Create New Listing</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('new_listing') }}">
+                    {{ listing_form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <div class="form-group">
+                            {{ listing_form.title.label(class="form-control-label") }}
+                            {% if listing_form.title.errors %}
+                                {{ listing_form.title(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in listing_form.title.errors %}
+                                        <span>{{error}}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ listing_form.title(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+        
+                        <div class="form-group">
+                            {{ listing_form.content.label(class="form-control-label") }}
+                            {% if listing_form.content.errors %}
+                                {{ listing_form.content(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in listing_form.content.errors%}
+                                        <span>{{error}}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ listing_form.content(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>        
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group"> 
+                    {{ listing_form.post_btn(class="btn btn-primary") }}
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
 {% endblock %}

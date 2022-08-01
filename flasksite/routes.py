@@ -97,7 +97,7 @@ def logout():
 @app.route("/new_listing", methods=['GET', 'POST'])
 def new_listing():
     form = ListingForm()
-    print(current_user.username)
+    #print(current_user.username)
     print(Listing.query.all())
     if form.validate_on_submit():
         listing = Listing(username=current_user.username, profile_pic=current_user.profile_pic, title=form.title.data,
