@@ -1,3 +1,4 @@
+import json
 from urllib.parse import urlparse, urljoin
 
 import sqlalchemy.exc
@@ -30,6 +31,13 @@ def base():
     return dict(form=form)
 
 
+def update_json():
+    with open("ebay_rest.json", "rw") as ebay_json:
+        json_data = json.load(ebay_json)
+        json_data['users']['sandbox_1']['email_or_username'] = session['ebay_username']
+        json_data['users']['sandbox_1']['password'] = session['password']
+
+
 @app.route("/search", methods=["POST"])
 def search():
     form = SearchForm()
@@ -56,7 +64,6 @@ def register():
         reg_form.state.choices = country.get_states(reg_form.country.data)
     except KeyError:
         reg_form.state.choices = ["- Select -"]
-
 
     if reg_form.validate_on_submit():
         full_address = f"{reg_form.street_address.data}, {reg_form.unit_type.data} {reg_form.unit_number.data}, \
@@ -126,9 +133,8 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route("/new_listing", methods=['GET', 'POST'])
-@login_required
-def new_listing():
+@app.route("/listings", methods=['GET', 'POST'])
+def listings():
     form = ListingForm()
     # print(current_user.username)
     print(Listing.query.all())
@@ -140,7 +146,7 @@ def new_listing():
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('home'))
-    return render_template('new_listing.html', listing_form=form)
+    return render_template('listings.html', listing_form=form)
 
 
 def ebay_init(listing_form):
@@ -210,7 +216,14 @@ def profile():
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
 
-    return render_template("profile.html", subtitle=subtitle, user=user)
+    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic)
+
+
+'''
+@app.route("/listings")
+def listings():
+    return render_template("listings.html")
+'''
 
 
 def is_safe_url(target):

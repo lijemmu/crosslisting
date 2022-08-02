@@ -1,5 +1,6 @@
 import ebay_rest.a_p_i as ebay
-from ebay_rest import Error
+from ebay_rest import Error, API
+from ebay_rest.token import UserToken
 
 import ebay_api
 
@@ -18,32 +19,27 @@ import ebay_api
 
 
 def set_item_data():
-    item_data = {
-        "condition": "USED_GOOD",
-        "packageWeightAndSize": {
-            "dimensions": {
-                "height": 6,
-                "length": 2,
-                "width": 1,
-                "unit": "INCH"
-            },
-            "weight": {
-                "value": 1,
-                "unit": "POUND"
-            }
+    item_data = {"condition": "USED_GOOD", "packageWeightAndSize": {
+        "dimensions": {
+            "height": 6,
+            "length": 2,
+            "width": 1,
+            "unit": "INCH"
         },
-        "availability": {
-            "shipToLocationAvailability": {
-                "quantity": 1
-            }
+        "weight": {
+            "value": 1,
+            "unit": "POUND"
         }
-    }
+    }, "availability": {
+        "shipToLocationAvailability": {
+            "quantity": 1
+        }
+    }, 'product': {}}
 
-    item_data['product'] = {}
     product_info = item_data['product']
-    product_info['title'] = scraper.get_name()[:79]
-    product_info['aspects'] = scraper.get_details()
-    product_info['imageURLs'] = scraper.get_pictures()
+    # product_info['title'] = scraper.get_name()[:79]
+    # product_info['aspects'] = scraper.get_details()
+    # product_info['imageURLs'] = scraper.get_pictures()
 
     return item_data
 
@@ -51,22 +47,23 @@ def set_item_data():
 def main():
     # scraper.set_url()
     try:
-        api = ebay.API(application='sandbox_1', user='sandbox_1', header='US')
+        # user_token = UserToken()
+        api = API(application='sandbox_1', user='sandbox_1', header='US')
     except Error as error:
         print(f'Error {error.number} is {error.reason}  {error.detail}.\n')
     else:
 
         item_data = set_item_data()
 
-        sku = scraper.get_sku()
+        # sku = scraper.get_sku()
 
         offer_data = {
-            "sku": sku,
+            "sku": "343BNB23",
             "marketplaceId": "EBAY_US",
             "format": "FIXED_PRICE",
             "availableQuantity": 1,
             "categoryId": "30120",
-            "listingDescription": scraper.get_description(),
+            "listingDescription": "test description",
             "listingPolicies": {
                 "fulfillmentPolicyId": "3*********0",
                 "paymentPolicyId": "3*********0",
@@ -75,7 +72,7 @@ def main():
             "pricingSummary": {
                 "price": {
                     "currency": "USD",
-                    "value": scraper.get_price()
+                    "value": "34.90"
                 }
             },
             "quantityLimitPerBuyer": 1,
@@ -102,8 +99,8 @@ def main():
         }
         merchant_loc_key = 'NYCLOC6TH'
 
-        ebay_api.create_listing(api, sku, item_data, offer_data, merchant_location_data, merchant_loc_key)
-        sql.prompt_user()
+        ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data, merchant_location_data, merchant_loc_key)
+        # sql.prompt_user()
         # Uncomment line below to clear all inventory items, locations, listings, and clear the database
         # ebay_api.clear_entities(api)
 
