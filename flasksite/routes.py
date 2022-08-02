@@ -94,10 +94,10 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route("/new_listing", methods=['GET', 'POST'])
-def new_listing():
+@app.route("/listings", methods=['GET', 'POST'])
+def listings():
     form = ListingForm()
-    print(current_user.username)
+    #print(current_user.username)
     print(Listing.query.all())
     if form.validate_on_submit():
         listing = Listing(username=current_user.username, profile_pic=current_user.profile_pic, title=form.title.data,
@@ -106,7 +106,7 @@ def new_listing():
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('home'))
-    return render_template('new_listing.html', listing_form=form)
+    return render_template('listings.html', listing_form=form)
 
 
 @app.route("/profile")
@@ -118,6 +118,12 @@ def profile():
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
 
     return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic)
+
+'''
+@app.route("/listings")
+def listings():
+    return render_template("listings.html")
+'''
 
 
 def is_safe_url(target):
