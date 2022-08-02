@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask_behind_proxy import FlaskBehindProxy
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 # import config
 
@@ -33,6 +34,7 @@ proxied = FlaskBehindProxy(app)
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 postdb = SQLAlchemy(app)
+migrate = Migrate(app, db)
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'

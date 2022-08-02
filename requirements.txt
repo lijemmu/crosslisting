@@ -16,6 +16,8 @@ SQLAlchemy
 psycopg2
 WTForms
 flask_sqlalchemy
+Flask-Migrate
 pytest
 pycodestyle
+ebay_rest
 

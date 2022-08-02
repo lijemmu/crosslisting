@@ -6,16 +6,16 @@
       {{ login_form.hidden_tag() }}
       <fieldset class="form-group">
         <div class="form-group">
-          {{ login_form.existing_user.label(class="form-control-label") }}
-          {% if login_form.existing_user.errors %}
-            {{ login_form.existing_user(class="form-control form-control-lg is-invalid") }}
+          {{ login_form.existing_email.label(class="form-control-label") }}
+          {% if login_form.existing_email.errors %}
+            {{ login_form.existing_email(class="form-control form-control-lg is-invalid") }}
             <div class="invalid-feedback">
-              {% for error in login_form.existing_user.errors %}
+              {% for error in login_form.existing_email.errors %}
                 <span>{{error}}</span>
               {% endfor %}
             </div>
           {% else %}
-            {{ login_form.existing_user(class="form-control form-control-lg") }}
+            {{ login_form.existing_email(class="form-control form-control-lg") }}
           {% endif %}
         </div>
 
