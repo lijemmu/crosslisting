@@ -72,16 +72,17 @@
                             {% else %}
                                 {{ listing_form.content(class="form-control form-control-lg") }}
                             {% endif %}
-                        </div>        
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <div class="form-group">
+                                {{ listing_form.post_btn(class="btn btn-primary") }}
+                            </div>
+                        </div>
                     </fieldset>
                 </form>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <div class="form-group"> 
-                {{ listing_form.post_btn(class="btn btn-primary") }}
-            </div>
-            </div>
+
           </div>
         </div>
       </div>

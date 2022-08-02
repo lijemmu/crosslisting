@@ -139,73 +139,136 @@ def listings():
     # print(current_user.username)
     print(Listing.query.all())
     if form.validate_on_submit():
-        listing = Listing(username=current_user.username, profile_pic=current_user.profile_pic, title=form.title.data,
+        listing = Listing(username=current_user.first_name + " " + current_user.last_name,
+                          profile_pic=current_user.profile_pic, title=form.title.data,
                           description=form.content.data)
         print(listing)
-        # ebay_init(form)
+        ebay_api_obj = ebay_init()
+        create_ebay_inventory_location(ebay_api_obj)
+        create_ebay_listing(ebay_api_obj, form)
         db.session.add(listing)
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('listings'))
+
     return render_template('listings.html', listing_form=form)
 
 
-def ebay_init(listing_form):
+def ebay_init():  # sets up ebay api credentials
+    application = {
+        "app_id": "AlbertTe-Resellin-SBX-db14cffb5-cfd1ac3b",
+        "cert_id": "SBX-b14cffb5e502-9d55-4736-8403-4947",
+        "dev_id": "85b11c14-7d19-40e2-8452-afd0f7687b58",
+        "redirect_uri": "Albert_Terc-AlbertTe-Resell-zeijgqsp"
+    }
+
     try:
-        api = ebay.API(application='sandbox_1', user='sandbox_1', header='US')
+        username = session['ebayUsername']
+        password = session['ebayPassword']
+    except KeyError:
+        flash("Please connect to your eBay account on the Profile page before creating a listing.", 'danger')
+        return
+
+    user = {
+        "email_or_username": session['ebayUsername'],
+        "password": session["ebayPassword"],
+        "refresh_token": "",
+        "refresh_token_expiry": ""
+    }
+
+    header = {
+        "accept_language": "en-US",
+        "affiliate_campaign_id": "",
+        "affiliate_reference_id": "",
+        "content_language": "en-US",
+        "country": "US",
+        "currency": "USD",
+        "device_id": "",
+        "marketplace_id": "EBAY_US",
+        "zip": ""
+    }
+
+    try:
+        api = ebay.API(application=application, user=user, header=header)
     except Error as error:
         print(f'Error {error.number} is {error.reason}  {error.detail}.\n')
     else:
+        return api
 
-        # item_data = set_item_data()
 
-        # sku = scraper.get_sku()
+def create_ebay_listing(api, listing_form):
+    offer_data = {
+        "sku": "234234BH",
+        "marketplaceId": "EBAY_US",
+        "format": "FIXED_PRICE",
+        "availableQuantity": 1,
+        "categoryId": "30120",
+        "listingDescription": listing_form.content.data,
+        "listingPolicies": {
+            "fulfillmentPolicyId": "3*********0",
+            "paymentPolicyId": "3*********0",
+            "returnPolicyId": "3*********0"
+        },
+        "pricingSummary": {
+            "price": {
+                "currency": "USD",
+                "value": "34.99"
+            }
+        },
+        "quantityLimitPerBuyer": 1,
+        "includeCatalogProductDetails": True,
+    }
 
-        offer_data = {
-            "sku": listing_form.sku.data,
-            "marketplaceId": "EBAY_US",
-            "format": "FIXED_PRICE",
-            "availableQuantity": listing_form.quantity.data,
-            "categoryId": "30120",
-            "listingDescription": listing_form.content.data,
-            "listingPolicies": {
-                "fulfillmentPolicyId": "3*********0",
-                "paymentPolicyId": "3*********0",
-                "returnPolicyId": "3*********0"
-            },
-            "pricingSummary": {
-                "price": {
-                    "currency": "USD",
-                    "value": listing_form.price.data
-                }
-            },
-            "quantityLimitPerBuyer": 1,
-            "includeCatalogProductDetails": True,
+
+    item_data = {"condition": "USED_GOOD", "packageWeightAndSize": {
+        "dimensions": {
+            "height": 6,
+            "length": 2,
+            "width": 1,
+            "unit": "INCH"
+        },
+        "weight": {
+            "value": 1,
+            "unit": "POUND"
         }
-
-        merchant_location_data = {
-            "location": {
-                "address": {
-                    "addressLine1": "625 6th Ave",
-                    "addressLine2": "Fl 2",
-                    "city": "New York",
-                    "stateOrProvince": "NY",
-                    "postalCode": "10011",
-                    "country": "US"
-                }
-            },
-            "locationInstructions": "Items ship from here.",
-            "name": "Cell Phone Vendor 6th Ave",
-            "merchantLocationStatus": "ENABLED",
-            "locationTypes": [
-                "STORE"
-            ]
+    }, "availability": {
+        "shipToLocationAvailability": {
+            "quantity": 1
         }
-        merchant_loc_key = 'NYCLOC6TH'
+    }, 'product': {}}
 
-        # ebay_api.create_listing(api, sku, item_data, offer_data, merchant_location_data, merchant_loc_key)
-        # sql.prompt_user()
-        # Uncomment line below to clear all inventory items, locations, listings, and clear the database
-        # ebay_api.clear_entities(api
+    product_info = item_data['product']
+    product_info['title'] = listing_form.title.data
+    # product_info['aspects'] = scraper.get_details()
+    # product_info['imageURLs'] = scraper.get_pictures()
+
+    ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data)
+    # sql.prompt_user()
+    # Uncomment line below to clear all inventory items, locations, listings, and clear the database
+    # ebay_api.clear_entities(api
+
+
+def create_ebay_inventory_location(api):
+    merchant_location_data = {
+        "location": {
+            "address": {
+                "addressLine1": current_user.street_address,
+                "addressLine2": current_user.address_line2,
+                "city": current_user.city,
+                "stateOrProvince": current_user.state,
+                "postalCode": current_user.zipcode,
+                "country": current_user.country
+            }
+        },
+        "locationInstructions": "Items ship from here.",
+        "name": "Inventory Location 1",
+        "merchantLocationStatus": "ENABLED",
+        "locationTypes": [
+            "STORE"
+        ]
+    }
+
+    merchant_loc_key = f"LOC{current_user.zipcode}"
+    ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -213,7 +276,18 @@ def ebay_init(listing_form):
 def profile():
     user = current_user
 
+    subtitle = "My Profile" if user == current_user else "Profile"
+    profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
 
+    ebayLogin = LoginForm()
+
+    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic, login_form=ebayLogin)
+
+
+@app.route('/profile/ebay', methods=['GET', 'POST'])
+@login_required
+def ebay_login():
+    user = current_user
 
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
@@ -223,9 +297,19 @@ def profile():
     if ebayLogin.validate_on_submit():
         session["ebayUsername"] = ebayLogin.existing_email.data
         session["ebayPassword"] = ebayLogin.existing_pass.data
+        print("valid ebay login")
+        redirect(url_for('profile'))
+    elif ebayLogin.is_submitted():
+        flash("Please enter a valid eBay login.", 'danger')
+        print("wrong ebay login")
+        redirect(url_for('ebay_login'))
 
-    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic, login_form = ebayLogin)
+    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic, login_form=ebayLogin)
 
+
+@app.route('/profile/edit', methods=['GET', 'POST'])
+def edit_profile():
+    pass
 
 '''
 @app.route("/listings")
