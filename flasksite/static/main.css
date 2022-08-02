@@ -53,6 +53,9 @@ h6 {
   border-radius: 3px;
   margin-bottom: 20px;
 }
+.card-container {
+    flex-direction: column;
+}
 
 .article-title {
   color: #444444;
@@ -91,10 +94,10 @@ a.article-title:hover {
 }
 
 .account-img {
-  height: 125px;
-  width: 125px;
-  margin-right: 20px;
-  margin-bottom: 16px;
+  height: 200px;
+  width: 200px;
+/*  margin-right: 20px;
+  margin-bottom: 16px;*/
 }
 
 .account-heading {
@@ -115,4 +118,8 @@ h4 {
 th,
 td {
   padding: 10px;
+}
+
+#button-grp {
+    height: 25px;
 }

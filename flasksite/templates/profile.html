@@ -1,17 +1,100 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="content-section">
 
-        <div class="d-flex align-items-center">
-            <div class="flex-shrink-8">
-                <img class="rounded-circle account-img" src="{{ profile_pic }}">
+
+<div class="content-section">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col">
+                <h1 class="account-heading">My Profile</h1>
             </div>
-            <div class="flex-grow-1 ms-3">
-                <h2>{{ subtitle }}</h2>
-                <h3 class="account-heading">{{ user.username }}</h3>
-                <p class="text-secondary">{{ user.email }}</p>
+            <div class="col-auto">
+                <button type="button" class="btn rounded-pill btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit Profile</button>
+            </div>
+        </div>
 
+        <div class="row">
+            <div class="d-flex flex-column justify-content-center align-items-start text-center col ms-5">
+                <div class="card-container">
+                   <img class="rounded-circle account-img" src="{{ profile_pic }}">
+                    <h2>First {{ user.username }}</h2>
+                    <p>{{ user.email }}</p>
+                    <div class="card" style="width: 25rem;">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Description</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Molestiae tempora unde impedit est ullam quae, vel esse et placeat,
+                            beatae repellendus voluptatum iusto aliquid fugiat sint odio harum incidunt sed!.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <h2>Selling On</h2>
+                <div class="justify-content-between">
+                    <div class="row">
+                        <div class="col-5 d-grid gap-3">
+                            <button class="btn btn-outline-success rounded-pill">Ebay</button>
+                            <button class="btn btn-outline-success rounded-pill">Mercado Libre</button>
+                        </div>
+                        <div class="col-5 d-grid gap-3">
+                            <button class="btn btn-outline-success rounded-pill">Etsy</button>
+                            <button class="btn btn-outline-success rounded-pill">AliExpress</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Name</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder={{user.username}} aria-describedby="emailHelp">
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder={{user.email}} aria-describedby="emailHelp">
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Update Picture: </label>
+                    <img id="update-pic" class="rounded-circle img-thumbnail" src="{{ profile_pic }}">
+                    <input type="file" id="img" name="img" accept="image/*">                
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="form-group"> 
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
 {% endblock content %}

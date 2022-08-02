@@ -5,7 +5,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-import config
+# import config
 
 
 def create_app(test_config=None):
@@ -14,8 +14,12 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         SECRET_KEY='063b5d59f24fbf66d126cfb5e661902f',
-        # SQLALCHEMY_DATABASE_URI="postgresql://dglsqplgywpefv:cdfbde81aa3b4eeae18da2824f5ae9f694f4675782fe1ae8eaa05758b4bab0d9@ec2-34-235-31-124.compute-1.amazonaws.com:5432/d3kr000jh54q12",
-        SQLALCHEMY_DATABASE_URI="postgresql://postgres:Crosslisting2!@localhost:5432/postgres"
+        SQLALCHEMY_DATABASE_URI='postgresql://iiilnvexangtgy:328a3f5230946f9d6069e5df35270ed672eeca6b2dee1f1374cec106317c67ea@ec2-54-159-175-38.compute-1.amazonaws.com:5432/dca3us5ktus2ad'
+
+
+        # SQLALCHEMY_DATABASE_URI='postgresql://zghuakjjjmaizw:e7eb618d0d9815a8c487ec7b5505cb5200bc079fa1516dfc1d61f9daafb57e77@ec2-44-206-197-71.compute-1.amazonaws.com:5432/d9jqgsjfb7ptd5',
+        
+        # SQLALCHEMY_DATABASE_URI='sqlite:///site.db',
         # GITHUB_CLIENT_ID=config.CLIENT_ID,
         # GITHUB_CLIENT_SECRET=config.CLIENT_SECRET
     )
