@@ -39,8 +39,8 @@
             "refresh_token_expiry": ""
         },
         "sandbox_1": {
-            "email_or_username": "testuser_albyt",
-            "password": "rRQkn@@hk5Xi",
+            "email_or_username": "email",
+            "password": "password",
             "refresh_token": "",
             "refresh_token_expiry": ""
         }
