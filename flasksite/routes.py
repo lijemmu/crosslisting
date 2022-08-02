@@ -132,7 +132,7 @@ def logout():
 def listings():
     form = ListingForm()
     #print(current_user.username)
-    listings = Listing.query.all()
+    user_listings = Listing.query.all()
     '''
     listings = [
         {
@@ -151,7 +151,18 @@ def listings():
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('listings'))
-    return render_template('listings.html', listing_form=form, listings=listings)
+    return render_template('listings.html', listing_form=form, listings=user_listings)
+
+@app.route("/<int:id>/delete", methods=["POST"])
+@login_required
+def delete(id):
+    # TODO ensure users cannot delete listings that aren't theirs
+    listing_to_delete = Listing.query.filter_by(id=id).first()
+    if listing_to_delete:
+        db.session.delete(listing_to_delete)
+        db.session.commit()
+    return redirect(url_for('listings'))
+
 
 
 def ebay_init(listing_form):
