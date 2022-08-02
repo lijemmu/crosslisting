@@ -17,7 +17,7 @@
             <div class="d-flex flex-column justify-content-center align-items-start text-center col ms-5">
                 <div class="card-container">
                    <img class="rounded-circle account-img" src="{{ profile_pic }}">
-                    <h2>First {{ user.username }}</h2>
+                    <h2>{{user.first_name}} {{ user.last_name }}</h2>
                     <p>{{ user.email }}</p>
                     <div class="card" style="width: 25rem;">
                         <div class="card-body">
@@ -35,7 +35,7 @@
                 <div class="justify-content-between">
                     <div class="row">
                         <div class="col-5 d-grid gap-3">
-                            <button class="btn btn-outline-success rounded-pill">Ebay</button>
+                            <button type="button" class="btn btn-outline-success rounded-pill" data-bs-target="#exampleModal2" data-bs-toggle="modal" >Ebay</button>
                             <button class="btn btn-outline-success rounded-pill">Mercado Libre</button>
                         </div>
                         <div class="col-5 d-grid gap-3">
@@ -63,9 +63,14 @@
         <div class="modal-body">
             <form>
                 <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Name</label>
-                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder={{user.username}} aria-describedby="emailHelp">
+                  <label for="exampleInputEmail1" class="form-label">First Name</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder={{user.first_name}} aria-describedby="emailHelp">
                 </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder={{user.last_name}} aria-describedby="emailHelp">
+                  </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Email</label>
@@ -74,9 +79,10 @@
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Update Picture: </label>
-                    <img id="update-pic" class="rounded-circle img-thumbnail" src="{{ profile_pic }}">
+                    <!-- <img id="update-pic" class="rounded-circle img-thumbnail" src="{{ profile_pic }}"> -->
                     <input type="file" id="img" name="img" accept="image/*">                
                 </div>
+        
 
                 <button type="submit" class="btn btn-primary">Submit</button>
               </form>
@@ -86,13 +92,65 @@
           <div class="form-group"> 
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
-
+    </div>
     </div>
   </div>
 </div>
 
 
 
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Log in to Ebay</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+
+          <div class="modal-body"> 
+            <form method="POST" action="">
+                {{ login_form.hidden_tag() }}
+                <fieldset class="form-group">
+                  <div class="form-group">
+                    {{ login_form.existing_email.label(class="form-control-label") }}
+                    {% if login_form.existing_email.errors %}
+                      {{ login_form.existing_email(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in login_form.existing_email.errors %}
+                          <span>{{error}}</span>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      {{ login_form.existing_email(class="form-control form-control-lg") }}
+                    {% endif %}
+                  </div>
+          
+                  <div class="form-group">
+                    {{ login_form.existing_pass.label(class="form-control-label") }}
+                      {% if login_form.existing_pass.errors %}
+                        {{ login_form.existing_pass(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                          {% for error in login_form.existing_pass.errors%}
+                              <span>{{error}}</span>
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        {{ login_form.existing_pass(class="form-control form-control-lg") }}
+                      {% endif %}
+                  </div>        
+                </fieldset>
+                <div class="form-group"> 
+                  {{ login_form.login(class="btn btn-primary") }}
+                </div>
+              </form>
+          </div>
+
+
+        </div>
+    </div>
+</div>
 
 
 
