@@ -203,15 +203,23 @@ def ebay_init(listing_form):
         # ebay_api.clear_entities(api
 
 
-@app.route("/profile")
+@app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
     user = current_user
 
+
+
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
 
-    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic)
+    ebayLogin = LoginForm()
+
+    if ebayLogin.validate_on_submit():
+        session["ebayUsername"] = ebayLogin.existing_email.data
+        session["ebayPassword"] = ebayLogin.existing_pass.data
+
+    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic, login_form = ebayLogin)
 
 '''
 @app.route("/listings")
