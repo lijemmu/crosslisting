@@ -131,14 +131,10 @@ def logout():
 @login_required
 def listings():
     form = ListingForm()
-    #print(current_user.username)
     user_listings = Listing.query.filter_by(username=current_user.first_name+current_user.last_name).all()
-    print(listings)
     if form.validate_on_submit():
         listing = Listing(username=current_user.first_name+current_user.last_name, profile_pic=current_user.profile_pic, title=form.title.data,
                           description=form.description.data)
-        print("form submitted")
-        print(listing)
         # ebay_init(form)
         db.session.add(listing)
         db.session.commit()
@@ -150,7 +146,10 @@ def listings():
 def delete(id):
     # TODO ensure users cannot delete listings that aren't theirs
     listing_to_delete = Listing.query.filter_by(id=id).first()
-    if listing_to_delete:
+
+    user_is_authorized = listing_to_delete.username == (current_user.first_name + current_user.last_name)
+
+    if listing_to_delete and user_is_authorized:
         db.session.delete(listing_to_delete)
         db.session.commit()
     return redirect(url_for('listings'))
