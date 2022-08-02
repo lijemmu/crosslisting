@@ -62,7 +62,7 @@
 
         <div class="modal-body">
 
-            <form method="POST" action="{{ url_for('profile') }}">
+            <form method="POST" action="{{url_for('update_profile')}}">
                 {{ update_form.hidden_tag() }}
     
                 <fieldset class="form-group">
@@ -168,7 +168,7 @@
     
                     <div class="row">
 
-                                                <div class="col">
+                        <div class="col">
                             {{ update_form.country.label(class="form-control-label") }}
                             {% if update_form.country.errors %}
                                 {{ update_form.country(class="form-control form-control-lg is-invalid") }}
@@ -218,9 +218,11 @@
 
 
                 </fieldset>
+
                 <div class="form-group">
                     {{ update_form.submit(class="btn btn-primary") }}
                 </div>
+                
             </form>
 
 
@@ -245,30 +247,41 @@
           </div>
           <div class="modal-body">
 
-            <form method="POST" action="" >
-                <div class="mb-3 row">
-                    <label for="exampleInputEmail1" class="col-sm-2 col-form-label">Email</label>
-                    <div class="col-sm-10">
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <form method="POST" action="{{ url_for('ebay_login')}}">
+                    {{ login_form.hidden_tag() }}
+                    <fieldset class="form-group">
+                    <div class="form-group">
+                        {{ login_form.existing_email.label(class="form-control-label") }}
+                        {% if login_form.existing_email.errors %}
+                        {{ login_form.existing_email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in login_form.existing_email.errors %}
+                            <span>{{error}}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ login_form.existing_email(class="form-control form-control-lg") }}
+                        {% endif %}
                     </div>
-                  </div>
-    
-                  <div class="mb-3 row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-                    <div class="col-sm-10">
-                      <input type="password" class="form-control" id="inputPassword">
+            
+                    <div class="form-group">
+                        {{ login_form.existing_pass.label(class="form-control-label") }}
+                        {% if login_form.existing_pass.errors %}
+                            {{ login_form.existing_pass(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                            {% for error in login_form.existing_pass.errors%}
+                                <span>{{error}}</span>
+                            {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ login_form.existing_pass(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>        
+                    </fieldset>
+                    <div class="form-group"> 
+                    {{ login_form.login(class="btn btn-primary") }}
                     </div>
-                  </div>      
-                
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary">Login</button>
-                </div>
-              </div>
-            </form>
-
-
-
+                </form>
 
     </div>
 </div>
@@ -282,7 +295,7 @@
     country_select.onchange = function () {
         country = country_select.value;
         if (country !== '- Select -') {
-            fetch("register/" + country).then(function (response) {
+            fetch("/register/" + country).then(function (response) {
                 response.json().then(function (data) {
                     let newStatesHTML = '';
 
