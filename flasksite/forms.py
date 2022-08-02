@@ -113,33 +113,33 @@ class UpdateAccountForm(FlaskForm):
         "UPPR - Upper"
     ]
 
-    # first_name = StringField('First Name', validators=[DataRequired()])
-    # last_name = StringField('Last Name', validators=[DataRequired()])
-    # email = StringField('Email', validators=[DataRequired(), Email()])
-
-    # # insert inventory location here
-    # street_address = StringField('Street Address', validators=[DataRequired()])
-    # unit_type = SelectField('Unit Type', choices=unit_types_list)
-    # unit_number = StringField('Unit Number')
-    # city = StringField('City', validators=[DataRequired()])
-    # state = SelectField('State/Province', choices=[], validators=[NoneOf("- Select -",
-    #                                                                      message="This field is required.")])
-    # zipcode = StringField('Zipcode', validators=[DataRequired()])
-    # country = SelectField('Country', choices=["- Select -"] + country.get_countries(),
-    #                       validators=[NoneOf("- Select -", message="This field is required.")])
-
     first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name')
-    email = StringField('Email')
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
 
     # insert inventory location here
-    street_address = StringField('Street Address')
+    street_address = StringField('Street Address', validators=[DataRequired()])
     unit_type = SelectField('Unit Type', choices=unit_types_list)
     unit_number = StringField('Unit Number')
-    city = StringField('City')
+    city = StringField('City', validators=[DataRequired()])
+    # state = SelectField('State/Province', choices=[], validators=[NoneOf("- Select -",
+    #                                                                      message="This field is required.")])
+    zipcode = StringField('Zipcode', validators=[DataRequired()])
+    country = SelectField('Country', choices=["- Select -"] + country.get_countries(),
+                          validators=[NoneOf("- Select -", message="This field is required.")])
+
+    # first_name = StringField('First Name', validators=[DataRequired()])
+    # last_name = StringField('Last Name')
+    # email = StringField('Email')
+
+    # # insert inventory location here
+    # street_address = StringField('Street Address')
+    # unit_type = SelectField('Unit Type', choices=unit_types_list)
+    # unit_number = StringField('Unit Number')
+    # city = StringField('City')
     state = SelectField('State/Province', choices=[], validate_choice = False)
-    zipcode = StringField('Zipcode')
-    country = SelectField('Country', choices=["- Select -"] + country.get_countries())
+    # zipcode = StringField('Zipcode')
+    # country = SelectField('Country', choices=["- Select -"] + country.get_countries())
 
 
 

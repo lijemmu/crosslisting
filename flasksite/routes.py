@@ -299,8 +299,8 @@ def update_profile():
             return redirect(url_for('profile'))
     else:
         print(updateForm.errors)
-        flash('Your account failed to update', 'danger')
-        return redirect(url_for('listings'))
+        flash('Your account failed to update ' + " ".join("=".join(map(str, updateForm.errors.values())) for dictionary in updateForm.errors) , 'danger')
+        return redirect(url_for('profile'))
 
 
     ebayLogin = LoginForm()
