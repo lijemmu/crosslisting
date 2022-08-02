@@ -7,17 +7,18 @@
                 Create Listing
             </button>
         </div>
+        <hr />
         <div class="row d-flex">
-            {% for i in range(9) %}
+            {% for listing in listings %}
             <div class="col-md-6 col-lg-4 mb-3 flex-row align-items-stretch">
                 <div class="card">
                     <img src="https://via.placeholder.com/150" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">
-                            Title
+                            {{  listing.title  }}
                         </h5>
                         <div class="card-text">
-                            This is some text that serves as a description.
+                            {{  listing.description  }}
                         </div>
                         <div class="dropdown">
 
@@ -61,16 +62,16 @@
                         </div>
         
                         <div class="form-group">
-                            {{ listing_form.content.label(class="form-control-label") }}
-                            {% if listing_form.content.errors %}
-                                {{ listing_form.content(class="form-control form-control-lg is-invalid") }}
+                            {{ listing_form.description.label(class="form-control-label") }}
+                            {% if listing_form.description.errors %}
+                                {{ listing_form.description(class="form-control form-control-lg is-invalid") }}
                                 <div class="invalid-feedback">
-                                    {% for error in listing_form.content.errors%}
+                                    {% for error in listing_form.description.errors%}
                                         <span>{{error}}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ listing_form.content(class="form-control form-control-lg") }}
+                                {{ listing_form.description(class="form-control form-control-lg") }}
                             {% endif %}
                         </div>        
                     </fieldset>

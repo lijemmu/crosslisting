@@ -76,5 +76,5 @@ class SearchForm(FlaskForm):
 
 class ListingForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired()])
-    content = TextAreaField("Content", validators=[DataRequired()])
+    description = TextAreaField("Description", validators=[DataRequired()])
     post_btn = SubmitField("Post")

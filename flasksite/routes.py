@@ -132,16 +132,23 @@ def logout():
 def listings():
     form = ListingForm()
     #print(current_user.username)
-    print(Listing.query.all())
+    #listings = Listing.query.all()
+    listings = [
+        {
+            'title': 'T-Shirt',
+            'description': 'A black t-shirt.'
+        }
+    ]
+    print(listings)
     if form.validate_on_submit():
         listing = Listing(username=current_user.username, profile_pic=current_user.profile_pic, title=form.title.data,
-                          description=form.content.data)
+                          description=form.description.data)
         print(listing)
         # ebay_init(form)
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('home'))
-    return render_template('listings.html', listing_form=form)
+    return render_template('listings.html', listing_form=form, listings=listings)
 
 
 def ebay_init(listing_form):
@@ -161,7 +168,7 @@ def ebay_init(listing_form):
             "format": "FIXED_PRICE",
             "availableQuantity": listing_form.quantity.data,
             "categoryId": "30120",
-            "listingDescription": listing_form.content.data,
+            "listingDescription": listing_form.description.data,
             "listingPolicies": {
                 "fulfillmentPolicyId": "3*********0",
                 "paymentPolicyId": "3*********0",
