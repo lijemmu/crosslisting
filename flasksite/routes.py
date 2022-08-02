@@ -268,14 +268,37 @@ def update_profile():
 
 
     updateForm = UpdateAccountForm()
-        
-    if updateForm.validate_on_submit():
-        current_user.first_name = updateForm.first_name.data
-        current_user.last_name = updateForm.last_name.data
-        db.session.commit()
-        flash('Your account has been updated', 'sucess')
-        return redirect(url_for('profile'))
+    validate =  updateForm.validate_on_submit()
+    if validate:
+        address_line2 = f"{updateForm.unit_type.data} {updateForm.unit_number.data}"
+        if "- Select -" in address_line2:  # when address line 2 isn't filled out in the form
+            current_user.first_name = updateForm.first_name.data, 
+            current_user.last_name= updateForm.last_name.data,
+            current_user.email= updateForm.email.data,
+            current_user.street_address= updateForm.street_address.data, 
+            current_user.city= updateForm.city.data,
+            current_user.state= updateForm.state.data, 
+            current_user.zipcode= updateForm.zipcode.data, 
+            current_user.country= updateForm.country.data,
+            db.session.commit()
+            flash('Your account has been updated!', 'success')
+            return redirect(url_for('profile'))
+
+        else:
+            current_user.first_name = updateForm.first_name.data, 
+            current_user.last_name= updateForm.last_name.data,
+            current_user.email= updateForm.email.data,
+            current_user.street_address= updateForm.street_address.data,
+            current_user.address_line2 = address_line2, 
+            current_user.city= updateForm.city.data,
+            current_user.state= updateForm.state.data, 
+            current_user.zipcode= updateForm.zipcode.data, 
+            current_user.country= updateForm.country.data,
+            db.session.commit()
+            flash('Your account has been updated!', 'success')
+            return redirect(url_for('profile'))
     else:
+        print(updateForm.errors)
         flash('Your account failed to update', 'danger')
         return redirect(url_for('listings'))
 
