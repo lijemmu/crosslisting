@@ -132,15 +132,7 @@ def logout():
 def listings():
     form = ListingForm()
     #print(current_user.username)
-    user_listings = Listing.query.all()
-    '''
-    listings = [
-        {
-            'title': 'T-Shirt',
-            'description': 'A black t-shirt.'
-        }
-    ]
-    '''
+    user_listings = Listing.query.filter_by(username=current_user.first_name+current_user.last_name).all()
     print(listings)
     if form.validate_on_submit():
         listing = Listing(username=current_user.first_name+current_user.last_name, profile_pic=current_user.profile_pic, title=form.title.data,
