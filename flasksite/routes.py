@@ -16,9 +16,10 @@ from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm
 from flasksite.api import ebay_api
 from flasksite.model import User, Listing
 from flasksite.api import country
-
 import ebay_rest.a_p_i as ebay
 from ebay_rest import Error
+
+MERCADOLIBRE_APP_ID = "5200906880853734"
 
 
 @app.route("/")
@@ -68,7 +69,6 @@ def register():
         if "- Select -" in address_line2:  # when address line 2 isn't filled out in the form
             user = User(first_name=reg_form.first_name.data, last_name=reg_form.last_name.data,
                         email=reg_form.email.data,
-                        street_address=reg_form.street_address.data, city=reg_form.city.data,
                         state=reg_form.state.data, zipcode=reg_form.zipcode.data, country=reg_form.country.data,
                         password_hash=hash_pass(reg_form.password.data))
         else:
@@ -152,7 +152,6 @@ def create_ebay_inventory_location(api):
     ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
 
 @app.route("/listings", methods=['GET', 'POST'])
-@login_required
 def listings():
     form = ListingForm()
     user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
@@ -415,6 +414,17 @@ def edit_profile():
 def listings():
     return render_template("listings.html")
 '''
+
+@app.route("/mercadolibre_oauth", methods=['GET'])
+def mercadolibreoauth():
+    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://github.com/lijemmu/crosslisting"
+    return redirect(url, code=302)
+
+
+@app.route("/profile?code=<code>")
+def get_code():
+     print(request.args.get("code"))
+     return code
 
 
 def is_safe_url(target):
