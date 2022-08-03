@@ -1,142 +1,312 @@
-{% extends "layout.html" %} {% block content %}
+{% extends "layout.html" %}
+{% block content %}
 
-<div class="content-section">
-  <div class="container">
-    <div class="row justify-content-between">
-      <div class="col">
-        <h1 class="account-heading">My Profile</h1>
-      </div>
-      <div class="col-auto">
-        <button
-          type="button"
-          class="btn rounded-pill btn-outline-secondary"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-        >
-          Edit Profile
-        </button>
-      </div>
-    </div>
-
-    <div class="row">
-      <div
-        class="d-flex flex-column justify-content-center align-items-start text-center col ms-5"
-      >
-        <div class="card-container">
-          <img class="rounded-circle account-img" src="{{ profile_pic }}" />
-          <h2>First {{ user.username }}</h2>
-          <p>{{ user.email }}</p>
-          <div class="card" style="width: 25rem">
-            <div class="card-body">
-              <h5 class="card-title text-center">Description</h5>
-              <p class="card-text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Molestiae tempora unde impedit est ullam quae, vel esse et
-                placeat, beatae repellendus voluptatum iusto aliquid fugiat sint
-                odio harum incidunt sed!.
-              </p>
+    <div class="content-section">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col">
+                    <h1 class="account-heading">My Profile</h1>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn rounded-pill btn-outline-secondary" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">Edit Profile
+                    </button>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="col">
-        <h2>Selling On</h2>
-        <div class="justify-content-between">
-          <div class="row">
-            <div class="col-5 d-grid gap-3">
-              <button class="btn btn-outline-success rounded-pill">Ebay</button>
-              <a href="mercadolibre_oauth"
-                ><button class="btn btn-outline-success rounded-pill">
-                  Mercado Libre
-                </button></a
-              >
-            </div>
-            <div class="col-5 d-grid gap-3">
-              <button class="btn btn-outline-success rounded-pill">Etsy</button>
-              <button class="btn btn-outline-success rounded-pill">
-                AliExpress
-              </button>
+            <div class="row">
+                <div class="d-flex flex-column justify-content-center align-items-start text-center col ms-5">
+                    <div class="card-container">
+                        <img class="rounded-circle account-img" src="{{ profile_pic }}">
+                        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                        <p>{{ user.email }}</p>
+                        <div class="card" style="width: 25rem;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">Description</h5>
+                                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                    Molestiae tempora unde impedit est ullam quae, vel esse et placeat,
+                                    beatae repellendus voluptatum iusto aliquid fugiat sint odio harum incidunt
+                                    sed!.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <h2>Selling On</h2>
+                    <div class="justify-content-between">
+                        <div class="row">
+                            <div class="col-5 d-grid gap-3">
+                                <button type="button" class="btn btn-outline-success rounded-pill"
+                                        data-bs-target="#ebayModal" data-bs-toggle="modal">Ebay
+                                </button>
+                                <a href="mercadolibre_oauth"
+                                ><button class="btn btn-outline-success rounded-pill">
+                                  Mercado Libre
+                                </button></a
+                              >                            
+                            </div>
+                            <div class="col-5 d-grid gap-3">
+                                <button class="btn btn-outline-success rounded-pill">Etsy</button>
+                                <button class="btn btn-outline-success rounded-pill">AliExpress</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<div
-  class="modal fade"
-  id="exampleModal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
 
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="exampleInputEmail1"
-              placeholder="{{user.username}}"
-              aria-describedby="emailHelp"
-            />
-          </div>
 
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              id="exampleInputEmail1"
-              placeholder="{{user.email}}"
-              aria-describedby="emailHelp"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label"
-              >Update Picture:
-            </label>
-            <img
-              id="update-pic"
-              class="rounded-circle img-thumbnail"
-              src="{{ profile_pic }}"
-            />
-            <input type="file" id="img" name="img" accept="image/*" />
-          </div>
-
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-      </div>
-
-      <div class="modal-footer">
-        <div class="form-group">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+    
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+    
+            <div class="modal-body">
+    
+                <form method="POST" action="{{url_for('update_profile')}}" id="updateForm">
+                    {{ update_form.hidden_tag() }}
+        
+                    <fieldset class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                {{ update_form.first_name.label(class="form-control-label") }}
+                                {% if update_form.first_name.errors %}
+                                    {{ update_form.first_name(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.first_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.first_name(class="form-control form-control-lg", value= user.first_name ) }}
+                                {% endif %}
+                            </div>
+        
+                            <div class="col">
+                                {{ update_form.last_name.label(class="form-control-label") }}
+                                {% if update_form.last_name.errors %}
+                                    {{ update_form.last_name(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.last_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.last_name(class="form-control form-control-lg" , value= user.last_name) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ update_form.email.label(class="form-control-label") }}
+                            {% if update_form.email.errors %}
+                                {{ update_form.email(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in update_form.email.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ update_form.email(class="form-control form-control-lg", value= user.email) }}
+                            {% endif %}
+                        </div>
+        
+                        <div class="form-group">
+                            {{ update_form.street_address.label(class="form-control-label") }}
+                            {% if update_form.street_address.errors %}
+                                {{ update_form.street_address(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in update_form.street_address.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ update_form.street_address(class="form-control form-control-lg", value= user.street_address) }}
+                            {% endif %}
+                        </div>
+        
+                        <div class="row">
+                            <div class="col">
+                                {{ update_form.unit_type.label(class="form-control-label") }}
+                                {% if update_form.unit_type.errors %}
+                                    {{ update_form.unit_type(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.unit_type.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.unit_type(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+        
+                            <div class="col">
+                                {{ update_form.unit_number.label(class="form-control-label") }}
+                                {% if update_form.unit_number.errors %}
+                                    {{ update_form.unit_number(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.unit_number.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.unit_number(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ update_form.city.label(class="form-control-label") }}
+                            {% if update_form.city.errors %}
+                                {{ update_form.city(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in update_form.city.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ update_form.city(class="form-control form-control-lg", value= user.city) }}
+                            {% endif %}
+                        </div>
+        
+                        <div class="row">
+    
+                            <div class="col">
+                                {{ update_form.country.label(class="form-control-label") }}
+                                {% if update_form.country.errors %}
+                                    {{ update_form.country(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.country.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.country(class="form-control form-control-lg", value = user.country, selected = user.country ) }}
+                                {% endif %}
+                            </div>
+    
+    
+                            <div class="col">
+                                {{ update_form.state.label(class="form-control-label") }}
+                                {% if update_form.state.errors %}
+                                    {{ update_form.state(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.state.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.state(class="form-control form-control-lg", value = user.state, selected = user.state) }}
+                                {% endif %}
+                            </div>
+        
+                            <div class="col">
+                                {{ update_form.zipcode.label(class="form-control-label") }}
+                                {% if update_form.zipcode.errors %}
+                                    {{ update_form.zipcode(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.zipcode.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.zipcode(class="form-control form-control-lg", value= user.zipcode) }}
+                                {% endif %}
+                            </div>
+        
+    
+                        </div>
+        
+        
+    
+    
+                    </fieldset>
+    
+                    <div class="form-group">
+                        {{ update_form.submit(class="btn btn-primary") }}
+                    </div>
+                    
+                </form>
+    
+    
+    
+    
+    
+            </div>
+    
         </div>
       </div>
     </div>
-  </div>
+    
+    
+    
 
-  {% endblock content %}
-</div>
+
+
+
+    <div class="modal fade" id="ebayModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Log in to Ebay</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('ebay_login') }}" id="ebayForm">
+                        {{ login_form.hidden_tag() }}
+
+                        <fieldset class="form-group">
+                            <div class="form-group">
+                                {{ login_form.existing_email.label(class="form-control-label") }}
+                                {% if login_form.existing_email.errors %}
+                                    {{ login_form.existing_email(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in login_form.existing_email.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ login_form.existing_email(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ login_form.existing_pass.label(class="form-control-label") }}
+                                {% if login_form.existing_pass.errors %}
+                                    {{ login_form.existing_pass(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in login_form.existing_pass.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ login_form.existing_pass(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                        </fieldset>
+                        <div class="form-group">
+                            {{ login_form.login(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='ebay_modal_validation.js') }}"></script>
+{% endblock %}
+
+
