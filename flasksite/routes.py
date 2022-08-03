@@ -1,6 +1,7 @@
 import json
 from urllib.parse import urlparse, urljoin
 
+"""Ref https://github.com/matecsaj/ebay_rest for selenium install and ebay_rest setup"""
 import selenium.common
 import sqlalchemy.exc
 from flask import render_template, url_for, flash, redirect, request, session, g, abort, jsonify
