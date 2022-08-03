@@ -9,7 +9,7 @@ from sqlalchemy import or_
 
 from flasksite import app, bcrypt, db
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm, UpdateAccountForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.api import ebay_api
@@ -58,6 +58,7 @@ def register():
         reg_form.state.choices = country.get_states(reg_form.country.data)
     except KeyError:
         reg_form.state.choices = ["- Select -"]
+
 
     if reg_form.validate_on_submit():
         full_address = f"{reg_form.street_address.data}, {reg_form.unit_type.data} {reg_form.unit_number.data}, \
@@ -127,10 +128,12 @@ def logout():
     return redirect(url_for('home'))
 
 
+
 @app.route("/listings", methods=['GET', 'POST'])
+@login_required
 def listings():
     form = ListingForm()
-    # print(current_user.username)
+    #print(current_user.username)
     print(Listing.query.all())
     if form.validate_on_submit():
         listing = Listing(username=current_user.first_name + " " + current_user.last_name,
@@ -193,6 +196,7 @@ def ebay_init():  # sets up ebay api credentials
     else:
         return api
 
+        # item_data = set_item_data()
 
 def create_ebay_listing(api, listing_form):
     offer_data = {
@@ -275,21 +279,38 @@ def create_ebay_inventory_location(api):
 def profile():
     user = current_user
 
+
+
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
 
+
+    updateForm = UpdateAccountForm()
+
+
+
     ebayLogin = LoginForm()
 
-    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic, login_form=ebayLogin)
+
+ 
 
 
-@app.route('/profile/ebay', methods=['GET', 'POST'])
+    return render_template("profile.html", subtitle=subtitle, user=user, 
+    profile_pic=profile_pic, login_form = ebayLogin, 
+    update_form = updateForm)
+
+
+@app.route("/profile/ebay", methods=['POST'])
 @login_required
 def ebay_login():
     user = current_user
 
+
+
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
+
+    updateForm = UpdateAccountForm()
 
     ebayLogin = LoginForm()
 
@@ -297,14 +318,70 @@ def ebay_login():
         print("added credentials to session")
         session["ebayUsername"] = ebayLogin.existing_email.data
         session["ebayPassword"] = ebayLogin.existing_pass.data
-        # print("valid ebay login")
-        redirect(url_for('profile'))
-    elif ebayLogin.is_submitted():
-        flash("Please enter a valid eBay login.", 'danger')
-        # print("wrong ebay login")
-        redirect(url_for('ebay_login'))
+        return redirect(url_for('profile'))
 
-    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic, login_form=ebayLogin)
+
+    return render_template("profile.html", subtitle=subtitle, user=user, 
+    profile_pic=profile_pic, login_form = ebayLogin, 
+    update_form = updateForm)
+
+
+
+@app.route("/profile/update", methods=['POST'])
+@login_required
+def update_profile():
+    user = current_user
+
+
+
+    subtitle = "My Profile" if user == current_user else "Profile"
+    profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
+
+
+    updateForm = UpdateAccountForm()
+    validate =  updateForm.validate_on_submit()
+    if validate:
+        address_line2 = f"{updateForm.unit_type.data} {updateForm.unit_number.data}"
+        if "- Select -" in address_line2:  # when address line 2 isn't filled out in the form
+            current_user.first_name = updateForm.first_name.data, 
+            current_user.last_name= updateForm.last_name.data,
+            current_user.email= updateForm.email.data,
+            current_user.street_address= updateForm.street_address.data, 
+            current_user.city= updateForm.city.data,
+            current_user.state= updateForm.state.data, 
+            current_user.zipcode= updateForm.zipcode.data, 
+            current_user.country= updateForm.country.data,
+            db.session.commit()
+            flash('Your account has been updated!', 'success')
+            return redirect(url_for('profile'))
+
+        else:
+            current_user.first_name = updateForm.first_name.data, 
+            current_user.last_name= updateForm.last_name.data,
+            current_user.email= updateForm.email.data,
+            current_user.street_address= updateForm.street_address.data,
+            current_user.address_line2 = address_line2, 
+            current_user.city= updateForm.city.data,
+            current_user.state= updateForm.state.data, 
+            current_user.zipcode= updateForm.zipcode.data, 
+            current_user.country= updateForm.country.data,
+            db.session.commit()
+            flash('Your account has been updated!', 'success')
+            return redirect(url_for('profile'))
+    else:
+        print(updateForm.errors)
+        flash('Your account failed to update ' + " ".join("=".join(map(str, updateForm.errors.values())) for dictionary in updateForm.errors) , 'danger')
+        return redirect(url_for('profile'))
+
+
+    ebayLogin = LoginForm()
+
+
+
+    return render_template("profile.html", subtitle=subtitle, user=user,
+    profile_pic=profile_pic, login_form = ebayLogin,
+    update_form = updateForm)
+
 
 @app.route("/profile/ebay/response", methods=['GET', 'POST'])
 def validate_ebay_login():
