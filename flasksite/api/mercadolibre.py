@@ -4,7 +4,7 @@ import pprint
 
 CLIENT_SECRET = "corezPKoQgdUS2mZQWAJ3DfLdDGj26qL"
 APP_ID = "5200906880853734"
-ACCESS_TOKEN = "APP_USR-5200906880853734-080112-78f5f659dcd6f68bb516a6040419c2c7-534966925"
+ACCESS_TOKEN = "APP_USR-5200906880853734-080121-469ea48695b6b0362d4e2ee66c13b62d-534966925"
 SERVER_CODE = "https://github.com/lijemmu/crosslisting?code=TG-62e2f0dee9602a001375917b-534966925&state="
 REFRESH_TOKEN = "TG-62e2f7508c8e400013fa8912-534966925"
 
@@ -47,7 +47,6 @@ def attributes_required(category_id):
     url = "https://api.mercadolibre.com/categories/" + category_id + "/attributes"
     resp = requests.get(url, headers=headers)
     print(resp.json())
-
 
 def post_listing_tech(title, description, price, quantity,condition, warranty_time, brand, line, model, color, os, processor):
 
@@ -201,7 +200,6 @@ def post_listing_clothes(title, description, price, quantity,condition, warranty
     listing_id = response['id']
     add_description(listing_id, description)
 
-
 def listing_call(body):
 
     headers = {'Authorization': 'Bearer ' + ACCESS_TOKEN, 'Content-Type': 'application/json'}
@@ -222,10 +220,41 @@ def add_description(product_id, description):
 
     return response.json()
 
+def post_listing(title):
+
+    product_category = find_category(title)
+
+    if product_category == 'MPE1652':
+        pass
+        ##Get data
+
+        #post_listing_tech(title)
+    
+    elif product_category == 'MPE6585':
+        pass
+
+        #Get Data
+
+        #post_listing_clothes(title)
+
+def delete_listing(product_id):
+    headers = {'Authorization': 'Bearer ' + ACCESS_TOKEN, 'Content-Type': 'application/json', "Accept": "application/json"}
+    body_close = {
+            "status": "closed"
+            }
+
+    body_delete = {
+        "deleted": "true"
+    }
+
+    url = "https://api.mercadolibre.com/items/" + product_id
 
 
-#prepare_body_tech("MacBook pro 2021 Apple", "New, ready to use", 6000, 3,"new", "6 meses", "Apple", "MacBook", "2021", "Black", "macOS", "Apple")
+    response_close = requests.request("PUT", url, headers=headers, data=json.dumps(body_close))
+    response_delete = requests.request("PUT", url, headers=headers, data=json.dumps(body_delete))
 
+    print(response_close.json())
+    print(response_delete.json())
 
 
 
@@ -236,4 +265,5 @@ def add_description(product_id, description):
 #print(find_category("MacBook nueva, no usada, modelo 2021"))
 #print(find_category("Zapatillas nike 2022 nuevas"))
 #attributes_required("MPE6585")
-post_listing_clothes("Zapatillas Nike 2022", "Modelo nuevo, nuevo de fabrica", 600, 1, "new", "6 meses", "Nike", "blanco", "M")
+#post_listing_clothes("Zapatillas Nike 2022", "Modelo nuevo, nuevo de fabrica", 600, 1, "new", "6 meses", "Nike", "blanco", "M")
+#delete_listing("MPE615774296")
