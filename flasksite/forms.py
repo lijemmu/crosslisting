@@ -80,21 +80,21 @@ class SearchForm(FlaskForm):
 class ListingForm(FlaskForm):
     image = FileField("Image", validators=[
                                FileRequired(),
-                               FileAllowed(['jpg', 'png'], 'Images only!')])
+                               FileAllowed(['jpg', 'jpeg', 'png'], 'Images only!')])
     title = StringField("Title", validators=[DataRequired()])
     price = DecimalField("Price", validators=[DataRequired()], places=2)
     quantity = IntegerField("Quantity", validators=[DataRequired()])
-    condition = RadioField("Condition", choices=[('new', 'New'), ('used', 'Used')], validators=[DataRequired()])
+    condition = SelectField("Condition", choices=[('new', 'New'), ('used', 'Used')], validators=[DataRequired()])
     description = TextAreaField("Description", validators=[DataRequired()])
     brand = StringField("Brand", validators=[DataRequired()])
     color = StringField("Color", validators=[DataRequired()])
     post_btn = SubmitField("Post")
 
 class TechForm(ListingForm):
-    model = StringField("Model", validators=[DataRequired])
-    line = StringField("Line", validators=[DataRequired])
-    os_name = StringField("OS Name", validators=[DataRequired])
-    processor_brand = StringField("Processor Brand", validators=[DataRequired])
+    model = StringField("Model", validators=[DataRequired()])
+    line = StringField("Line", validators=[DataRequired()])
+    os_name = StringField("OS Name", validators=[DataRequired()])
+    processor_brand = StringField("Processor Brand", validators=[DataRequired()])
 
 class ClothingForm(ListingForm):
     size = SelectField("Size", validators=[DataRequired()], choices=[('xxs', 'XXS'),

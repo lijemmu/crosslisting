@@ -10,7 +10,7 @@ from sqlalchemy import or_
 
 from flasksite import app, bcrypt, db
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm, TechForm, ClothingForm, UpdateAccountForm
+from flasksite.forms import ListingForm, RegistrationForm, LoginForm, SearchForm, TechForm, ClothingForm, UpdateAccountForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.api import ebay_api
@@ -153,13 +153,15 @@ def create_ebay_inventory_location(api):
 
 @app.route("/listings", methods=['GET'])
 def listings():
+    listing_form = ListingForm()
     tech_form = TechForm()
     clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
-    return render_template('listings.html', tech_form=tech_form, listings=user_listings)
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
 
 @app.route("/listings/create/tech", methods=['POST'])
 def create_tech():
+    listing_form = ListingForm()
     tech_form = TechForm()
     clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
@@ -179,10 +181,11 @@ def create_tech():
         db.session.commit()
         return redirect(url_for('listings'))
 
-    return render_template('listings.html', tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
 
 @app.route("/listings/create/clothing", methods=['POST'])
-def create_tech():
+def create_clothing():
+    listing_form = ListingForm()
     tech_form = TechForm()
     clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
@@ -202,7 +205,7 @@ def create_tech():
         db.session.commit()
         return redirect(url_for('listings'))
 
-    return render_template('listings.html', tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
 
 @app.route("/<int:id>/delete", methods=["POST"])
 @login_required
