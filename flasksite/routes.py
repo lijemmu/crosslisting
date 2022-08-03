@@ -18,6 +18,7 @@ from flasksite.model import User, Listing
 from flasksite.api import country
 import ebay_rest.a_p_i as ebay
 from ebay_rest import Error
+from mercadolibre import MercadoLibreAPI
 
 MERCADOLIBRE_APP_ID = "5200906880853734"
 
@@ -403,16 +404,36 @@ def validate_ebay_login():
         print("wrong ebay login")
         return jsonify(ebayLogin.errors)
 
+
+
+@app.route('/profile/edit', methods=['GET', 'POST'])
+def edit_profile():
+    pass
+
+'''
+@app.route("/listings")
+def listings():
+    return render_template("listings.html")
+'''
+
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():
     url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://crosslisting-testdb.herokuapp.com/profile"
     return redirect(url, code=302)
 
 
-@app.route("/profile?code=<code>")
+@app.route("/profile?code=<code>", methods=['POST'])
 def get_code():
-     print(request.args.get("code"))
-     return code
+
+    code = request.args.get("code")
+    mercado_libre_api = MercadoLibreAPI(code)
+    access_token, refresh_token = mercado_libre_api.get_access_token()
+    set_cookie("at", value = access_token, httponly = True)    
+    set_cookie("rt", value = refresh_token, httponly = True)
+
+    access_tokenNNN = cookies.get("at")
+    print(access_token) 
+
 
 
 def is_safe_url(target):
