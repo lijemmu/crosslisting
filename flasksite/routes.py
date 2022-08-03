@@ -403,18 +403,6 @@ def validate_ebay_login():
         print("wrong ebay login")
         return jsonify(ebayLogin.errors)
 
-
-
-@app.route('/profile/edit', methods=['GET', 'POST'])
-def edit_profile():
-    pass
-
-'''
-@app.route("/listings")
-def listings():
-    return render_template("listings.html")
-'''
-
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():
     url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://crosslisting-testdb.herokuapp.com/profile"
