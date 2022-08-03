@@ -40,11 +40,7 @@
                                 <button type="button" class="btn btn-outline-success rounded-pill"
                                         data-bs-target="#ebayModal" data-bs-toggle="modal">Ebay
                                 </button>
-                                <a href="mercadolibre_oauth"
-                                ><button class="btn btn-outline-success rounded-pill">
-                                  Mercado Libre
-                                </button></a
-                              >                            
+                                <a href="mercadolibre_oauth" class="btn btn-outline-success rounded-pill" role="button">Mercado Libre</a>
                             </div>
                             <div class="col-5 d-grid gap-3">
                                 <button class="btn btn-outline-success rounded-pill">Etsy</button>
@@ -223,10 +219,6 @@
         
     
                         </div>
-        
-        
-    
-    
                     </fieldset>
     
                     <div class="form-group">
@@ -234,13 +226,7 @@
                     </div>
                     
                 </form>
-    
-    
-    
-    
-    
             </div>
-    
         </div>
       </div>
     </div>
@@ -307,6 +293,7 @@
 
 {% block script %}
     <script type="text/javascript" src="{{ url_for('static', filename='ebay_modal_validation.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='dynamic_address.js') }}"></script>
 {% endblock %}
 
 
