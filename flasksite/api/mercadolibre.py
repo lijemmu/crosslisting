@@ -68,7 +68,7 @@ class MercadoLibreAPI:
         print(resp.json())
 
     def find_category(title):
-        headers = {'Authorization': 'Bearer ' + ACCESS_TOKEN}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
         site_id = "MPE"
         product_info = title.replace(" ", "%20")
         url = "https://api.mercadolibre.com/sites/" + site_id + "/domain_discovery/search?q=" + product_info
@@ -79,7 +79,7 @@ class MercadoLibreAPI:
 
     def attributes_required(category_id): 
 
-        headers = {'Authorization': 'Bearer ' + ACCESS_TOKEN}
+        headers = {'Authorization': 'Bearer ' + self.access_token}
         url = "https://api.mercadolibre.com/categories/" + category_id + "/attributes"
         resp = requests.get(url, headers=headers)
         print(resp.json())
@@ -238,7 +238,7 @@ class MercadoLibreAPI:
 
     def listing_call(body):
 
-        headers = {'Authorization': 'Bearer ' + ACCESS_TOKEN, 'Content-Type': 'application/json'}
+        headers = {'Authorization': 'Bearer ' + self.access_token, 'Content-Type': 'application/json'}
         url = "https://api.mercadolibre.com/items"
         response = requests.request("POST", url, headers=headers, data=json.dumps(body))
         return response.json()
@@ -250,7 +250,7 @@ class MercadoLibreAPI:
         }
 
         url = "https://api.mercadolibre.com/items/" + product_id + "/description"
-        headers = {'Authorization': 'Bearer ' + ACCESS_TOKEN, 'Content-Type': 'application/json'}
+        headers = {'Authorization': 'Bearer ' + self.access_token, 'Content-Type': 'application/json'}
         payload = json.dumps(body)
         response = requests.request("PUT", url, headers=headers, data=payload)
 
@@ -274,7 +274,7 @@ class MercadoLibreAPI:
             #post_listing_clothes(title)
 
     def delete_listing(product_id):
-        headers = {'Authorization': 'Bearer ' + ACCESS_TOKEN, 'Content-Type': 'application/json', "Accept": "application/json"}
+        headers = {'Authorization': 'Bearer ' + self.access_token, 'Content-Type': 'application/json', "Accept": "application/json"}
         body_close = {
                 "status": "closed"
                 }
@@ -291,7 +291,6 @@ class MercadoLibreAPI:
 
         print(response_close.json())
         print(response_delete.json())
-
 
 
     #post_listing()

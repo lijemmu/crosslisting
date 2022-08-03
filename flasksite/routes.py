@@ -18,13 +18,13 @@ from flasksite.model import User, Listing
 from flasksite.api import country
 import ebay_rest.a_p_i as ebay
 from ebay_rest import Error
-from mercadolibre import MercadoLibreAPI
+from flasksite.api.mercadolibre import MercadoLibreAPI
 
 MERCADOLIBRE_APP_ID = "5200906880853734"
 
 
 @app.route("/")
-@app.route("/home", methods=["GET", "POST"])
+@app.route("/home", methods=["POST"])
 def home():
     return render_template('home.html', subtitle="Catalog")
 
@@ -422,17 +422,16 @@ def mercadolibreoauth():
     return redirect(url, code=302)
 
 
-@app.route("/profile?code=<code>", methods=['POST'])
+@app.route("/profile?code=<code>")
 def get_code():
-
-    code = request.args.get("code")
-    mercado_libre_api = MercadoLibreAPI(code)
-    access_token, refresh_token = mercado_libre_api.get_access_token()
-    set_cookie("at", value = access_token, httponly = True)    
-    set_cookie("rt", value = refresh_token, httponly = True)
-
-    access_tokenNNN = cookies.get("at")
-    print(access_token) 
+    pass
+    #code = request.args.get("code")
+    #mercado_libre_api = MercadoLibreAPI(code)
+    #access_token, refresh_token = mercado_libre_api.get_access_token()
+    #set_cookie("at", value = access_token, httponly = True)    
+    #set_cookie("rt", value = refresh_token, httponly = True)
+    #access_tokenNNN = cookies.get("at")
+    #print(access_token) 
 
 
 
