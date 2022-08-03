@@ -89,7 +89,11 @@ def get_account_policies(api):
         ]
     }
 
-    fulfillment_policy = api.sell_account_get_fulfillment_policy_by_name("EBAY_US", "Domestic free shipping")
+    try:
+        fulfillment_policy = api.sell_account_get_fulfillment_policy_by_name("EBAY_US", "Domestic free shipping")
+    except Error:
+        fulfillment_policy = api.sell_account_create_fulfillment_policy(fulfillment_policy_data)
+
     fulfillment_policy_id = fulfillment_policy["fulfillment_policy_id"]
 
     payment_policy_request = {
@@ -108,7 +112,11 @@ def get_account_policies(api):
         ]
     }
 
-    payment_policy_response = api.sell_account_get_payment_policy_by_name("EBAY_US", "default payment policy")
+    try:
+        payment_policy_response = api.sell_account_get_payment_policy_by_name("EBAY_US", "default payment policy")
+    except Error:
+        payment_policy_response = api.sell_account_create_payment_policy(payment_policy_request)
+
     payment_policy_id = payment_policy_response["payment_policy_id"]
 
     return_policy_request = {
@@ -117,8 +125,11 @@ def get_account_policies(api):
         "returnsAccepted": False
     }
 
-    # return_policy_response = api.sell_account_create_return_policy(return_policy_request)
-    return_policy_response = api.sell_account_get_return_policy_by_name("EBAY_US", "no returns")
+    try:
+        return_policy_response = api.sell_account_get_return_policy_by_name("EBAY_US", "no returns")
+    except Error:
+        return_policy_response = api.sell_account_create_return_policy(return_policy_request)
+
     return_policy_id = return_policy_response["return_policy_id"]
 
     policy_ids = {
