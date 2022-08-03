@@ -10,7 +10,7 @@ from sqlalchemy import or_
 
 from flasksite import app, bcrypt, db
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm, UpdateAccountForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm, TechForm, ClothingForm, UpdateAccountForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.api import ebay_api
@@ -151,19 +151,27 @@ def create_ebay_inventory_location(api):
     merchant_loc_key = f"LOC{current_user.zipcode}"
     ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
 
-@app.route("/listings", methods=['GET', 'POST'])
+@app.route("/listings", methods=['GET'])
 def listings():
-    form = ListingForm()
+    tech_form = TechForm()
+    clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
-    if form.validate_on_submit():
+    return render_template('listings.html', tech_form=tech_form, listings=user_listings)
+
+@app.route("/listings/create/tech", methods=['POST'])
+def create_tech():
+    tech_form = TechForm()
+    clothing_form = ClothingForm()
+    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
+    if tech_form.validate_on_submit():
         listing = Listing(username=current_user.first_name + " " + current_user.last_name,
-                          profile_pic=current_user.profile_pic, title=form.title.data,
-                          description=form.description.data)
+                          profile_pic=current_user.profile_pic, title=tech_form.title.data,
+                          description=tech_form.description.data)
         ebay_api_obj = ebay_init()
 
         try:
             create_ebay_inventory_location(ebay_api_obj)
-            create_ebay_listing(ebay_api_obj, form)
+            create_ebay_listing(ebay_api_obj, tech_form)
         except:
             flash("Unable to create eBay listing.", 'danger')
 
@@ -171,7 +179,30 @@ def listings():
         db.session.commit()
         return redirect(url_for('listings'))
 
-    return render_template('listings.html', listing_form=form, listings=user_listings)
+    return render_template('listings.html', tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
+
+@app.route("/listings/create/clothing", methods=['POST'])
+def create_tech():
+    tech_form = TechForm()
+    clothing_form = ClothingForm()
+    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
+    if clothing_form.validate_on_submit():
+        listing = Listing(username=current_user.first_name + " " + current_user.last_name,
+                          profile_pic=current_user.profile_pic, title=clothing_form.title.data,
+                          description=clothing_form.description.data)
+        ebay_api_obj = ebay_init()
+
+        try:
+            create_ebay_inventory_location(ebay_api_obj)
+            create_ebay_listing(ebay_api_obj, clothing_form)
+        except:
+            flash("Unable to create eBay listing.", 'danger')
+
+        db.session.add(listing)
+        db.session.commit()
+        return redirect(url_for('listings'))
+
+    return render_template('listings.html', tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
 
 @app.route("/<int:id>/delete", methods=["POST"])
 @login_required
