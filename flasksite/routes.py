@@ -424,8 +424,8 @@ def mercadolibreoauth():
 
 @app.route("/profile?code=<code>")
 def get_code():
-    pass
-    #code = request.args.get("code")
+    code = request.args.get("code")
+    print(code)
     #mercado_libre_api = MercadoLibreAPI(code)
     #access_token, refresh_token = mercado_libre_api.get_access_token()
     #set_cookie("at", value = access_token, httponly = True)    
