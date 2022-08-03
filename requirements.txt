@@ -20,4 +20,6 @@ Flask-Migrate
 pytest
 pycodestyle
 ebay_rest
+selenium
+
 

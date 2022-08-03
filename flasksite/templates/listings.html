@@ -3,21 +3,22 @@
     <div class="content-section">
         <div class="d-flex justify-content-between mb-4">
             <h2>My Listings</h2>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createListingModal">
                 Create Listing
             </button>
         </div>
+        <hr />
         <div class="row d-flex">
-            {% for i in range(9) %}
+            {% for listing in listings %}
             <div class="col-md-6 col-lg-4 mb-3 flex-row align-items-stretch">
-                <div class="card">
+                <div class="card" id="{{ listing.id }}">
                     <img src="https://via.placeholder.com/150" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">
-                            Title
+                            {{  listing.title  }}
                         </h5>
                         <div class="card-text">
-                            This is some text that serves as a description.
+                            {{  listing.description  }}
                         </div>
                         <div class="dropdown">
 
@@ -25,21 +26,40 @@
                         <div class="dropdown text-end card-img-overlay">
                             <button class="btn btn-light" data-bs-toggle="dropdown">&vellip;</button>
                             <div class="dropdown-menu">
-                                <a href="#" class="dropdown-item">Edit</a>
-                                <a href="#" class="dropdown-item">Delete</a>
+                                <button data-bs-toggle="modal" data-bs-target="#delete{{  listing.id  }}Modal" class="dropdown-item">Delete</button>
                             </div>
                         </div>
                     </div>
                 </div>
              </div>
+
+             <div class="modal fade" id="delete{{  listing.id  }}Modal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <h5 class="modal-title text-center">Are you sure you want to delete this listing?</h4>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <form action="{{  url_for('delete', id=listing.id)  }}" method="POST">
+                        <input class="btn btn-danger" type="submit" value="Delete">
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
             {% endfor %}
         </div>
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <div class="modal fade" id="createListingModal" tabindex="-1" aria-labelledby="createListingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Create New Listing</h5>
+              <h5 class="modal-title" id="createListingModalLabel">Create New Listing</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -61,28 +81,80 @@
                         </div>
         
                         <div class="form-group">
-                            {{ listing_form.content.label(class="form-control-label") }}
-                            {% if listing_form.content.errors %}
-                                {{ listing_form.content(class="form-control form-control-lg is-invalid") }}
+                            {{ listing_form.description.label(class="form-control-label") }}
+                            {% if listing_form.description.errors %}
+                                {{ listing_form.description(class="form-control form-control-lg is-invalid") }}
                                 <div class="invalid-feedback">
-                                    {% for error in listing_form.content.errors%}
+                                    {% for error in listing_form.description.errors%}
                                         <span>{{error}}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ listing_form.content(class="form-control form-control-lg") }}
+                                {{ listing_form.description(class="form-control form-control-lg") }}
                             {% endif %}
-                        </div>        
+                        </div>
                     </fieldset>
+                    <div class="form-group"> 
+                        {{ listing_form.post_btn(class="btn btn-primary") }}
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <div class="form-group"> 
-                {{ listing_form.post_btn(class="btn btn-primary") }}
-            </div>
             </div>
           </div>
         </div>
-      </div>
+    </div>
+
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">Choose a Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-evenly">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" data-bs-target="#techModal" data-bs-toggle="modal">Technology</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" data-bs-target="#clothingModal" data-bs-toggle="modal">Clothing</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="clothingModal" tabindex="-1" aria-labelledby="clothingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clothingModalLabel">Clothes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" data-bs-target="#categoryModal" data-bs-toggle="modal">Back</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="techModal" tabindex="-1" aria-labelledby="techModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="techModalLabel">Technology</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" data-bs-target="#categoryModal" data-bs-toggle="modal">Back</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 {% endblock %}

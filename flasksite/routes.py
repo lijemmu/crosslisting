@@ -1,5 +1,8 @@
+import json
 from urllib.parse import urlparse, urljoin
 
+"""Ref https://github.com/matecsaj/ebay_rest for selenium install and ebay_rest setup"""
+import selenium.common
 import sqlalchemy.exc
 from flask import render_template, url_for, flash, redirect, request, session, g, abort, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
@@ -13,9 +16,10 @@ from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm
 from flasksite.api import ebay_api
 from flasksite.model import User, Listing
 from flasksite.api import country
-
 import ebay_rest.a_p_i as ebay
 from ebay_rest import Error
+
+MERCADOLIBRE_APP_ID = "5200906880853734"
 
 
 @app.route("/")
@@ -65,7 +69,6 @@ def register():
         if "- Select -" in address_line2:  # when address line 2 isn't filled out in the form
             user = User(first_name=reg_form.first_name.data, last_name=reg_form.last_name.data,
                         email=reg_form.email.data,
-                        street_address=reg_form.street_address.data, city=reg_form.city.data,
                         state=reg_form.state.data, zipcode=reg_form.zipcode.data, country=reg_form.country.data,
                         password_hash=hash_pass(reg_form.password.data))
         else:
@@ -80,8 +83,7 @@ def register():
         db.session.commit()
         login_user(user)
         flash(f'Account created for {reg_form.first_name.data} {reg_form.last_name.data}!', 'success')
-        return redirect(url_for('home')) 
-        
+        return redirect(url_for('home'))
     return render_template('register.html', title='Register', register_form=reg_form)
 
 
@@ -126,82 +128,158 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+def create_ebay_inventory_location(api):
+    merchant_location_data = {
+        "location": {
+            "address": {
+                "addressLine1": current_user.street_address,
+                "addressLine2": current_user.address_line2,
+                "city": current_user.city,
+                "stateOrProvince": current_user.state,
+                "postalCode": current_user.zipcode,
+                "country": current_user.country
+            }
+        },
+        "locationInstructions": "Items ship from here.",
+        "name": "Inventory Location 1",
+        "merchantLocationStatus": "ENABLED",
+        "locationTypes": [
+            "STORE"
+        ]
+    }
 
+    merchant_loc_key = f"LOC{current_user.zipcode}"
+    ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
 
 @app.route("/listings", methods=['GET', 'POST'])
-@login_required
 def listings():
     form = ListingForm()
-    #print(current_user.username)
-    print(Listing.query.all())
+    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
     if form.validate_on_submit():
-        listing = Listing(username=current_user.username, profile_pic=current_user.profile_pic, title=form.title.data,
-                          description=form.content.data)
-        print(listing)
-        # ebay_init(form)
+        listing = Listing(username=current_user.first_name + " " + current_user.last_name,
+                          profile_pic=current_user.profile_pic, title=form.title.data,
+                          description=form.description.data)
+        ebay_api_obj = ebay_init()
+
+        try:
+            create_ebay_inventory_location(ebay_api_obj)
+            create_ebay_listing(ebay_api_obj, form)
+        except:
+            flash("Unable to create eBay listing.", 'danger')
+
         db.session.add(listing)
         db.session.commit()
-        return redirect(url_for('home'))
-    return render_template('listings.html', listing_form=form)
+        return redirect(url_for('listings'))
+
+    return render_template('listings.html', listing_form=form, listings=user_listings)
+
+@app.route("/<int:id>/delete", methods=["POST"])
+@login_required
+def delete(id):
+    # TODO ensure users cannot delete listings that aren't theirs
+    listing_to_delete = Listing.query.filter_by(id=id).first()
+
+    user_is_authorized = listing_to_delete.username == (current_user.first_name + current_user.last_name)
+
+    if listing_to_delete and user_is_authorized:
+        db.session.delete(listing_to_delete)
+        db.session.commit()
+    return redirect(url_for('listings'))
 
 
-def ebay_init(listing_form):
+def ebay_init():  # sets up ebay api credentials
+    application = {
+        "app_id": "AlbertTe-Resellin-SBX-db14cffb5-cfd1ac3b",
+        "cert_id": "SBX-b14cffb5e502-9d55-4736-8403-4947",
+        "dev_id": "85b11c14-7d19-40e2-8452-afd0f7687b58",
+        "redirect_uri": "Albert_Terc-AlbertTe-Resell-zeijgqsp"
+    }
+
     try:
-        api = ebay.API(application='sandbox_1', user='sandbox_1', header='US')
+        username = session['ebayUsername']
+        password = session['ebayPassword']
+    except KeyError:
+        flash("Please connect to your eBay account on the Profile page before creating a listing.", 'danger')
+        return
+
+    user = {
+        "email_or_username": session['ebayUsername'],
+        "password": session["ebayPassword"],
+        "refresh_token": "",
+        "refresh_token_expiry": ""
+    }
+
+    header = {
+        "accept_language": "en-US",
+        "affiliate_campaign_id": "",
+        "affiliate_reference_id": "",
+        "content_language": "en-US",
+        "country": "US",
+        "currency": "USD",
+        "device_id": "",
+        "marketplace_id": "EBAY_US",
+        "zip": ""
+    }
+
+    try:
+        api = ebay.API(application=application, user=user, header=header)
     except Error as error:
         print(f'Error {error.number} is {error.reason}  {error.detail}.\n')
     else:
+        return api
 
         # item_data = set_item_data()
 
-        # sku = scraper.get_sku()
+def create_ebay_listing(api, listing_form):
+    offer_data = {
+        "sku": "234234BH",
+        "marketplaceId": "EBAY_US",
+        "format": "FIXED_PRICE",
+        "availableQuantity": 1,
+        "categoryId": "30120",
+        "listingDescription": listing_form.content.data,
+        "listingPolicies": {
+            "fulfillmentPolicyId": "3*********0",
+            "paymentPolicyId": "3*********0",
+            "returnPolicyId": "3*********0"
+        },
+        "pricingSummary": {
+            "price": {
+                "currency": "USD",
+                "value": "34.99"
+            }
+        },
+        "quantityLimitPerBuyer": 1,
+        "includeCatalogProductDetails": True,
+    }
 
-        offer_data = {
-            "sku": listing_form.sku.data,
-            "marketplaceId": "EBAY_US",
-            "format": "FIXED_PRICE",
-            "availableQuantity": listing_form.quantity.data,
-            "categoryId": "30120",
-            "listingDescription": listing_form.content.data,
-            "listingPolicies": {
-                "fulfillmentPolicyId": "3*********0",
-                "paymentPolicyId": "3*********0",
-                "returnPolicyId": "3*********0"
-            },
-            "pricingSummary": {
-                "price": {
-                    "currency": "USD",
-                    "value": listing_form.price.data
-                }
-            },
-            "quantityLimitPerBuyer": 1,
-            "includeCatalogProductDetails": True,
+
+    item_data = {"condition": "USED_GOOD", "packageWeightAndSize": {
+        "dimensions": {
+            "height": 6,
+            "length": 2,
+            "width": 1,
+            "unit": "INCH"
+        },
+        "weight": {
+            "value": 1,
+            "unit": "POUND"
         }
-
-        merchant_location_data = {
-            "location": {
-                "address": {
-                    "addressLine1": "625 6th Ave",
-                    "addressLine2": "Fl 2",
-                    "city": "New York",
-                    "stateOrProvince": "NY",
-                    "postalCode": "10011",
-                    "country": "US"
-                }
-            },
-            "locationInstructions": "Items ship from here.",
-            "name": "Cell Phone Vendor 6th Ave",
-            "merchantLocationStatus": "ENABLED",
-            "locationTypes": [
-                "STORE"
-            ]
+    }, "availability": {
+        "shipToLocationAvailability": {
+            "quantity": 1
         }
-        merchant_loc_key = 'NYCLOC6TH'
+    }, 'product': {}}
 
-        # ebay_api.create_listing(api, sku, item_data, offer_data, merchant_location_data, merchant_loc_key)
-        # sql.prompt_user()
-        # Uncomment line below to clear all inventory items, locations, listings, and clear the database
-        # ebay_api.clear_entities(api
+    product_info = item_data['product']
+    product_info['title'] = listing_form.title.data
+    # product_info['aspects'] = scraper.get_details()
+    # product_info['imageURLs'] = scraper.get_pictures()
+
+    ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data)
+    # sql.prompt_user()
+    # Uncomment line below to clear all inventory items, locations, listings, and clear the database
+    # ebay_api.clear_entities(api
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -245,6 +323,7 @@ def ebay_login():
     ebayLogin = LoginForm()
 
     if ebayLogin.validate_on_submit():
+        print("added credentials to session")
         session["ebayUsername"] = ebayLogin.existing_email.data
         session["ebayPassword"] = ebayLogin.existing_pass.data
         return redirect(url_for('profile'))
@@ -302,21 +381,38 @@ def update_profile():
         flash('Your account failed to update ' + " ".join("=".join(map(str, updateForm.errors.values())) for dictionary in updateForm.errors) , 'danger')
         return redirect(url_for('profile'))
 
+    
+    # ebayLogin = LoginForm()
 
+
+
+    # return render_template("profile.html", subtitle=subtitle, user=user,
+    # profile_pic=profile_pic, login_form = ebayLogin,
+    # update_form = updateForm)
+
+
+@app.route("/profile/ebay/response", methods=['GET', 'POST'])
+def validate_ebay_login():
     ebayLogin = LoginForm()
 
+    if ebayLogin.validate_on_submit():
+
+        print("valid ebay login")
+        return jsonify({"valid": True})
+    else:
+        print("wrong ebay login")
+        return jsonify(ebayLogin.errors)
+
+@app.route("/mercadolibre_oauth", methods=['GET'])
+def mercadolibreoauth():
+    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://crosslisting-testdb.herokuapp.com/profile"
+    return redirect(url, code=302)
 
 
-    return render_template("profile.html", subtitle=subtitle, user=user, 
-    profile_pic=profile_pic, login_form = ebayLogin, 
-    update_form = updateForm)
-
-
-'''
-@app.route("/listings")
-def listings():
-    return render_template("listings.html")
-'''
+@app.route("/profile?code=<code>")
+def get_code():
+     print(request.args.get("code"))
+     return code
 
 
 def is_safe_url(target):

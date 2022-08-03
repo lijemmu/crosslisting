@@ -203,10 +203,9 @@ def clear_entities(api):
     # sql.clear_database()
 
 
-def create_listing(api, sku, item_data, offer_data, location_data, location_key):
+def create_listing(api, sku, item_data, offer_data):
     try:
         print("Starting...")
-        create_inventory_location(api, location_data, location_key)
         create_inventory_item(api, item_data, sku)
         policy_data = get_account_policies(api)
         offer_resp = create_offer(api, policy_data, offer_data)
