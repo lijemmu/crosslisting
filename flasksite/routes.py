@@ -409,10 +409,10 @@ def mercadolibreoauth():
     return redirect(url, code=302)
 
 
-@app.route("/profile?code=<code>")
-def get_code():
-     print(request.args.get("code"))
-     return code
+# @app.route("/profile?code=<code>")
+# def get_code():
+#      print(request.args.get("code"))
+#      return code
 
 
 def is_safe_url(target):
