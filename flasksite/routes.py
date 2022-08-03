@@ -128,32 +128,64 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+def create_ebay_inventory_location(api):
+    merchant_location_data = {
+        "location": {
+            "address": {
+                "addressLine1": current_user.street_address,
+                "addressLine2": current_user.address_line2,
+                "city": current_user.city,
+                "stateOrProvince": current_user.state,
+                "postalCode": current_user.zipcode,
+                "country": current_user.country
+            }
+        },
+        "locationInstructions": "Items ship from here.",
+        "name": "Inventory Location 1",
+        "merchantLocationStatus": "ENABLED",
+        "locationTypes": [
+            "STORE"
+        ]
+    }
 
+    merchant_loc_key = f"LOC{current_user.zipcode}"
+    ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
 
 @app.route("/listings", methods=['GET', 'POST'])
 @login_required
 def listings():
     form = ListingForm()
-    #print(current_user.username)
-    print(Listing.query.all())
+    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
     if form.validate_on_submit():
         listing = Listing(username=current_user.first_name + " " + current_user.last_name,
                           profile_pic=current_user.profile_pic, title=form.title.data,
-                          description=form.content.data)
-        print(listing)
+                          description=form.description.data)
         ebay_api_obj = ebay_init()
 
         try:
             create_ebay_inventory_location(ebay_api_obj)
             create_ebay_listing(ebay_api_obj, form)
-        except selenium.common.ElementNotInteractableException:
+        except:
             flash("Unable to create eBay listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('listings'))
 
-    return render_template('listings.html', listing_form=form)
+    return render_template('listings.html', listing_form=form, listings=user_listings)
+
+@app.route("/<int:id>/delete", methods=["POST"])
+@login_required
+def delete(id):
+    # TODO ensure users cannot delete listings that aren't theirs
+    listing_to_delete = Listing.query.filter_by(id=id).first()
+
+    user_is_authorized = listing_to_delete.username == (current_user.first_name + current_user.last_name)
+
+    if listing_to_delete and user_is_authorized:
+        db.session.delete(listing_to_delete)
+        db.session.commit()
+    return redirect(url_for('listings'))
 
 
 def ebay_init():  # sets up ebay api credentials
@@ -249,30 +281,6 @@ def create_ebay_listing(api, listing_form):
     # sql.prompt_user()
     # Uncomment line below to clear all inventory items, locations, listings, and clear the database
     # ebay_api.clear_entities(api
-
-
-def create_ebay_inventory_location(api):
-    merchant_location_data = {
-        "location": {
-            "address": {
-                "addressLine1": current_user.street_address,
-                "addressLine2": current_user.address_line2,
-                "city": current_user.city,
-                "stateOrProvince": current_user.state,
-                "postalCode": current_user.zipcode,
-                "country": current_user.country
-            }
-        },
-        "locationInstructions": "Items ship from here.",
-        "name": "Inventory Location 1",
-        "merchantLocationStatus": "ENABLED",
-        "locationTypes": [
-            "STORE"
-        ]
-    }
-
-    merchant_loc_key = f"LOC{current_user.zipcode}"
-    ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -374,14 +382,14 @@ def update_profile():
         flash('Your account failed to update ' + " ".join("=".join(map(str, updateForm.errors.values())) for dictionary in updateForm.errors) , 'danger')
         return redirect(url_for('profile'))
 
+    
+    # ebayLogin = LoginForm()
 
-    ebayLogin = LoginForm()
 
 
-
-    return render_template("profile.html", subtitle=subtitle, user=user,
-    profile_pic=profile_pic, login_form = ebayLogin,
-    update_form = updateForm)
+    # return render_template("profile.html", subtitle=subtitle, user=user,
+    # profile_pic=profile_pic, login_form = ebayLogin,
+    # update_form = updateForm)
 
 
 @app.route("/profile/ebay/response", methods=['GET', 'POST'])
