@@ -2,79 +2,89 @@
 <html>
 
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans&family=DM+Sans&display=swap" rel="stylesheet"> 
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Albert+Sans&family=DM+Sans&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <header class="site-header">
+<header class="site-header">
     <nav class="navbar navbar-expand-lg navbar-light bg-steel fixed-top">
-      <div class="container">
-        <a id="title" class="navbar-brand mr-4" href="/">Crosslister</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container">
+            <a id="title" class="navbar-brand mr-4" href="/">Crosslister</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
 
-          <div class="navbar-nav justify-content-end" id="navbarText">
-            {% if current_user.is_authenticated %}
-            <!--listings.html does not exist yet in this branch, so My Listings link throws an error-->
-            <a class="nav-item nav-link" href="{{  url_for('listings')  }}">My Listings</a>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Welcome, {{ current_user.first_name }}
-                </a>
-                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                    <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
-                </ul>
-              </li>
+            <div class="navbar-nav justify-content-end" id="navbarText">
+                {% if current_user.is_authenticated %}
+                    <!--listings.html does not exist yet in this branch, so My Listings link throws an error-->
+                    <a class="nav-item nav-link" href="{{ url_for('listings') }}">My Listings</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Welcome, {{ current_user.first_name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                            <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                        </ul>
+                    </li>
 
-            {% else %}
-              <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-              <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>            
-            {% endif %}
-          </div>         
+                {% else %}
+                    <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+                    <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
         </div>
-      </div>
+        </div>
     </nav>
-  </header>
+</header>
 
 
-
-  <main role="main" class="container">
+<main role="main" class="container">
     {% with messages = get_flashed_messages(with_categories=True) %}
-      {% if messages %}
-        <ul class="flashes list-group">
-        {% for category, message in messages %}
-          <li class="list-group-item list-group-item-{{ category }}">{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
+        {% if messages %}
+            <ul class="flashes list-group">
+                {% for category, message in messages %}
+                    <li class="list-group-item list-group-item-{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     {% endwith %}
     <div class="row">
-<!--      <div class="col-8">-->
+        <!--      <div class="col-8">-->
         <!-- <h1>This shows up on every page</h1>  -->
         {% block content %}{% endblock %}
-<!--      </div>-->
+        <!--      </div>-->
     </div>
-  </main>
-  <!-- JQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</main>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+{#<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"#}
+{#        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"#}
+{#        crossorigin="anonymous"></script>#}
 
-  <!-- font awesome -->
-  <script src="https://kit.fontawesome.com/a52414976d.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+
+<!-- font awesome -->
+<script src="https://kit.fontawesome.com/a52414976d.js" crossorigin="anonymous"></script>
+{% block script %}{% endblock %}
 </body>
 
-{% block script %}{% endblock %}
 
 </html>

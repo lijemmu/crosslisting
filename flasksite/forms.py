@@ -1,5 +1,6 @@
 import requests
 from flask_wtf import FlaskForm
+from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NoneOf
 
@@ -78,3 +79,63 @@ class ListingForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired()])
     description = TextAreaField("Description", validators=[DataRequired()])
     post_btn = SubmitField("Post")
+
+
+
+class UpdateAccountForm(FlaskForm):
+    unit_types_list = [
+        "- Select -",
+        "APT - Apartment",
+        "BSMT - Basement",
+        "BLDG - Building",
+        "DEPT - Department",
+        "FL - Floor",
+        "FRNT - Front",
+        "HNGR - Hanger",
+        "KEY - Key",
+        "LBBY - Lobby",
+        "LOT - Lot",
+        "LOWR - Lower",
+        "OFC - Office",
+        "Other",
+        "PH - Penthouse",
+        "PIER - Pier",
+        "REAR - Rear",
+        "RM - Room",
+        "SIDE - Side",
+        "SLIP - Slip",
+        "SPC - Space",
+        "STOP - Stop",
+        "STE - Suite",
+        "TRLR - Trailer",
+        "Unable to determine",
+        "UNIT - Unit",
+        "UPPR - Upper"
+    ]
+
+    first_name = StringField('First Name' , validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+
+    # insert inventory location here
+    street_address = StringField('Street Address', validators=[DataRequired()])
+    unit_type = SelectField('Unit Type', choices=unit_types_list)
+    unit_number = StringField('Unit Number')
+    city = StringField('City', validators=[DataRequired()])
+    state = SelectField('State/Province', choices=[], validate_choice = False)
+    zipcode = StringField('Zipcode', validators=[DataRequired()])
+    country = SelectField('Country', choices=["- Select -"] + country.get_countries(),
+                          validators=[NoneOf("- Select -", message="This field is required.")])
+
+
+
+
+
+
+    submit = SubmitField('Update')
+
+    def validate_email(self, email):
+        if email.data != current_user.email:
+            user_obj = User.query.filter_by(email=email.data).first()
+            if user_obj:
+                raise ValidationError("Email already in use.")

@@ -3,7 +3,7 @@
     <div class="content-section">
         <div class="d-flex justify-content-between mb-4">
             <h2>My Listings</h2>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createListingModal">
                 Create Listing
             </button>
         </div>
@@ -92,7 +92,7 @@
                             {% else %}
                                 {{ listing_form.description(class="form-control form-control-lg") }}
                             {% endif %}
-                        </div>        
+                        </div>
                     </fieldset>
                     <div class="form-group"> 
                         {{ listing_form.post_btn(class="btn btn-primary") }}

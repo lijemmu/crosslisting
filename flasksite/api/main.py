@@ -48,7 +48,7 @@ def main():
     # scraper.set_url()
     try:
         # user_token = UserToken()
-        api = API(application='sandbox_1', header='US')
+        api = API(application='sandbox_1', user='sandbox_1', header='US')
     except Error as error:
         print(f'Error {error.number} is {error.reason}  {error.detail}.\n')
     else:
