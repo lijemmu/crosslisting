@@ -1,6 +1,7 @@
 import json
 from urllib.parse import urlparse, urljoin
 
+import selenium.common
 import sqlalchemy.exc
 from flask import render_template, url_for, flash, redirect, request, session, g, abort, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
@@ -29,13 +30,6 @@ def home():
 def base():
     form = SearchForm()
     return dict(form=form)
-
-
-def update_json():
-    with open("ebay_rest.json", "rw") as ebay_json:
-        json_data = json.load(ebay_json)
-        json_data['users']['sandbox_1']['email_or_username'] = session['ebay_username']
-        json_data['users']['sandbox_1']['password'] = session['password']
 
 
 @app.route("/search", methods=["POST"])
@@ -144,8 +138,13 @@ def listings():
                           description=form.content.data)
         print(listing)
         ebay_api_obj = ebay_init()
-        create_ebay_inventory_location(ebay_api_obj)
-        create_ebay_listing(ebay_api_obj, form)
+
+        try:
+            create_ebay_inventory_location(ebay_api_obj)
+            create_ebay_listing(ebay_api_obj, form)
+        except selenium.common.ElementNotInteractableException:
+            flash("Unable to create eBay listing.", 'danger')
+
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('listings'))
@@ -295,16 +294,30 @@ def ebay_login():
     ebayLogin = LoginForm()
 
     if ebayLogin.validate_on_submit():
+        print("added credentials to session")
         session["ebayUsername"] = ebayLogin.existing_email.data
         session["ebayPassword"] = ebayLogin.existing_pass.data
-        print("valid ebay login")
+        # print("valid ebay login")
         redirect(url_for('profile'))
     elif ebayLogin.is_submitted():
         flash("Please enter a valid eBay login.", 'danger')
-        print("wrong ebay login")
+        # print("wrong ebay login")
         redirect(url_for('ebay_login'))
 
     return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic, login_form=ebayLogin)
+
+@app.route("/profile/ebay/response", methods=['GET', 'POST'])
+def validate_ebay_login():
+    ebayLogin = LoginForm()
+
+    if ebayLogin.validate_on_submit():
+
+        print("valid ebay login")
+        return jsonify({"valid": True})
+    else:
+        print("wrong ebay login")
+        return jsonify(ebayLogin.errors)
+
 
 
 @app.route('/profile/edit', methods=['GET', 'POST'])

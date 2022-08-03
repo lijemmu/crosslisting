@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
 
-
     <div class="content-section">
         <div class="container">
             <div class="row justify-content-between">
@@ -67,6 +66,7 @@
 
                 <div class="modal-body">
                     <form>
+
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="exampleInputEmail1"
@@ -119,7 +119,7 @@
 
 
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('ebay_login') }}">
+                    <form method="POST" action="{{ url_for('ebay_login') }}" id="ebayForm">
                         {{ login_form.hidden_tag() }}
 
                         <fieldset class="form-group">
@@ -152,7 +152,7 @@
                             </div>
                         </fieldset>
                         <div class="form-group">
-                            {{ login_form.login(class="btn btn-primary", onclick="validateForm()") }}
+                            {{ login_form.login(class="btn btn-primary") }}
                         </div>
                     </form>
                 </div>
@@ -160,21 +160,72 @@
             </div>
         </div>
     </div>
-
-{#    {% block script %}#}
-        <script>
-            let ebaySignIn = document.getElementById('login')
-
-            function validateForm() {
-                let messages = "{{ get_flashed_messages() }}"
-                console.log('outside if ')
-                console.log(messages)
-                if (messages) {
-                    ebaySignIn.
-                }
-            }
-        </script>
-{#    {% endblock %}#}
-
-
 {% endblock content %}
+
+{% block script %}
+    <script>
+        let ebayForm = document.getElementById('ebayForm')
+        let ebayModal = new bootstrap.Modal(document.getElementById('ebayModal'))
+
+        console.log("ebayModal:")
+        console.log(ebayModal)
+
+        let invalidCount = 1
+
+        ebayForm.addEventListener('submit', function (event) {
+            let ebayFormData = new FormData(ebayForm)
+            let csrf_token = document.getElementById("csrf_token").value
+
+            ebayFormData.append("csrf_token", csrf_token)
+            event.preventDefault()
+
+            let validFlag = false;
+
+            fetch("/profile/ebay/response", {
+                method: "post",
+                body: ebayFormData
+            }).then(function (response) {
+                response.json().then(function (data) {
+                    if (data.valid) {
+                        console.log('valid');
+                        {#ebayModal.hide();#}
+                        validFlag = true;
+                    } else {
+                        for (let key of Object.keys(data)) {
+                            console.log(key)
+                            let invalidField = document.getElementById(key);
+                            invalidField.classList.add("is-invalid");
+
+                            let errorMessage = data[key][0]
+                            let errorMessageHTML = "<span>" + errorMessage + "</span>"
+                            let divHTML = "<div class='invalid-feedback'>" + errorMessageHTML + "</div>"
+
+                            if (invalidCount === 1) {
+                                invalidField.insertAdjacentHTML("afterend", divHTML)
+                                invalidCount++
+                            }
+                        }
+
+                        console.log('invalid');
+                        ebayModal.show();
+                        validFlag = false;
+                        {#ebayEmail.classList.add("is-invalid")#}
+                        {#ebayPassword.classList.add("is-invalid")#}
+                    }
+                    console.log(data);
+
+                    if (validFlag) {
+                        event.currentTarget.submit()
+                        {#let feedbackNodes = document.getElementsByClassName("invalid-feedback")#}
+                        {#feedbackNodes.#}
+                        window.location.reload(true);
+                    }
+                })
+            })
+
+
+        });
+    </script>
+{% endblock %}
+
+
