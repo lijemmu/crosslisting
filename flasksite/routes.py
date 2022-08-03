@@ -129,6 +129,10 @@ def logout():
     return redirect(url_for('home'))
 
 def create_ebay_inventory_location(api):
+    my_country = current_user.country
+    if current_user.country == "United States":
+        my_country = 'US'
+
     merchant_location_data = {
         "location": {
             "address": {
@@ -137,7 +141,7 @@ def create_ebay_inventory_location(api):
                 "city": current_user.city,
                 "stateOrProvince": current_user.state,
                 "postalCode": current_user.zipcode,
-                "country": current_user.country
+                "country": my_country
             }
         },
         "locationInstructions": "Items ship from here.",
@@ -237,7 +241,7 @@ def create_ebay_listing(api, listing_form):
         "format": "FIXED_PRICE",
         "availableQuantity": 1,
         "categoryId": "30120",
-        "listingDescription": listing_form.content.data,
+        "listingDescription": listing_form.description.data,
         "listingPolicies": {
             "fulfillmentPolicyId": "3*********0",
             "paymentPolicyId": "3*********0",
