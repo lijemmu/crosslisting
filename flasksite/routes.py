@@ -417,7 +417,7 @@ def listings():
 
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():
-    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://github.com/lijemmu/crosslisting"
+    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://crosslisting-testdb.herokuapp.com/profile"
     return redirect(url, code=302)
 
 
