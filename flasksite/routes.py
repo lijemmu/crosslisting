@@ -7,7 +7,7 @@ from sqlalchemy import or_
 
 from flasksite import app, bcrypt, db
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm, UpdateAccountForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.api import ebay_api
@@ -80,7 +80,8 @@ def register():
         db.session.commit()
         login_user(user)
         flash(f'Account created for {reg_form.first_name.data} {reg_form.last_name.data}!', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('home')) 
+        
     return render_template('register.html', title='Register', register_form=reg_form)
 
 
@@ -203,15 +204,113 @@ def ebay_init(listing_form):
         # ebay_api.clear_entities(api
 
 
-@app.route("/profile")
+@app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
     user = current_user
 
+
+
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
 
-    return render_template("profile.html", subtitle=subtitle, user=user, profile_pic=profile_pic)
+
+    updateForm = UpdateAccountForm()
+
+
+
+    ebayLogin = LoginForm()
+
+
+ 
+
+
+    return render_template("profile.html", subtitle=subtitle, user=user, 
+    profile_pic=profile_pic, login_form = ebayLogin, 
+    update_form = updateForm)
+
+
+@app.route("/profile/ebay", methods=['POST'])
+@login_required
+def ebay_login():
+    user = current_user
+
+
+
+    subtitle = "My Profile" if user == current_user else "Profile"
+    profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
+
+    updateForm = UpdateAccountForm()
+
+    ebayLogin = LoginForm()
+
+    if ebayLogin.validate_on_submit():
+        session["ebayUsername"] = ebayLogin.existing_email.data
+        session["ebayPassword"] = ebayLogin.existing_pass.data
+        return redirect(url_for('profile'))
+
+
+    return render_template("profile.html", subtitle=subtitle, user=user, 
+    profile_pic=profile_pic, login_form = ebayLogin, 
+    update_form = updateForm)
+
+
+
+@app.route("/profile/update", methods=['POST'])
+@login_required
+def update_profile():
+    user = current_user
+
+
+
+    subtitle = "My Profile" if user == current_user else "Profile"
+    profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
+
+
+    updateForm = UpdateAccountForm()
+    validate =  updateForm.validate_on_submit()
+    if validate:
+        address_line2 = f"{updateForm.unit_type.data} {updateForm.unit_number.data}"
+        if "- Select -" in address_line2:  # when address line 2 isn't filled out in the form
+            current_user.first_name = updateForm.first_name.data, 
+            current_user.last_name= updateForm.last_name.data,
+            current_user.email= updateForm.email.data,
+            current_user.street_address= updateForm.street_address.data, 
+            current_user.city= updateForm.city.data,
+            current_user.state= updateForm.state.data, 
+            current_user.zipcode= updateForm.zipcode.data, 
+            current_user.country= updateForm.country.data,
+            db.session.commit()
+            flash('Your account has been updated!', 'success')
+            return redirect(url_for('profile'))
+
+        else:
+            current_user.first_name = updateForm.first_name.data, 
+            current_user.last_name= updateForm.last_name.data,
+            current_user.email= updateForm.email.data,
+            current_user.street_address= updateForm.street_address.data,
+            current_user.address_line2 = address_line2, 
+            current_user.city= updateForm.city.data,
+            current_user.state= updateForm.state.data, 
+            current_user.zipcode= updateForm.zipcode.data, 
+            current_user.country= updateForm.country.data,
+            db.session.commit()
+            flash('Your account has been updated!', 'success')
+            return redirect(url_for('profile'))
+    else:
+        print(updateForm.errors)
+        flash('Your account failed to update ' + " ".join("=".join(map(str, updateForm.errors.values())) for dictionary in updateForm.errors) , 'danger')
+        return redirect(url_for('profile'))
+
+
+    ebayLogin = LoginForm()
+
+
+
+    return render_template("profile.html", subtitle=subtitle, user=user, 
+    profile_pic=profile_pic, login_form = ebayLogin, 
+    update_form = updateForm)
+
 
 '''
 @app.route("/listings")
