@@ -17,6 +17,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
+<style>
+    #li {
+        background: #EDD81A;
+        border-radius: 7px;
+    }
+
+    #blck {
+        color: #000000;
+    }
+</style>
+
 <body>
 <header class="site-header">
     <nav class="navbar navbar-expand-lg fixed-top">
@@ -45,8 +56,8 @@
                     </li>
 
                 {% else %}
-                    <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-                    <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+                    <a class="nav-item nav-link"  id="blck" href="{{ url_for('login') }}">Login</a>
+                    <a class="nav-item nav-link" id="li" href="{{ url_for('register') }}">Register</a>
                 {% endif %}
             </div>
         </div>

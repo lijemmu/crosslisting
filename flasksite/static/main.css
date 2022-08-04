@@ -1,11 +1,6 @@
 body {
   color: #333333;
-  background: linear-gradient(
-    246.1deg,
-    #1647cb 30.2%,
-    #42a1ec 66.75%,
-    #67cfee 94.17%
-  );
+  background: linear-gradient(63.69deg, rgba(104, 208, 239, 0.22) 7.92%, #EDF5F8 95.59%);
   margin-top: 5rem;
 }
 
