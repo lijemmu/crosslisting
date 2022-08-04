@@ -1,6 +1,11 @@
 body {
-  background: #fafafa;
   color: #333333;
+  background: linear-gradient(
+    246.1deg,
+    #1647cb 30.2%,
+    #42a1ec 66.75%,
+    #67cfee 94.17%
+  );
   margin-top: 5rem;
 }
 
@@ -19,31 +24,21 @@ h6 {
   font-weight: bold;
 }
 
-.bg-steel {
-  background-color: #fff;
-}
-
 .list-group-item {
   margin-bottom: 1em;
 }
 
 .site-header .navbar-nav .nav-link {
-  color: #0b0c0d;
-}
-
-.site-header .navbar-nav .nav-link:hover {
-  color: #bebebe;
+  color: white;
 }
 
 .site-header .navbar-nav .nav-link.active {
   font-weight: 500;
 }
 
-#title {
-  font-family: "DM Sans", sans-serif;
-  font-weight: bold;
-  font-size: 2em;
-  color: #000;
+#navbarText {
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
 }
 
 .content-section {
@@ -62,7 +57,6 @@ h6 {
 }
 
 a.article-title:hover {
-  color: #428bca;
   text-decoration: none;
 }
 
@@ -111,7 +105,6 @@ a.article-title:hover {
 h4 {
   padding: 5px;
   text-align: center;
-  color: #428bca;
   padding-top: 30px;
 }
 
@@ -127,5 +120,56 @@ td {
 #homepage {
   display: flex;
   flex-direction: row;
-  background-color: blue;
+}
+
+.text-home {
+  width: 500px;
+  margin-top: 173px;
+  color: white;
+  margin-left: 105px;
+}
+
+h1 {
+  font-family: "Inter", sans-serif;
+  font-size: 49px;
+  margin-bottom: 35px;
+  color: white;
+}
+
+h2 {
+  font-size: 25px;
+  color: white;
+  font-weight: normal;
+}
+
+.transparent-button {
+  border: 2px solid #ffffff;
+  border-radius: 15px;
+  background-color: transparent;
+  width: 125px;
+  height: 48px;
+  font-size: 18px;
+  color: white;
+}
+
+.illustration {
+  margin-top: 80px;
+  margin-left: 170px;
+}
+
+.navbar {
+  margin-top: 25px;
+}
+
+#logo {
+  max-width: 65%;
+  height: auto;
+}
+
+.navbar {
+  color: white;
+}
+
+#home-buttons {
+  margin-top: 55px;
 }
