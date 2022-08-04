@@ -1,4 +1,5 @@
 import json
+import os
 from urllib.parse import urlparse, urljoin
 
 """Ref https://github.com/matecsaj/ebay_rest for selenium install and ebay_rest setup"""
@@ -18,6 +19,7 @@ from flasksite.model import User, Listing
 from flasksite.api import country
 import ebay_rest.a_p_i as ebay
 from ebay_rest import Error
+from werkzeug.utils import secure_filename
 from flasksite.api.mercadolibre import MercadoLibreAPI
 
 MERCADOLIBRE_APP_ID = "5200906880853734"
@@ -27,27 +29,6 @@ MERCADOLIBRE_APP_ID = "5200906880853734"
 @app.route("/home", methods=["GET", "POST"])
 def home():
     return render_template('home.html', subtitle="Catalog")
-
-
-@app.context_processor
-def base():
-    form = SearchForm()
-    return dict(form=form)
-
-
-@app.route("/search", methods=["POST"])
-def search():
-    form = SearchForm()
-    if not form.validate_on_submit():
-        return redirect(url_for('home'))
-    else:
-        search_query = form.searched.data
-        user_obj = User.query.filter(or_(
-            (User.username.like(f'%{search_query}%')),
-            (User.email.like(f'{search_query}%'))
-        )).all()
-
-        return render_template("search.html", form=form, searched=search_query, users=user_obj)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -70,6 +51,8 @@ def register():
         if "- Select -" in address_line2:  # when address line 2 isn't filled out in the form
             user = User(first_name=reg_form.first_name.data, last_name=reg_form.last_name.data,
                         email=reg_form.email.data,
+                        street_address=reg_form.street_address.data,
+                        city=reg_form.city.data,
                         state=reg_form.state.data, zipcode=reg_form.zipcode.data, country=reg_form.country.data,
                         password_hash=hash_pass(reg_form.password.data))
         else:
@@ -161,7 +144,7 @@ def listings():
     listing_form = ListingForm()
     tech_form = TechForm()
     clothing_form = ClothingForm()
-    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
+    user_listings = Listing.query.filter_by(user_id=current_user.id).all()
     return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
 
 @app.route("/listings/create/tech", methods=['POST'])
@@ -169,11 +152,32 @@ def create_tech():
     listing_form = ListingForm()
     tech_form = TechForm()
     clothing_form = ClothingForm()
-    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
+    user_listings = Listing.query.filter_by(user_id=current_user.id).all()
     if tech_form.validate_on_submit():
-        listing = Listing(username=current_user.first_name + " " + current_user.last_name,
-                          profile_pic=current_user.profile_pic, title=tech_form.title.data,
-                          description=tech_form.description.data)
+        image = tech_form.image.data
+        filename = secure_filename(image.filename)
+        filepath = os.path.join(
+            'flasksite',
+            'static',
+            'assets',
+            str(current_user.id),
+            filename
+        )
+        image.save(filepath)
+        listing = Listing(user_id=current_user.id,
+                          listing_pic=filepath,
+                          title=tech_form.title.data,
+                          description=tech_form.description.data,
+                          price=tech_form.price.data,
+                          quantity=tech_form.quantity.data,
+                          condition=tech_form.condition.data,
+                          brand=tech_form.brand.data,
+                          color=tech_form.color.data,
+                          model=tech_form.model.data,
+                          line=tech_form.line.data,
+                          os_name=tech_form.os_name.data,
+                          processor_brand=tech_form.processor_brand.data
+                          )
         ebay_api_obj = ebay_init()
 
         try:
@@ -193,11 +197,28 @@ def create_clothing():
     listing_form = ListingForm()
     tech_form = TechForm()
     clothing_form = ClothingForm()
-    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
+    user_listings = Listing.query.filter_by(user_id=current_user.id).all()
+    print(request.files)
     if clothing_form.validate_on_submit():
-        listing = Listing(username=current_user.first_name + " " + current_user.last_name,
-                          profile_pic=current_user.profile_pic, title=clothing_form.title.data,
-                          description=clothing_form.description.data)
+        image = tech_form.image.data
+        filename = secure_filename(image.filename)
+        filepath = os.path.join(
+            'assets',
+            str(current_user.id),
+            filename
+        )
+        image.save(os.path.join('flasksite', 'static', filepath))
+        listing = Listing(user_id=current_user.id,
+                          listing_pic=filepath,
+                          title=clothing_form.title.data,
+                          description=clothing_form.description.data,
+                          price=clothing_form.price.data,
+                          quantity=clothing_form.quantity.data,
+                          condition=clothing_form.condition.data,
+                          brand=clothing_form.brand.data,
+                          color=clothing_form.color.data,
+                          size=clothing_form.size.data
+                          )
         ebay_api_obj = ebay_init()
 
         try:
@@ -209,18 +230,19 @@ def create_clothing():
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('listings'))
+    elif request.method == "POST":
+        data = json.dumps(clothing_form.errors, ensure_ascii=False)
+        return jsonify(data)
 
     return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
 
 @app.route("/<int:id>/delete", methods=["POST"])
 @login_required
 def delete(id):
-    # TODO ensure users cannot delete listings that aren't theirs
     listing_to_delete = Listing.query.filter_by(id=id).first()
-
-    user_is_authorized = listing_to_delete.username == (current_user.first_name + current_user.last_name)
-
+    user_is_authorized = listing_to_delete.user_id == current_user.id
     if listing_to_delete and user_is_authorized:
+        os.remove(os.path.join('flasksite', 'static', listing_to_delete.listing_pic))
         db.session.delete(listing_to_delete)
         db.session.commit()
     return redirect(url_for('listings'))
@@ -312,6 +334,7 @@ def create_ebay_listing(api, listing_form):
 
     product_info = item_data['product']
     product_info['title'] = listing_form.title.data
+
     # product_info['aspects'] = scraper.get_details()
     # product_info['imageURLs'] = scraper.get_pictures()
 

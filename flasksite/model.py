@@ -9,7 +9,6 @@ def load_user(user_id):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    # username = db.Column(db.String(20), unique=True, nullable=False)
     first_name = db.Column(db.String(), nullable=False)
     last_name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -21,6 +20,7 @@ class User(db.Model, UserMixin):
     country = db.Column(db.String(), nullable=False)
     profile_pic = db.Column(db.String(20), default='default.png')
     password_hash = db.Column(db.String(60), nullable=False)
+    listings = db.relationship('Listing', backref='user', lazy=True)
 
     def __repr__(self):
         return f"User('{self.first_name}', '{self.last_name}', '{self.email}', '{self.street_address}', " \
@@ -30,10 +30,24 @@ class User(db.Model, UserMixin):
 
 class Listing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), nullable=False)
-    profile_pic = db.Column(db.String(20), nullable=False, default='default.png')
-    title = db.Column(db.String(20), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+    listing_pic = db.Column(db.String(120), nullable=False, default='default.png')
+    title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text(), nullable=False)
+    price = db.Column(db.String(20), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    condition = db.Column(db.String(20), nullable=False)
+    brand = db.Column(db.String(20), nullable=False)
+    color = db.Column(db.String(20), nullable=False)
+
+    # Technology Only
+    model = db.Column(db.String(20))
+    line = db.Column(db.String(20))
+    os_name = db.Column(db.String(20))
+    processor_brand = db.Column(db.String(20))
+
+    # Clothing Only
+    size = db.Column(db.String(20))
 
     def __str__(self):
         return f"Post('{self.username}', '{self.title}', '{self.profile_pic}','{self.description}')"
