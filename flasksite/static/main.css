@@ -78,8 +78,13 @@ h4 {
 }
 
 #login_page {
+  margin-top: 100px;
+  width: 350px;
   display: flex;
   flex-direction: row;
+  margin-left: 530px;
+  height: 400px;
+  margin-bottom: 400px;
 }
 
 .content-section {
@@ -88,8 +93,9 @@ h4 {
   border: 1px solid #dddddd;
   border-radius: 3px;
   margin-bottom: 20px;
-  width: 350px;
-  margin-left: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .card-container {
   flex-direction: column;
