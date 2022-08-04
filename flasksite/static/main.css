@@ -18,6 +18,42 @@ h6 {
   color: #444444;
 }
 
+h3 {
+  margin-top: 20px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 20px;
+  color: black;
+  justify-content: center;
+}
+
+.yellowbutton {
+  color: black;
+  background-color: #edd81a;
+  width: 90px;
+}
+
+.text-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h4 {
+  width: 411px;
+  height: 28px;
+  left: 514px;
+  color: black;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 10px;
+  text-align: center;
+}
+
 .total-solved {
   text-align: right;
   color: darkblue;
@@ -41,12 +77,19 @@ h6 {
   font-size: 18px;
 }
 
+#login_page {
+  display: flex;
+  flex-direction: row;
+}
+
 .content-section {
   background: #ffffff;
   padding: 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
   margin-bottom: 20px;
+  width: 350px;
+  margin-left: 80px;
 }
 .card-container {
   flex-direction: column;
