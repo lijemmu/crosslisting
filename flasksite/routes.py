@@ -151,7 +151,18 @@ def listings():
     tech_form = TechForm()
     clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(user_id=current_user.id).all()
-    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
+
+    cookie_exist = False
+
+    if request.cookies.get("at"):
+        cookie_exist = True
+        print(cookie_exist)
+    
+    else:
+        flash("Please go to your profile and click on the Mercado Libre button")
+
+
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
 
 @app.route("/listings/create/tech", methods=['POST'])
 def create_tech():
@@ -159,6 +170,17 @@ def create_tech():
     tech_form = TechForm()
     clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(user_id=current_user.id).all()
+
+    cookie_exist = False
+
+    if request.cookies.get("at"):
+        cookie_exist = True
+        print(cookie_exist)
+    
+    else:
+        flash("Please go to your profile and click on the Mercado Libre button")
+
+
     if tech_form.validate_on_submit():
         image = tech_form.image.data
         filename = secure_filename(image.filename)
@@ -196,7 +218,7 @@ def create_tech():
         db.session.commit()
         return redirect(url_for('listings'))
 
-    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
 
 @app.route("/listings/create/clothing", methods=['POST'])
 def create_clothing():
@@ -205,6 +227,18 @@ def create_clothing():
     clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(user_id=current_user.id).all()
     print(request.files)
+
+    cookie_exist = False
+
+    if request.cookies.get("at"):
+        cookie_exist = True
+        print(cookie_exist)
+    
+    else:
+        flash("Please go to your profile and click on the Mercado Libre button")
+
+
+
     if clothing_form.validate_on_submit():
         image = tech_form.image.data
         filename = secure_filename(image.filename)
@@ -225,13 +259,20 @@ def create_clothing():
                           color=clothing_form.color.data,
                           size=clothing_form.size.data
                           )
-        ebay_api_obj = ebay_init()
+        # ebay_api_obj = ebay_init()
+
+        # try:
+        #     create_ebay_inventory_location(ebay_api_obj)
+        #     create_ebay_listing(ebay_api_obj, clothing_form)
+        # except:
+        #     flash("Unable to create eBay listing.", 'danger')
 
         try:
-            create_ebay_inventory_location(ebay_api_obj)
-            create_ebay_listing(ebay_api_obj, clothing_form)
-        except:
-            flash("Unable to create eBay listing.", 'danger')
+            create_mercadolibre_listing(clothing_form)
+            
+        except Exception as e: 
+            print(e)
+            flash("Unable to create Mercado Libre listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
@@ -240,7 +281,7 @@ def create_clothing():
         data = json.dumps(clothing_form.errors, ensure_ascii=False)
         return jsonify(data)
 
-    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings, cookie_exist=cookie_exist)
 
 @app.route("/<int:id>/delete", methods=["POST"])
 @login_required
@@ -296,6 +337,18 @@ def ebay_init():  # sets up ebay api credentials
         return api
 
         # item_data = set_item_data()
+
+def create_mercadolibre_listing(form):
+    api = MercadoLibreAPI()
+    access_token = request.cookies.get("at")
+    api.update_access_token(access_token)
+
+
+    if isinstance(form, ClothingForm):
+        api.post_listing_clothes(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.color.data, form.size.data)
+    else:
+        api.post_listing_tech(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.line.data, form.model.data, form.color.data, form.os_name.data,form.processor_brand.data)
+        
 
 def create_ebay_listing(api, listing_form):
     offer_data = {
@@ -366,8 +419,8 @@ def profile():
         update_form = updateForm))
 
     if(code):
-        mercado_libre_api = MercadoLibreAPI(code)
-        access_token, refresh_token = mercado_libre_api.get_access_token()
+        mercado_libre_api = MercadoLibreAPI()
+        access_token, refresh_token = mercado_libre_api.get_access_token(code)
         #res.set_cookie("at", value = access_token, httponly = True)    
         #set_cookie("rt", value = refresh_token, httponly = True)
         #access_tokenNNN = cookies.get("at")
@@ -488,22 +541,8 @@ def listings():
 
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():
-    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://491a-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile"
+    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://3dda-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile"
     return redirect(url, code=302)
-
-
-#@app.route("/profile")
-#def get_code():
-    #code = request.args.get('code')
-    #print("AAAAAAAA")
-    #mercado_libre_api = MercadoLibreAPI(code)
-    #access_token, refresh_token = mercado_libre_api.get_access_token()
-    #set_cookie("at", value = access_token, httponly = True)    
-    #set_cookie("rt", value = refresh_token, httponly = True)
-    #access_tokenNNN = cookies.get("at")
-    #print(access_token) 
-
-
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)

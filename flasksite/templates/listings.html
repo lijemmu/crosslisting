@@ -3,9 +3,21 @@
     <div class="content-section">
         <div class="d-flex justify-content-between mb-4">
             <h2>My Listings</h2>
+
+            {% if cookie_exist %}
+
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
                 Create Listing
             </button>
+
+            {% else %}
+
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal" disabled>
+                Create Listing
+            </button>
+
+            {%endif%}
+
         </div>
         <hr />
         <div class="row d-flex">
