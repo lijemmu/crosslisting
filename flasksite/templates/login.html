@@ -1,5 +1,18 @@
 {% extends "layout.html" %} {% block content %}
+<style>
+  body {
+    background: linear-gradient(
+      246.97deg,
+      #1647cb 30.71%,
+      #42a1ec 67.62%,
+      #67cfee 95.3%
+    );
+  }
+</style>
 <div id="login_page" class="justify-content-center">
+  <div>
+    <img src="../static/img/left.svg" />
+  </div>
   <div class="content-section">
     <div class="text-form">
       <h3 class="justify-content-center">Welcome!</h3>
@@ -40,6 +53,9 @@
         {{ login_form.login(class="btn yellowbutton") }}
       </div>
     </form>
+  </div>
+  <div>
+    <img src="../static/img/right.svg" />
   </div>
 </div>
 {% endblock content %}
