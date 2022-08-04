@@ -154,13 +154,13 @@ def listings():
 
     cookie_exist = False
 
-    # if request.cookies.get("at") or (session['ebayUsername'] and session['ebayPassword']):
-    #     cookie_exist = True
-    #     print(cookie_exist)
+    if request.cookies.get("at") or (session.get('ebayUsername') and session.get('ebayPassword')):
+        cookie_exist = True
+        print(cookie_exist)
     
-    # else:
-    #     #flash("Please go to your profile and click on the Mercado Libre button")
-    #     flash("You must connect your account to an external marketplace before creating a listing.")
+    else:
+        #flash("Please go to your profile and click on the Mercado Libre button")
+        flash("You must connect your account to an external marketplace before creating a listing.")
 
 
     return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
@@ -209,11 +209,19 @@ def create_tech():
                           )
         ebay_api_obj = ebay_init()
 
-        try:
-            create_ebay_inventory_location(ebay_api_obj)
-            create_ebay_listing(ebay_api_obj, tech_form)
-        except:
-            flash("Unable to create eBay listing.", 'danger')
+        if session.get('ebayUsername') and session.get('ebayPassword'):
+            try:
+                create_ebay_inventory_location(ebay_api_obj)
+                create_ebay_listing(ebay_api_obj, clothing_form)
+            except:
+                flash("Unable to create eBay listing.", 'danger')
+
+        if request.cookies.get("at"):
+            try:
+                create_mercadolibre_listing(clothing_form)
+            except Exception as e: 
+                print(e)
+                flash("Unable to create Mercado Libre listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
@@ -233,13 +241,13 @@ def create_clothing():
 
     cookie_exist = False
 
-    # if request.cookies.get("at") or (session['ebayUsername'] and session['ebayPassword']):
-    #     cookie_exist = True
-    #     print(cookie_exist)
+    if request.cookies.get("at") or (session.get('ebayUsername') and session.get('ebayPassword')):
+        cookie_exist = True
+        print(cookie_exist)
     
-    # else:
-    #     #flash("Please go to your profile and click on the Mercado Libre button")
-    #     flash("You must connect your account to an external marketplace before creating a listing.")
+    else:
+        #flash("Please go to your profile and click on the Mercado Libre button")
+        flash("You must connect your account to an external marketplace before creating a listing.")
 
 
 
@@ -265,18 +273,19 @@ def create_clothing():
                           )
         ebay_api_obj = ebay_init()
 
-        try:
-            create_ebay_inventory_location(ebay_api_obj)
-            create_ebay_listing(ebay_api_obj, clothing_form)
-        except:
-            flash("Unable to create eBay listing.", 'danger')
+        if session.get('ebayUsername') and session.get('ebayPassword'):
+            try:
+                create_ebay_inventory_location(ebay_api_obj)
+                create_ebay_listing(ebay_api_obj, clothing_form)
+            except:
+                flash("Unable to create eBay listing.", 'danger')
 
-        try:
-            create_mercadolibre_listing(clothing_form)
-            
-        except Exception as e: 
-            print(e)
-            flash("Unable to create Mercado Libre listing.", 'danger')
+        if request.cookies.get("at"):
+            try:
+                create_mercadolibre_listing(clothing_form)
+            except Exception as e: 
+                print(e)
+                flash("Unable to create Mercado Libre listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
