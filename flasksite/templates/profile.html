@@ -248,7 +248,7 @@
 
 
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('ebay_login') }}" id="ebayForm">
+                    <form name="ebayForm" method="POST" action="{{ url_for('ebay_login') }}" id="ebayForm">
                         {{ login_form.hidden_tag() }}
 
                         <fieldset class="form-group">
