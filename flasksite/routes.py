@@ -262,13 +262,13 @@ def create_clothing():
                           color=clothing_form.color.data,
                           size=clothing_form.size.data
                           )
-        # ebay_api_obj = ebay_init()
+        ebay_api_obj = ebay_init()
 
-        # try:
-        #     create_ebay_inventory_location(ebay_api_obj)
-        #     create_ebay_listing(ebay_api_obj, clothing_form)
-        # except:
-        #     flash("Unable to create eBay listing.", 'danger')
+        try:
+            create_ebay_inventory_location(ebay_api_obj)
+            create_ebay_listing(ebay_api_obj, clothing_form)
+        except:
+            flash("Unable to create eBay listing.", 'danger')
 
         try:
             create_mercadolibre_listing(clothing_form)
@@ -352,13 +352,12 @@ def create_mercadolibre_listing(form):
     else:
         api.post_listing_tech(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.line.data, form.model.data, form.color.data, form.os_name.data,form.processor_brand.data)
         
-
 def create_ebay_listing(api, listing_form):
     offer_data = {
         "sku": "234234BH",
         "marketplaceId": "EBAY_US",
         "format": "FIXED_PRICE",
-        "availableQuantity": 1,
+        "availableQuantity": listing_form.quantity.data,
         "categoryId": "30120",
         "listingDescription": listing_form.description.data,
         "listingPolicies": {
@@ -369,41 +368,59 @@ def create_ebay_listing(api, listing_form):
         "pricingSummary": {
             "price": {
                 "currency": "USD",
-                "value": "34.99"
+                "value": str(listing_form.price.data)
             }
         },
         "quantityLimitPerBuyer": 1,
         "includeCatalogProductDetails": True,
     }
 
+    condition = listing_form.condition.data
+    if condition == 'used':
+        condition = "USED_GOOD"
+    elif condition == 'new':
+        condition = "NEW"
 
-    item_data = {"condition": "USED_GOOD", "packageWeightAndSize": {
-        "dimensions": {
-            "height": 6,
-            "length": 2,
-            "width": 1,
-            "unit": "INCH"
-        },
-        "weight": {
-            "value": 1,
-            "unit": "POUND"
-        }
-    }, "availability": {
-        "shipToLocationAvailability": {
-            "quantity": 1
-        }
-    }, 'product': {}}
+    item_data = {
+        "condition": condition,
+        "packageWeightAndSize": {
+            "dimensions": {
+                "height": 6,
+                "length": 2,
+                "width": 1,
+                "unit": "INCH"
+            },
+            "weight": {
+                "value": 1,
+                "unit": "POUND"
+            }
+        }, "availability": {
+            "shipToLocationAvailability": {
+                "quantity": listing_form.quantity.data
+            }
+        }, 'product': {}}
 
     product_info = item_data['product']
     product_info['title'] = listing_form.title.data
+    # product_info['brand'] = listing_form.brand.data
 
-    # product_info['aspects'] = scraper.get_details()
-    # product_info['imageURLs'] = scraper.get_pictures()
+    if isinstance(listing_form, ClothingForm):
+        product_info['aspects'] = {
+            "Size": [listing_form.size.data],
+        }
+
+    elif isinstance(listing_form, TechForm):
+        product_info['aspects'] = {
+            "Model": [listing_form.model.data],
+            "Processor Brand": [listing_form.processor_brand.data],
+            "Operating System": [listing_form.os_name.data],
+            "Line": [listing_form.line.data]
+        }
+
+    product_info['aspects']['Color'] = [listing_form.color.data]
+    product_info['aspects']['brand'] = [listing_form.brand.data]
 
     ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data)
-    # sql.prompt_user()
-    # Uncomment line below to clear all inventory items, locations, listings, and clear the database
-    # ebay_api.clear_entities(api
 
 
 @app.route("/profile", methods=['GET', 'POST'])
