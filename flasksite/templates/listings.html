@@ -12,7 +12,7 @@
 
             {% else %}
 
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal" disabled>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
                 Create Listing
             </button>
 
@@ -24,7 +24,7 @@
             {% for listing in listings %}
             <div class="col-md-6 col-lg-4 mb-3 flex-row align-items-stretch">
                 <div class="card" id="{{ listing.id }}">
-                    <img src="{{ url_for('static', filename=listing.listing_pic)  }}" class="card-img-top">
+                    <img src="{{  url_for('static', filename='assets/{}/{}'.format(current_user.id,listing.listing_pic))  }}" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">
                             {{  listing.title  }}

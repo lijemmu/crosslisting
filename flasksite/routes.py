@@ -154,12 +154,13 @@ def listings():
 
     cookie_exist = False
 
-    if request.cookies.get("at"):
-        cookie_exist = True
-        print(cookie_exist)
+    # if request.cookies.get("at") or (session['ebayUsername'] and session['ebayPassword']):
+    #     cookie_exist = True
+    #     print(cookie_exist)
     
-    else:
-        flash("Please go to your profile and click on the Mercado Libre button")
+    # else:
+    #     #flash("Please go to your profile and click on the Mercado Libre button")
+    #     flash("You must connect your account to an external marketplace before creating a listing.")
 
 
     return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
@@ -193,7 +194,7 @@ def create_tech():
         )
         image.save(os.path.join('flasksite', 'static', filepath))
         listing = Listing(user_id=current_user.id,
-                          listing_pic=filepath,
+                          listing_pic=filename,
                           title=tech_form.title.data,
                           description=tech_form.description.data,
                           price=tech_form.price.data,
@@ -229,16 +230,16 @@ def create_clothing():
     tech_form = TechForm()
     clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(user_id=current_user.id).all()
-    print(request.files)
 
     cookie_exist = False
 
-    if request.cookies.get("at"):
-        cookie_exist = True
-        print(cookie_exist)
+    # if request.cookies.get("at") or (session['ebayUsername'] and session['ebayPassword']):
+    #     cookie_exist = True
+    #     print(cookie_exist)
     
-    else:
-        flash("Please go to your profile and click on the Mercado Libre button")
+    # else:
+    #     #flash("Please go to your profile and click on the Mercado Libre button")
+    #     flash("You must connect your account to an external marketplace before creating a listing.")
 
 
 
@@ -252,7 +253,7 @@ def create_clothing():
         )
         image.save(os.path.join('flasksite', 'static', filepath))
         listing = Listing(user_id=current_user.id,
-                          listing_pic=filepath,
+                          listing_pic=filename,
                           title=clothing_form.title.data,
                           description=clothing_form.description.data,
                           price=clothing_form.price.data,
