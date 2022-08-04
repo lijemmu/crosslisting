@@ -184,14 +184,14 @@ def create_tech():
     if tech_form.validate_on_submit():
         image = tech_form.image.data
         filename = secure_filename(image.filename)
+        if not os.path.exists(os.path.join('flasksite', 'static', 'assets', str(current_user.id))):
+            os.mkdir(os.path.join('flasksite', 'static', 'assets', str(current_user.id)))
         filepath = os.path.join(
-            'flasksite',
-            'static',
             'assets',
             str(current_user.id),
             filename
         )
-        image.save(filepath)
+        image.save(os.path.join('flasksite', 'static', filepath))
         listing = Listing(user_id=current_user.id,
                           listing_pic=filepath,
                           title=tech_form.title.data,
@@ -217,6 +217,9 @@ def create_tech():
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('listings'))
+    elif request.method == "POST":
+        data = json.dumps(tech_form.errors, ensure_ascii=False)
+        return jsonify(data)
 
     return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
 
@@ -240,7 +243,7 @@ def create_clothing():
 
 
     if clothing_form.validate_on_submit():
-        image = tech_form.image.data
+        image = clothing_form.image.data
         filename = secure_filename(image.filename)
         filepath = os.path.join(
             'assets',

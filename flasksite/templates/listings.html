@@ -75,7 +75,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ url_for('listings') }}" enctype=”multipart/form-data”>
+                <form method="POST" action="{{ url_for('listings') }}" enctype="multipart/form-data">
                     {{ listing_form.hidden_tag() }}
                     <fieldset class="form-group">
                         <div class="form-group">
@@ -292,7 +292,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('create_tech') }}" enctype=”multipart/form-data”>
+                    <form method="POST" action="{{ url_for('create_tech') }}" enctype="multipart/form-data">
                         {{ tech_form.hidden_tag() }}
                         <fieldset class="form-group">
                             <div class="form-group">
