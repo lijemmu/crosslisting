@@ -1,25 +1,31 @@
 {% extends "layout.html" %}
 {% block content %}
 
-    <div class="content-section">
+    <style>
+        body {
+            background: linear-gradient(63.69deg, rgba(104, 208, 239, 0.22) 7.92%, #EDF5F8 95.59%);
+        }
+
+    </style>
+
+    <div class="content-section" id="CS">
         <div class="container">
             <div class="row justify-content-between">
                 <div class="col">
-                    <h1 class="account-heading">My Profile</h1>
+                    <h1 class="" id="MP">My Profile</h1>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn rounded-pill btn-outline-secondary" data-bs-toggle="modal"
+                    <button type="button" id="editButton" class="btn " data-bs-toggle="modal"
                             data-bs-target="#exampleModal">Edit Profile
                     </button>
                 </div>
             </div>
 
             <div class="row">
-                <div class="d-flex flex-column justify-content-center align-items-start text-center col ms-5">
+                <div class="d-flex flex-column justify-content-center align-items-start text-center col ms-5" id="leftSide">
                     <div class="card-container">
                         <img class="rounded-circle account-img" src="{{ profile_pic }}">
-                        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-                        <p>{{ user.email }}</p>
+                        <h2 id="aName">{{ user.first_name }} {{ user.last_name }}</h2>
                         <div class="card" style="width: 25rem;">
                             <div class="card-body">
                                 <h5 class="card-title text-center">Description</h5>
@@ -33,26 +39,34 @@
                 </div>
 
                 <div class="col">
-                    <h2>Selling On</h2>
-                    <div class="justify-content-between">
+                    <h2 id="SO">Selling On</h2>
+                    <div class="justify-content-between" id="apiBtnGrp">
                         <div class="row">
                             <div class="col-5 d-grid gap-3">
-                                <button type="button" class="btn btn-outline-success rounded-pill"
+                                <button type="button" class="btn fernandaBtn"
                                         data-bs-target="#ebayModal" data-bs-toggle="modal">Ebay
                                 </button>
-                                <a href="mercadolibre_oauth" class="btn btn-outline-success rounded-pill" role="button">Mercado Libre</a>
+                                <a href="mercadolibre_oauth" class="btn fernandaBtn" role="button">Mercado Libre</a>
                             </div>
                             <div class="col-5 d-grid gap-3">
-                                <button class="btn btn-outline-success rounded-pill">Etsy</button>
-                                <button class="btn btn-outline-success rounded-pill">AliExpress</button>
+                                <button class="btn fernandaBtn">Etsy</button>
+                                <button class="btn fernandaBtn">AliExpress</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-          </div>
+            </div>
+            </div>
         </div>
-      </div>
+
+        <div class="container">
+            <h2 id="PI">Personal Info</h2>
+            <h6 id="Pemail">Email: </h6>
+            <p id="aEmail">{{user.email}}</p>
+            <h6 id="areaLabel">Area</h6>
+            <p id="uArea">{{user.state}} , {{user.country}}</p>
+        </div>
     </div>
 
 
