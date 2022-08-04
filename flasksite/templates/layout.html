@@ -12,13 +12,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Albert+Sans&family=DM+Sans&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
 <header class="site-header">
-    <nav class="navbar navbar-expand-lg navbar-light bg-steel fixed-top">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a id="title" class="navbar-brand mr-4" href="/">Crosslister</a>
+            <!-- <a id="title" class="navbar-brand mr-4" href="/"><img id="logo" src="../static/img/logo.svg"></a> -->
+            <a id="title" class="navbar-brand mr-4" href="/">crosslister</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
                     aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -28,9 +32,9 @@
             <div class="navbar-nav justify-content-end" id="navbarText">
                 {% if current_user.is_authenticated %}
                     <!--listings.html does not exist yet in this branch, so My Listings link throws an error-->
-                    <a class="nav-item nav-link" href="{{ url_for('listings') }}">My Listings</a>
+                    <a class="nav-item nav-link" id="fernandaNavBtn2" href="{{ url_for('listings') }}">My Listings</a>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button"
+                        <a class="nav-link dropdown-toggle" id="fernandaNavBtn1" href="#" id="navbarLightDropdownMenuLink" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             Welcome, {{ current_user.first_name }}
                         </a>
@@ -51,7 +55,7 @@
 </header>
 
 
-<main role="main" class="container">
+<main role="main" >
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             <ul class="flashes list-group">

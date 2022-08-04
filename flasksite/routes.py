@@ -1,16 +1,17 @@
 import json
+import os
 from urllib.parse import urlparse, urljoin
 
 """Ref https://github.com/matecsaj/ebay_rest for selenium install and ebay_rest setup"""
 import selenium.common
 import sqlalchemy.exc
-from flask import render_template, url_for, flash, redirect, request, session, g, abort, jsonify
+from flask import render_template, url_for, flash, redirect, request, session, g, abort, jsonify, make_response
 from flask_login import login_user, logout_user, current_user, login_required
 from sqlalchemy import or_
 
 from flasksite import app, bcrypt, db
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm, UpdateAccountForm
+from flasksite.forms import ListingForm, RegistrationForm, LoginForm, SearchForm, TechForm, ClothingForm, UpdateAccountForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.api import ebay_api
@@ -18,6 +19,8 @@ from flasksite.model import User, Listing
 from flasksite.api import country
 import ebay_rest.a_p_i as ebay
 from ebay_rest import Error
+from werkzeug.utils import secure_filename
+from flasksite.api.mercadolibre import MercadoLibreAPI
 
 MERCADOLIBRE_APP_ID = "5200906880853734"
 
@@ -26,27 +29,6 @@ MERCADOLIBRE_APP_ID = "5200906880853734"
 @app.route("/home", methods=["GET", "POST"])
 def home():
     return render_template('home.html', subtitle="Catalog")
-
-
-@app.context_processor
-def base():
-    form = SearchForm()
-    return dict(form=form)
-
-
-@app.route("/search", methods=["POST"])
-def search():
-    form = SearchForm()
-    if not form.validate_on_submit():
-        return redirect(url_for('home'))
-    else:
-        search_query = form.searched.data
-        user_obj = User.query.filter(or_(
-            (User.username.like(f'%{search_query}%')),
-            (User.email.like(f'{search_query}%'))
-        )).all()
-
-        return render_template("search.html", form=form, searched=search_query, users=user_obj)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -69,6 +51,8 @@ def register():
         if "- Select -" in address_line2:  # when address line 2 isn't filled out in the form
             user = User(first_name=reg_form.first_name.data, last_name=reg_form.last_name.data,
                         email=reg_form.email.data,
+                        street_address=reg_form.street_address.data,
+                        city=reg_form.city.data,
                         state=reg_form.state.data, zipcode=reg_form.zipcode.data, country=reg_form.country.data,
                         password_hash=hash_pass(reg_form.password.data))
         else:
@@ -82,6 +66,12 @@ def register():
         db.session.add(user)
         db.session.commit()
         login_user(user)
+        os.mkdir(os.path.join(
+            'flasksite',
+            'static',
+            'assets',
+            str(current_user.id)
+        ))
         flash(f'Account created for {reg_form.first_name.data} {reg_form.last_name.data}!', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', register_form=reg_form)
@@ -129,6 +119,10 @@ def logout():
     return redirect(url_for('home'))
 
 def create_ebay_inventory_location(api):
+    my_country = current_user.country
+    if current_user.country == "United States":
+        my_country = 'US'
+
     merchant_location_data = {
         "location": {
             "address": {
@@ -137,7 +131,7 @@ def create_ebay_inventory_location(api):
                 "city": current_user.city,
                 "stateOrProvince": current_user.state,
                 "postalCode": current_user.zipcode,
-                "country": current_user.country
+                "country": my_country
             }
         },
         "locationInstructions": "Items ship from here.",
@@ -151,37 +145,154 @@ def create_ebay_inventory_location(api):
     merchant_loc_key = f"LOC{current_user.zipcode}"
     ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
 
-@app.route("/listings", methods=['GET', 'POST'])
+@app.route("/listings", methods=['GET'])
 def listings():
-    form = ListingForm()
-    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
-    if form.validate_on_submit():
-        listing = Listing(username=current_user.first_name + " " + current_user.last_name,
-                          profile_pic=current_user.profile_pic, title=form.title.data,
-                          description=form.description.data)
+    listing_form = ListingForm()
+    tech_form = TechForm()
+    clothing_form = ClothingForm()
+    user_listings = Listing.query.filter_by(user_id=current_user.id).all()
+
+    cookie_exist = False
+
+    if request.cookies.get("at"):
+        cookie_exist = True
+        print(cookie_exist)
+    
+    else:
+        flash("Please go to your profile and click on the Mercado Libre button")
+
+
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
+
+@app.route("/listings/create/tech", methods=['POST'])
+def create_tech():
+    listing_form = ListingForm()
+    tech_form = TechForm()
+    clothing_form = ClothingForm()
+    user_listings = Listing.query.filter_by(user_id=current_user.id).all()
+
+    cookie_exist = False
+
+    if request.cookies.get("at"):
+        cookie_exist = True
+        print(cookie_exist)
+    
+    else:
+        flash("Please go to your profile and click on the Mercado Libre button")
+
+
+    if tech_form.validate_on_submit():
+        image = tech_form.image.data
+        filename = secure_filename(image.filename)
+        if not os.path.exists(os.path.join('flasksite', 'static', 'assets', str(current_user.id))):
+            os.mkdir(os.path.join('flasksite', 'static', 'assets', str(current_user.id)))
+        filepath = os.path.join(
+            'assets',
+            str(current_user.id),
+            filename
+        )
+        image.save(os.path.join('flasksite', 'static', filepath))
+        listing = Listing(user_id=current_user.id,
+                          listing_pic=filepath,
+                          title=tech_form.title.data,
+                          description=tech_form.description.data,
+                          price=tech_form.price.data,
+                          quantity=tech_form.quantity.data,
+                          condition=tech_form.condition.data,
+                          brand=tech_form.brand.data,
+                          color=tech_form.color.data,
+                          model=tech_form.model.data,
+                          line=tech_form.line.data,
+                          os_name=tech_form.os_name.data,
+                          processor_brand=tech_form.processor_brand.data
+                          )
         ebay_api_obj = ebay_init()
 
         try:
             create_ebay_inventory_location(ebay_api_obj)
-            create_ebay_listing(ebay_api_obj, form)
+            create_ebay_listing(ebay_api_obj, tech_form)
         except:
             flash("Unable to create eBay listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('listings'))
+    elif request.method == "POST":
+        data = json.dumps(tech_form.errors, ensure_ascii=False)
+        return jsonify(data)
 
-    return render_template('listings.html', listing_form=form, listings=user_listings)
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
+
+@app.route("/listings/create/clothing", methods=['POST'])
+def create_clothing():
+    listing_form = ListingForm()
+    tech_form = TechForm()
+    clothing_form = ClothingForm()
+    user_listings = Listing.query.filter_by(user_id=current_user.id).all()
+    print(request.files)
+
+    cookie_exist = False
+
+    if request.cookies.get("at"):
+        cookie_exist = True
+        print(cookie_exist)
+    
+    else:
+        flash("Please go to your profile and click on the Mercado Libre button")
+
+
+
+    if clothing_form.validate_on_submit():
+        image = clothing_form.image.data
+        filename = secure_filename(image.filename)
+        filepath = os.path.join(
+            'assets',
+            str(current_user.id),
+            filename
+        )
+        image.save(os.path.join('flasksite', 'static', filepath))
+        listing = Listing(user_id=current_user.id,
+                          listing_pic=filepath,
+                          title=clothing_form.title.data,
+                          description=clothing_form.description.data,
+                          price=clothing_form.price.data,
+                          quantity=clothing_form.quantity.data,
+                          condition=clothing_form.condition.data,
+                          brand=clothing_form.brand.data,
+                          color=clothing_form.color.data,
+                          size=clothing_form.size.data
+                          )
+        # ebay_api_obj = ebay_init()
+
+        # try:
+        #     create_ebay_inventory_location(ebay_api_obj)
+        #     create_ebay_listing(ebay_api_obj, clothing_form)
+        # except:
+        #     flash("Unable to create eBay listing.", 'danger')
+
+        try:
+            create_mercadolibre_listing(clothing_form)
+            
+        except Exception as e: 
+            print(e)
+            flash("Unable to create Mercado Libre listing.", 'danger')
+
+        db.session.add(listing)
+        db.session.commit()
+        return redirect(url_for('listings'))
+    elif request.method == "POST":
+        data = json.dumps(clothing_form.errors, ensure_ascii=False)
+        return jsonify(data)
+
+    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings, cookie_exist=cookie_exist)
 
 @app.route("/<int:id>/delete", methods=["POST"])
 @login_required
 def delete(id):
-    # TODO ensure users cannot delete listings that aren't theirs
     listing_to_delete = Listing.query.filter_by(id=id).first()
-
-    user_is_authorized = listing_to_delete.username == (current_user.first_name + current_user.last_name)
-
+    user_is_authorized = listing_to_delete.user_id == current_user.id
     if listing_to_delete and user_is_authorized:
+        os.remove(os.path.join('flasksite', 'static', listing_to_delete.listing_pic))
         db.session.delete(listing_to_delete)
         db.session.commit()
     return redirect(url_for('listings'))
@@ -230,6 +341,18 @@ def ebay_init():  # sets up ebay api credentials
 
         # item_data = set_item_data()
 
+def create_mercadolibre_listing(form):
+    api = MercadoLibreAPI()
+    access_token = request.cookies.get("at")
+    api.update_access_token(access_token)
+
+
+    if isinstance(form, ClothingForm):
+        api.post_listing_clothes(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.color.data, form.size.data)
+    else:
+        api.post_listing_tech(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.line.data, form.model.data, form.color.data, form.os_name.data,form.processor_brand.data)
+        
+
 def create_ebay_listing(api, listing_form):
     offer_data = {
         "sku": "234234BH",
@@ -237,7 +360,7 @@ def create_ebay_listing(api, listing_form):
         "format": "FIXED_PRICE",
         "availableQuantity": 1,
         "categoryId": "30120",
-        "listingDescription": listing_form.content.data,
+        "listingDescription": listing_form.description.data,
         "listingPolicies": {
             "fulfillmentPolicyId": "3*********0",
             "paymentPolicyId": "3*********0",
@@ -273,6 +396,7 @@ def create_ebay_listing(api, listing_form):
 
     product_info = item_data['product']
     product_info['title'] = listing_form.title.data
+
     # product_info['aspects'] = scraper.get_details()
     # product_info['imageURLs'] = scraper.get_pictures()
 
@@ -285,27 +409,30 @@ def create_ebay_listing(api, listing_form):
 @app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
+
+    code = request.args.get('code')
     user = current_user
-
-
-
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
-
-
     updateForm = UpdateAccountForm()
-
-
-
     ebayLogin = LoginForm()
 
+    resp = make_response(render_template("profile.html", subtitle=subtitle, user=user, 
+        profile_pic=profile_pic, login_form = ebayLogin, 
+        update_form = updateForm))
 
- 
+    if(code):
+        mercado_libre_api = MercadoLibreAPI()
+        access_token, refresh_token = mercado_libre_api.get_access_token(code)
+        #res.set_cookie("at", value = access_token, httponly = True)    
+        #set_cookie("rt", value = refresh_token, httponly = True)
+        #access_tokenNNN = cookies.get("at")
 
+        resp.set_cookie("at", value = access_token, httponly = True)
+        print(request.cookies.get("at"))
 
-    return render_template("profile.html", subtitle=subtitle, user=user, 
-    profile_pic=profile_pic, login_form = ebayLogin, 
-    update_form = updateForm)
+    return resp
+
 
 
 @app.route("/profile/ebay", methods=['POST'])
@@ -403,17 +530,13 @@ def validate_ebay_login():
         print("wrong ebay login")
         return jsonify(ebayLogin.errors)
 
+
+
+
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():
-    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://crosslisting-testdb.herokuapp.com/profile"
+    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://3dda-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile"
     return redirect(url, code=302)
-
-
-# @app.route("/profile?code=<code>")
-# def get_code():
-#      print(request.args.get("code"))
-#      return code
-
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
