@@ -5,7 +5,7 @@ from urllib.parse import urlparse, urljoin
 """Ref https://github.com/matecsaj/ebay_rest for selenium install and ebay_rest setup"""
 import selenium.common
 import sqlalchemy.exc
-from flask import render_template, url_for, flash, redirect, request, session, g, abort, jsonify
+from flask import render_template, url_for, flash, redirect, request, session, g, abort, jsonify, make_response
 from flask_login import login_user, logout_user, current_user, login_required
 from sqlalchemy import or_
 
@@ -20,6 +20,7 @@ from flasksite.api import country
 import ebay_rest.a_p_i as ebay
 from ebay_rest import Error
 from werkzeug.utils import secure_filename
+from flasksite.api.mercadolibre import MercadoLibreAPI
 
 MERCADOLIBRE_APP_ID = "5200906880853734"
 
@@ -346,27 +347,30 @@ def create_ebay_listing(api, listing_form):
 @app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
+
+    code = request.args.get('code')
     user = current_user
-
-
-
     subtitle = "My Profile" if user == current_user else "Profile"
     profile_pic = url_for('static', filename=f"img/{user.profile_pic}")  # change to GitHub pic
-
-
     updateForm = UpdateAccountForm()
-
-
-
     ebayLogin = LoginForm()
 
+    resp = make_response(render_template("profile.html", subtitle=subtitle, user=user, 
+        profile_pic=profile_pic, login_form = ebayLogin, 
+        update_form = updateForm))
 
- 
+    if(code):
+        mercado_libre_api = MercadoLibreAPI(code)
+        access_token, refresh_token = mercado_libre_api.get_access_token()
+        #res.set_cookie("at", value = access_token, httponly = True)    
+        #set_cookie("rt", value = refresh_token, httponly = True)
+        #access_tokenNNN = cookies.get("at")
 
+        resp.set_cookie("at", value = access_token, httponly = True)
+        print(request.cookies.get("at"))
 
-    return render_template("profile.html", subtitle=subtitle, user=user, 
-    profile_pic=profile_pic, login_form = ebayLogin, 
-    update_form = updateForm)
+    return resp
+
 
 
 @app.route("/profile/ebay", methods=['POST'])
@@ -464,16 +468,35 @@ def validate_ebay_login():
         print("wrong ebay login")
         return jsonify(ebayLogin.errors)
 
+
+
+@app.route('/profile/edit', methods=['GET', 'POST'])
+def edit_profile():
+    pass
+
+'''
+@app.route("/listings")
+def listings():
+    return render_template("listings.html")
+'''
+
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():
-    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://crosslisting-testdb.herokuapp.com/profile"
+    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://491a-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile"
     return redirect(url, code=302)
 
 
-@app.route("/profile?code=<code>")
-def get_code():
-     print(request.args.get("code"))
-     return code
+#@app.route("/profile")
+#def get_code():
+    #code = request.args.get('code')
+    #print("AAAAAAAA")
+    #mercado_libre_api = MercadoLibreAPI(code)
+    #access_token, refresh_token = mercado_libre_api.get_access_token()
+    #set_cookie("at", value = access_token, httponly = True)    
+    #set_cookie("rt", value = refresh_token, httponly = True)
+    #access_tokenNNN = cookies.get("at")
+    #print(access_token) 
+
 
 
 def is_safe_url(target):

@@ -54,7 +54,7 @@ h6 {
   margin-bottom: 20px;
 }
 .card-container {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 .article-title {
@@ -96,7 +96,7 @@ a.article-title:hover {
 .account-img {
   height: 200px;
   width: 200px;
-/*  margin-right: 20px;
+  /*  margin-right: 20px;
   margin-bottom: 16px;*/
 }
 
@@ -121,5 +121,11 @@ td {
 }
 
 #button-grp {
-    height: 25px;
+  height: 25px;
+}
+
+#homepage {
+  display: flex;
+  flex-direction: row;
+  background-color: blue;
 }
