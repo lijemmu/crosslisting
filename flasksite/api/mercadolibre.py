@@ -7,7 +7,7 @@ APP_ID = "5200906880853734"
 ACCESS_TOKEN = "APP_USR-5200906880853734-080121-469ea48695b6b0362d4e2ee66c13b62d-534966925"
 SERVER_CODE = "https://github.com/lijemmu/crosslisting?code=TG-62e2f0dee9602a001375917b-534966925&state="
 REFRESH_TOKEN = "TG-62e2f7508c8e400013fa8912-534966925"
-REDIRECT_URI = 'https://3dda-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile'
+REDIRECT_URI = 'https://a4a3-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile'
 
 
 class MercadoLibreAPI:
@@ -157,6 +157,9 @@ class MercadoLibreAPI:
         listing_id = response[0]['id']
         self.add_description(listing_id, description)
 
+        return "https://articulo.mercadolibre.com.pe/MPE-" + response['id'][3:]
+        
+
     def post_listing_clothes(self, title, description, price, quantity,condition, warranty_time, brand, color, size):
 
         #category_id = find_category(title)
@@ -208,6 +211,7 @@ class MercadoLibreAPI:
         response = self.listing_call(body)
         listing_id = response['id']
         self.add_description(listing_id, description)
+        return "https://articulo.mercadolibre.com.pe/MPE-" + response['id'][3:]
 
     def listing_call(self, body):
 
