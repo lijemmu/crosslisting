@@ -8,4 +8,3 @@ config.py
 .codio
 flasksite/__init__.pyc
 
-flasksite/static/assets/**

@@ -3,21 +3,9 @@
     <div class="content-section">
         <div class="d-flex justify-content-between mb-4">
             <h2>My Listings</h2>
-
-            {% if cookie_exist %}
-
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
                 Create Listing
             </button>
-
-            {% else %}
-
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal" disabled>
-                Create Listing
-            </button>
-
-            {%endif%}
-
         </div>
         <hr />
         <div class="row d-flex">
@@ -75,7 +63,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ url_for('listings') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ url_for('listings') }}" enctype=”multipart/form-data”>
                     {{ listing_form.hidden_tag() }}
                     <fieldset class="form-group">
                         <div class="form-group">
@@ -292,7 +280,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('create_tech') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ url_for('create_tech') }}" enctype=”multipart/form-data”>
                         {{ tech_form.hidden_tag() }}
                         <fieldset class="form-group">
                             <div class="form-group">
