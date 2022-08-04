@@ -2,7 +2,7 @@
 
 
 
-<div class="content-section" id="lForm">
+<div class="content-section mx-auto col-4 mt-5" id="lForm" style="border-radius: 10px">
   <h2 class="text-dark">Login</h2>
   <form method="POST" action="">
     {{ login_form.hidden_tag() }}
@@ -34,10 +34,11 @@
         {% else %} {{ login_form.existing_pass(class="form-control
         form-control-lg") }} {% endif %}
       </div>
+        <div class="form-group">
+            {{ login_form.login(class="btn btn-primary") }}
+        </div>
     </fieldset>
-    <div class="form-group">
-      {{ login_form.login(class="btn btn-primary") }}
-    </div>
+
   </form>
 </div>
 

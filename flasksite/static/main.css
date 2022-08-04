@@ -177,7 +177,7 @@ h2 {
 
 #CS {
   position: absolute;
-  width: 1310px;
+  width: 80%;
   height: 700px;
   left: 10%;
   top: 221px;
@@ -383,12 +383,12 @@ h2 {
 }
 
 
-#lForm {
-  position: absolute;
-  width: 546px;
-  height: 42%;
-  left: 34%;
-  top: 235px;
-  background: #FFFFFF;
-  border-radius: 20px;
-}
+/*#lForm {*/
+/*  !*position: absolute;*!*/
+/*  !*width: 546px;*!*/
+/*  height: auto;*/
+/*  !*left: 50%;*!*/
+/*  top: 235px;*/
+/*  background: #FFFFFF;*/
+/*  border-radius: 20px;*/
+/*}*/
