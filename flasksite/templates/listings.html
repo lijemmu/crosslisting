@@ -3,7 +3,7 @@
     <div class="content-section">
         <div class="d-flex justify-content-between mb-4">
             <h2>My Listings</h2>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createListingModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
                 Create Listing
             </button>
         </div>
@@ -129,7 +129,140 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <form method="POST" action="{{ url_for('create_clothing') }}">
+                        {{ clothing_form.hidden_tag() }}
+                        <fieldset class="form-group">
+                            <div class="form-group">
+                                {{ clothing_form.title.label(class="form-control-label") }}
+                                {% if clothing_form.title.errors %}
+                                    {{ clothing_form.title(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.title.errors %}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.title(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+            
+                            <div class="form-group">
+                                {{ clothing_form.description.label(class="form-control-label") }}
+                                {% if clothing_form.description.errors %}
+                                    {{ clothing_form.description(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.description.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.description(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ clothing_form.image.label(class="form-control-label") }}
+                                {% if clothing_form.image.errors %}
+                                    {{ clothing_form.image(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.image.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.image(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ clothing_form.price.label(class="form-control-label") }}
+                                {% if clothing_form.price.errors %}
+                                    {{ clothing_form.price(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.price.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.price(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ clothing_form.quantity.label(class="form-control-label") }}
+                                {% if clothing_form.quantity.errors %}
+                                    {{ clothing_form.quantity(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.quantity.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.quantity(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ clothing_form.condition.label(class="form-control-label") }}
+                                {% if clothing_form.condition.errors %}
+                                    {{ clothing_form.condition(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.condition.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.condition(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ clothing_form.brand.label(class="form-control-label") }}
+                                {% if clothing_form.brand.errors %}
+                                    {{ clothing_form.brand(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.brand.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.brand(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ clothing_form.color.label(class="form-control-label") }}
+                                {% if clothing_form.color.errors %}
+                                    {{ clothing_form.color(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.color.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.color(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ clothing_form.size.label(class="form-control-label") }}
+                                {% if clothing_form.size.errors %}
+                                    {{ clothing_form.size(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in clothing_form.size.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clothing_form.size(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                        </fieldset>
+                        <div class="form-group"> 
+                            {{ clothing_form.post_btn(class="btn btn-primary") }}
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" data-bs-target="#categoryModal" data-bs-toggle="modal">Back</button>
@@ -147,7 +280,182 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <form method="POST" action="{{ url_for('create_tech') }}">
+                        {{ tech_form.hidden_tag() }}
+                        <fieldset class="form-group">
+                            <div class="form-group">
+                                {{ tech_form.title.label(class="form-control-label") }}
+                                {% if tech_form.title.errors %}
+                                    {{ tech_form.title(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.title.errors %}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.title(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+            
+                            <div class="form-group">
+                                {{ tech_form.description.label(class="form-control-label") }}
+                                {% if tech_form.description.errors %}
+                                    {{ tech_form.description(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.description.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.description(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.image.label(class="form-control-label") }}
+                                {% if tech_form.image.errors %}
+                                    {{ tech_form.image(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.image.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.image(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.price.label(class="form-control-label") }}
+                                {% if tech_form.price.errors %}
+                                    {{ tech_form.price(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.price.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.price(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.quantity.label(class="form-control-label") }}
+                                {% if tech_form.quantity.errors %}
+                                    {{ tech_form.quantity(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.quantity.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.quantity(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.condition.label(class="form-control-label") }}
+                                {% if tech_form.condition.errors %}
+                                    {{ tech_form.condition(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.condition.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.condition(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.brand.label(class="form-control-label") }}
+                                {% if tech_form.brand.errors %}
+                                    {{ tech_form.brand(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.brand.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.brand(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.color.label(class="form-control-label") }}
+                                {% if tech_form.color.errors %}
+                                    {{ tech_form.color(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.color.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.color(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.model.label(class="form-control-label") }}
+                                {% if tech_form.model.errors %}
+                                    {{ tech_form.model(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.model.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.model(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.line.label(class="form-control-label") }}
+                                {% if tech_form.line.errors %}
+                                    {{ tech_form.line(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.line.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.line(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.os_name.label(class="form-control-label") }}
+                                {% if tech_form.os_name.errors %}
+                                    {{ tech_form.os_name(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.os_name.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.os_name(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ tech_form.processor_brand.label(class="form-control-label") }}
+                                {% if tech_form.processor_brand.errors %}
+                                    {{ tech_form.processor_brand(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in tech_form.processor_brand.errors%}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ tech_form.processor_brand(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                        </fieldset>
+                        <div class="form-group"> 
+                            {{ tech_form.post_btn(class="btn btn-primary") }}
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" data-bs-target="#categoryModal" data-bs-toggle="modal">Back</button>
