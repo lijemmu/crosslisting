@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-
+ 
     <style>
         body {
             background: linear-gradient(63.69deg, rgba(104, 208, 239, 0.22) 7.92%, #EDF5F8 95.59%);
         }
-
+ 
     </style>
-
+ 
     <div class="content-section" id="CS">
         <div class="container">
             <div class="row justify-content-between">
@@ -20,10 +20,9 @@
                     </button>
                 </div>
             </div>
-
+ 
             <div class="row">
-                <div class="d-flex flex-column justify-content-center align-items-start text-center col ms-5"
-                     id="leftSide">
+                <div class="d-flex flex-column justify-content-center align-items-start text-center col ms-5" id="leftSide">
                     <div class="card-container">
                         <img class="rounded-circle account-img" src="{{ profile_pic }}">
                         <h2 id="aName" style="margin-top: 15px;">{{ user.first_name }} {{ user.last_name }}</h2>
@@ -38,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-
+ 
                 <div class="col">
                     <h2 id="SO">Selling On</h2>
                     <div class="justify-content-between" id="apiBtnGrp">
@@ -57,216 +56,217 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="container">
-        <h2 id="PI">Personal Info</h2>
-        <h6 id="Pemail">Email: </h6>
-        <p id="aEmail">{{ user.email }}</p>
-        <h6 id="areaLabel">Area: </h6>
-        <p id="uArea">{{ user.state }}, {{ user.country }}</p>
-    </div>
-    </div>
-
-
-    </div>
-
-
-
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <form method="POST" action="{{ url_for('update_profile') }}" id="updateForm">
-                        {{ update_form.hidden_tag() }}
-
-                        <fieldset class="form-group">
-                            <div class="row">
-                                <div class="col">
-                                    {{ update_form.first_name.label(class="form-control-label") }}
-                                    {% if update_form.first_name.errors %}
-                                        {{ update_form.first_name(class="form-control form-control-lg is-invalid") }}
-                                        <div class="invalid-feedback">
-                                            {% for error in update_form.first_name.errors %}
-                                                <span>{{ error }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        {{ update_form.first_name(class="form-control form-control-lg", value= user.first_name ) }}
-                                    {% endif %}
-                                </div>
-
-                                <div class="col">
-                                    {{ update_form.last_name.label(class="form-control-label") }}
-                                    {% if update_form.last_name.errors %}
-                                        {{ update_form.last_name(class="form-control form-control-lg is-invalid") }}
-                                        <div class="invalid-feedback">
-                                            {% for error in update_form.last_name.errors %}
-                                                <span>{{ error }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        {{ update_form.last_name(class="form-control form-control-lg" , value= user.last_name) }}
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                {{ update_form.email.label(class="form-control-label") }}
-                                {% if update_form.email.errors %}
-                                    {{ update_form.email(class="form-control form-control-lg is-invalid") }}
-                                    <div class="invalid-feedback">
-                                        {% for error in update_form.email.errors %}
-                                            <span>{{ error }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    {{ update_form.email(class="form-control form-control-lg", value= user.email) }}
-                                {% endif %}
-                            </div>
-
-                            <div class="form-group">
-                                {{ update_form.street_address.label(class="form-control-label") }}
-                                {% if update_form.street_address.errors %}
-                                    {{ update_form.street_address(class="form-control form-control-lg is-invalid") }}
-                                    <div class="invalid-feedback">
-                                        {% for error in update_form.street_address.errors %}
-                                            <span>{{ error }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    {{ update_form.street_address(class="form-control form-control-lg", value= user.street_address) }}
-                                {% endif %}
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    {{ update_form.unit_type.label(class="form-control-label") }}
-                                    {% if update_form.unit_type.errors %}
-                                        {{ update_form.unit_type(class="form-control form-control-lg is-invalid") }}
-                                        <div class="invalid-feedback">
-                                            {% for error in update_form.unit_type.errors %}
-                                                <span>{{ error }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        {{ update_form.unit_type(class="form-control form-control-lg") }}
-                                    {% endif %}
-                                </div>
-
-                                <div class="col">
-                                    {{ update_form.unit_number.label(class="form-control-label") }}
-                                    {% if update_form.unit_number.errors %}
-                                        {{ update_form.unit_number(class="form-control form-control-lg is-invalid") }}
-                                        <div class="invalid-feedback">
-                                            {% for error in update_form.unit_number.errors %}
-                                                <span>{{ error }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        {{ update_form.unit_number(class="form-control form-control-lg") }}
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                {{ update_form.city.label(class="form-control-label") }}
-                                {% if update_form.city.errors %}
-                                    {{ update_form.city(class="form-control form-control-lg is-invalid") }}
-                                    <div class="invalid-feedback">
-                                        {% for error in update_form.city.errors %}
-                                            <span>{{ error }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    {{ update_form.city(class="form-control form-control-lg", value= user.city) }}
-                                {% endif %}
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col">
-                                    {{ update_form.country.label(class="form-control-label") }}
-                                    {% if update_form.country.errors %}
-                                        {{ update_form.country(class="form-control form-control-lg is-invalid") }}
-                                        <div class="invalid-feedback">
-                                            {% for error in update_form.country.errors %}
-                                                <span>{{ error }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        {{ update_form.country(class="form-control form-control-lg", value = user.country, selected = user.country ) }}
-                                    {% endif %}
-                                </div>
-
-
-                                <div class="col">
-                                    {{ update_form.state.label(class="form-control-label") }}
-                                    {% if update_form.state.errors %}
-                                        {{ update_form.state(class="form-control form-control-lg is-invalid") }}
-                                        <div class="invalid-feedback">
-                                            {% for error in update_form.state.errors %}
-                                                <span>{{ error }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        {{ update_form.state(class="form-control form-control-lg", value = user.state, selected = user.state) }}
-                                    {% endif %}
-                                </div>
-
-                                <div class="col">
-                                    {{ update_form.zipcode.label(class="form-control-label") }}
-                                    {% if update_form.zipcode.errors %}
-                                        {{ update_form.zipcode(class="form-control form-control-lg is-invalid") }}
-                                        <div class="invalid-feedback">
-                                            {% for error in update_form.zipcode.errors %}
-                                                <span>{{ error }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    {% else %}
-                                        {{ update_form.zipcode(class="form-control form-control-lg", value= user.zipcode) }}
-                                    {% endif %}
-                                </div>
-
-
-                            </div>
-                        </fieldset>
-
-                        <div class="form-group">
-                            {{ update_form.submit(class="btn btn-primary") }}
-                        </div>
-
-                    </form>
-                </div>
+            </div>
             </div>
         </div>
+ 
+        <div class="container" style="
+        position: relative;
+        right: 210px;">
+            <h2 id="PI">Personal Info</h2>
+            <h6 id="Pemail">Email: </h6>
+            <p id="aEmail">{{user.email}}</p>
+            <h6 id="areaLabel">Area: </h6>
+            <p id="uArea">{{user.state}} , {{user.country}}</p>
+        </div>
     </div>
-
-
-
-
-
-
-
+ 
+ 
+ 
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+   
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+   
+            <div class="modal-body">
+   
+                <form method="POST" action="{{url_for('update_profile')}}" id="updateForm">
+                    {{ update_form.hidden_tag() }}
+       
+                    <fieldset class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                {{ update_form.first_name.label(class="form-control-label") }}
+                                {% if update_form.first_name.errors %}
+                                    {{ update_form.first_name(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.first_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.first_name(class="form-control form-control-lg", value= user.first_name ) }}
+                                {% endif %}
+                            </div>
+       
+                            <div class="col">
+                                {{ update_form.last_name.label(class="form-control-label") }}
+                                {% if update_form.last_name.errors %}
+                                    {{ update_form.last_name(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.last_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.last_name(class="form-control form-control-lg" , value= user.last_name) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ update_form.email.label(class="form-control-label") }}
+                            {% if update_form.email.errors %}
+                                {{ update_form.email(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in update_form.email.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ update_form.email(class="form-control form-control-lg", value= user.email) }}
+                            {% endif %}
+                        </div>
+       
+                        <div class="form-group">
+                            {{ update_form.street_address.label(class="form-control-label") }}
+                            {% if update_form.street_address.errors %}
+                                {{ update_form.street_address(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in update_form.street_address.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ update_form.street_address(class="form-control form-control-lg", value= user.street_address) }}
+                            {% endif %}
+                        </div>
+       
+                        <div class="row">
+                            <div class="col">
+                                {{ update_form.unit_type.label(class="form-control-label") }}
+                                {% if update_form.unit_type.errors %}
+                                    {{ update_form.unit_type(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.unit_type.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.unit_type(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+       
+                            <div class="col">
+                                {{ update_form.unit_number.label(class="form-control-label") }}
+                                {% if update_form.unit_number.errors %}
+                                    {{ update_form.unit_number(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.unit_number.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.unit_number(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ update_form.city.label(class="form-control-label") }}
+                            {% if update_form.city.errors %}
+                                {{ update_form.city(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in update_form.city.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ update_form.city(class="form-control form-control-lg", value= user.city) }}
+                            {% endif %}
+                        </div>
+       
+                        <div class="row">
+   
+                            <div class="col">
+                                {{ update_form.country.label(class="form-control-label") }}
+                                {% if update_form.country.errors %}
+                                    {{ update_form.country(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.country.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.country(class="form-control form-control-lg", value = user.country, selected = user.country ) }}
+                                {% endif %}
+                            </div>
+   
+   
+                            <div class="col">
+                                {{ update_form.state.label(class="form-control-label") }}
+                                {% if update_form.state.errors %}
+                                    {{ update_form.state(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.state.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.state(class="form-control form-control-lg", value = user.state, selected = user.state) }}
+                                {% endif %}
+                            </div>
+       
+                            <div class="col">
+                                {{ update_form.zipcode.label(class="form-control-label") }}
+                                {% if update_form.zipcode.errors %}
+                                    {{ update_form.zipcode(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_form.zipcode.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_form.zipcode(class="form-control form-control-lg", value= user.zipcode) }}
+                                {% endif %}
+                            </div>
+       
+   
+                        </div>
+                    </fieldset>
+   
+                    <div class="form-group">
+                        {{ update_form.submit(class="btn btn-primary") }}
+                    </div>
+                   
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+   
+   
+   
+ 
+ 
+ 
+ 
     <div class="modal fade" id="ebayModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-
+ 
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Log in to Ebay</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-
+ 
+ 
                 <div class="modal-body">
                     <form name="ebayForm" method="POST" action="{{ url_for('ebay_login') }}" id="ebayForm">
                         {{ login_form.hidden_tag() }}
-
+ 
                         <fieldset class="form-group">
                             <div class="form-group">
                                 {{ login_form.existing_email.label(class="form-control-label") }}
@@ -281,7 +281,7 @@
                                     {{ login_form.existing_email(class="form-control form-control-lg") }}
                                 {% endif %}
                             </div>
-
+ 
                             <div class="form-group">
                                 {{ login_form.existing_pass.label(class="form-control-label") }}
                                 {% if login_form.existing_pass.errors %}
@@ -301,15 +301,15 @@
                         </div>
                     </form>
                 </div>
-
+ 
             </div>
         </div>
     </div>
 {% endblock content %}
-
+ 
 {% block script %}
     <script type="text/javascript" src="{{ url_for('static', filename='ebay_modal_validation.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='dynamic_address.js') }}"></script>
 {% endblock %}
-
-
+ 
+ 
