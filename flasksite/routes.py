@@ -199,7 +199,7 @@ def create_tech():
             ebay_api_obj = ebay_init()
             try:
                 create_ebay_inventory_location(ebay_api_obj)
-                ebay_listing_url = create_ebay_listing(ebay_api_obj, tech_form)
+                ebay_listing_url = create_ebay_listing(ebay_api_obj, tech_form, f"{current_user.id}/{filename}")
             except:
                 flash("Unable to create eBay listing.", 'danger')
 
@@ -207,7 +207,7 @@ def create_tech():
 
         if request.cookies.get("at"):
             try:
-                url = create_mercadolibre_listing(tech_form)
+                url = create_mercadolibre_listing(tech_form, f"{current_user.id}/{filename}")
             except Exception as e:
                 print(e)
                 flash("Unable to create Mercado Libre listing.", 'danger')
@@ -274,7 +274,7 @@ def create_clothing():
         if session.get('ebayUsername') and session.get('ebayPassword'):
             try:
                 create_ebay_inventory_location(ebay_api_obj)
-                ebay_listing_url = create_ebay_listing(ebay_api_obj, clothing_form)
+                ebay_listing_url = create_ebay_listing(ebay_api_obj, clothing_form, f"{current_user.id}/{filename}")
             except:
                 flash("Unable to create eBay listing.", 'danger')
 
@@ -283,7 +283,7 @@ def create_clothing():
 
         if request.cookies.get("at"):
             try:
-                url = create_mercadolibre_listing(clothing_form)
+                url = create_mercadolibre_listing(clothing_form, f"{current_user.id}/{filename}")
 
 
             except Exception as e: 
@@ -368,20 +368,20 @@ def ebay_init():  # sets up ebay api credentials
 
         # item_data = set_item_data()
 
-def create_mercadolibre_listing(form):
+def create_mercadolibre_listing(form, image_url):
     api = MercadoLibreAPI()
     access_token = request.cookies.get("at")
     api.update_access_token(access_token)
 
 
     if isinstance(form, ClothingForm):
-        url = api.post_listing_clothes(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.color.data, form.size.data)
+        url = api.post_listing_clothes(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.color.data, form.size.data, image_url)
     else:
-        url = api.post_listing_tech(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.line.data, form.model.data, form.color.data, form.os_name.data,form.processor_brand.data)
+        url = api.post_listing_tech(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.line.data, form.model.data, form.color.data, form.os_name.data,form.processor_brand.data, image_url)
 
     return url
         
-def create_ebay_listing(api, listing_form):
+def create_ebay_listing(api, listing_form, image_url):
     offer_data = {
         "sku": "234234BH",
         "marketplaceId": "EBAY_US",
@@ -431,6 +431,7 @@ def create_ebay_listing(api, listing_form):
 
     product_info = item_data['product']
     product_info['title'] = listing_form.title.data
+    product_info['image_urls'] = ["https://a4a3-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/static/assets/" + image_url]
     # product_info['brand'] = listing_form.brand.data
 
     if isinstance(listing_form, ClothingForm):

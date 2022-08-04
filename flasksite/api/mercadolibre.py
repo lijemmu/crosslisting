@@ -84,7 +84,7 @@ class MercadoLibreAPI:
         resp = requests.get(url, headers=headers)
         print(resp.json())
 
-    def post_listing_tech(self, title, description, price, quantity,condition, warranty_time, brand, line, model, color, os, processor):
+    def post_listing_tech(self, title, description, price, quantity,condition, warranty_time, brand, line, model, color, os, processor, image_url):
 
         #category_id = find_category(title)
 
@@ -109,17 +109,8 @@ class MercadoLibreAPI:
         ],
         "pictures":[
             {
-                "source":"https://content.rolex.com//dam/2022/upright-cc/m126200-0020.png"
+                "source":"https://a4a3-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/static/assets/" + image_url
             },
-            {
-                "source":"https://content.rolex.com//dam/2022/laying-ba-with-shadow/m126200-0020.png"
-            },
-            {
-                "source":"https://content.rolex.com//dam/2022/presentation-box-hr/m126200-0020.jpg"
-            },
-            {
-                "source":"https://content.rolex.com//dam/2022/presentation-tray/m126200-0020.jpg"
-            }
         ],
 
         "attributes":[
@@ -160,7 +151,7 @@ class MercadoLibreAPI:
         return "https://articulo.mercadolibre.com.pe/MPE-" + response['id'][3:]
         
 
-    def post_listing_clothes(self, title, description, price, quantity,condition, warranty_time, brand, color, size):
+    def post_listing_clothes(self, title, description, price, quantity,condition, warranty_time, brand, color, size, image_url):
 
         #category_id = find_category(title)
 
@@ -185,7 +176,7 @@ class MercadoLibreAPI:
         ],
         "pictures":[
             {
-                "source":"https://content.rolex.com//dam/2022/upright-cc/m126200-0020.png"
+                "source":"https://a4a3-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/static/assets/" + image_url
             },
             
         ],
