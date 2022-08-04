@@ -49,5 +49,7 @@ class Listing(db.Model):
     # Clothing Only
     size = db.Column(db.String(20))
 
+    ebay_url = db.Column(db.String(), nullable=False)
+
     def __str__(self):
         return f"Post('{self.username}', '{self.title}', '{self.profile_pic}','{self.description}')"

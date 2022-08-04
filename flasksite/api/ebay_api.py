@@ -228,5 +228,4 @@ def create_listing(api, sku, item_data, offer_data):
         # sql.store_data(sku, offer_resp, listing_id, scraper.URL)
         # print(publish_resp)
         print("Here's the link to your eBay listing:")
-        print(f"https://www.sandbox.ebay.com/itm/{listing_id}")
-        return listing_id
+        return f"https://www.sandbox.ebay.com/itm/{listing_id}"

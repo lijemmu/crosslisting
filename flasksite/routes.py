@@ -150,16 +150,17 @@ def listings():
     listing_form = ListingForm()
     tech_form = TechForm()
     clothing_form = ClothingForm()
-    user_listings = Listing.query.filter_by(user_id=current_user.id).all()
+    user_listings = Listing.query.filter_by(user_id=current_user.id).order_by(Listing.id.desc())
 
     cookie_exist = False
 
-    if request.cookies.get("at"):
+    if request.cookies.get("at") or (session.get('ebayUsername') and session.get('ebayPassword')):
         cookie_exist = True
         print(cookie_exist)
     
     else:
-        flash("Please go to your profile and click on the Mercado Libre button")
+        #flash("Please go to your profile and click on the Mercado Libre button")
+        flash("You must connect your account to an external marketplace before creating a listing.")
 
 
     return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
@@ -184,16 +185,33 @@ def create_tech():
     if tech_form.validate_on_submit():
         image = tech_form.image.data
         filename = secure_filename(image.filename)
+        if not os.path.exists(os.path.join('flasksite', 'static', 'assets', str(current_user.id))):
+            os.mkdir(os.path.join('flasksite', 'static', 'assets', str(current_user.id)))
         filepath = os.path.join(
-            'flasksite',
-            'static',
             'assets',
             str(current_user.id),
             filename
         )
-        image.save(filepath)
+        image.save(os.path.join('flasksite', 'static', filepath))
+
+        ebay_listing_url = ""
+        if session.get('ebayUsername') and session.get('ebayPassword'):
+            ebay_api_obj = ebay_init()
+            try:
+                create_ebay_inventory_location(ebay_api_obj)
+                ebay_listing_url = create_ebay_listing(ebay_api_obj, tech_form)
+            except:
+                flash("Unable to create eBay listing.", 'danger')
+
+        if request.cookies.get("at"):
+            try:
+                create_mercadolibre_listing(tech_form)
+            except Exception as e:
+                print(e)
+                flash("Unable to create Mercado Libre listing.", 'danger')
+
         listing = Listing(user_id=current_user.id,
-                          listing_pic=filepath,
+                          listing_pic=filename,
                           title=tech_form.title.data,
                           description=tech_form.description.data,
                           price=tech_form.price.data,
@@ -204,19 +222,16 @@ def create_tech():
                           model=tech_form.model.data,
                           line=tech_form.line.data,
                           os_name=tech_form.os_name.data,
-                          processor_brand=tech_form.processor_brand.data
+                          processor_brand=tech_form.processor_brand.data,
+                          ebay_url=ebay_listing_url
                           )
-        ebay_api_obj = ebay_init()
-
-        try:
-            create_ebay_inventory_location(ebay_api_obj)
-            create_ebay_listing(ebay_api_obj, tech_form)
-        except:
-            flash("Unable to create eBay listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('listings'))
+    elif request.method == "POST":
+        data = json.dumps(tech_form.errors, ensure_ascii=False)
+        return jsonify(data)
 
     return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings,cookie_exist=cookie_exist)
 
@@ -226,21 +241,21 @@ def create_clothing():
     tech_form = TechForm()
     clothing_form = ClothingForm()
     user_listings = Listing.query.filter_by(user_id=current_user.id).all()
-    print(request.files)
 
     cookie_exist = False
 
-    if request.cookies.get("at"):
+    if request.cookies.get("at") or (session.get('ebayUsername') and session.get('ebayPassword')):
         cookie_exist = True
         print(cookie_exist)
     
     else:
-        flash("Please go to your profile and click on the Mercado Libre button")
+        #flash("Please go to your profile and click on the Mercado Libre button")
+        flash("You must connect your account to an external marketplace before creating a listing.")
 
 
 
     if clothing_form.validate_on_submit():
-        image = tech_form.image.data
+        image = clothing_form.image.data
         filename = secure_filename(image.filename)
         filepath = os.path.join(
             'assets',
@@ -248,8 +263,29 @@ def create_clothing():
             filename
         )
         image.save(os.path.join('flasksite', 'static', filepath))
+
+        ebay_api_obj = ebay_init()
+
+        ebay_listing_url = ""
+
+        if session.get('ebayUsername') and session.get('ebayPassword'):
+            try:
+                create_ebay_inventory_location(ebay_api_obj)
+                ebay_listing_url = create_ebay_listing(ebay_api_obj, clothing_form)
+            except:
+                flash("Unable to create eBay listing.", 'danger')
+
+
+
+        if request.cookies.get("at"):
+            try:
+                create_mercadolibre_listing(clothing_form)
+            except Exception as e: 
+                print(e)
+                flash("Unable to create Mercado Libre listing.", 'danger')
+
         listing = Listing(user_id=current_user.id,
-                          listing_pic=filepath,
+                          listing_pic=filename,
                           title=clothing_form.title.data,
                           description=clothing_form.description.data,
                           price=clothing_form.price.data,
@@ -257,22 +293,9 @@ def create_clothing():
                           condition=clothing_form.condition.data,
                           brand=clothing_form.brand.data,
                           color=clothing_form.color.data,
-                          size=clothing_form.size.data
+                          size=clothing_form.size.data,
+                          ebay_url=ebay_listing_url
                           )
-        # ebay_api_obj = ebay_init()
-
-        # try:
-        #     create_ebay_inventory_location(ebay_api_obj)
-        #     create_ebay_listing(ebay_api_obj, clothing_form)
-        # except:
-        #     flash("Unable to create eBay listing.", 'danger')
-
-        try:
-            create_mercadolibre_listing(clothing_form)
-            
-        except Exception as e: 
-            print(e)
-            flash("Unable to create Mercado Libre listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
@@ -289,7 +312,7 @@ def delete(id):
     listing_to_delete = Listing.query.filter_by(id=id).first()
     user_is_authorized = listing_to_delete.user_id == current_user.id
     if listing_to_delete and user_is_authorized:
-        os.remove(os.path.join('flasksite', 'static', listing_to_delete.listing_pic))
+        # os.remove(os.path.join('flasksite', 'static', listing_to_delete.listing_pic))
         db.session.delete(listing_to_delete)
         db.session.commit()
     return redirect(url_for('listings'))
@@ -349,13 +372,12 @@ def create_mercadolibre_listing(form):
     else:
         api.post_listing_tech(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.line.data, form.model.data, form.color.data, form.os_name.data,form.processor_brand.data)
         
-
 def create_ebay_listing(api, listing_form):
     offer_data = {
         "sku": "234234BH",
         "marketplaceId": "EBAY_US",
         "format": "FIXED_PRICE",
-        "availableQuantity": 1,
+        "availableQuantity": listing_form.quantity.data,
         "categoryId": "30120",
         "listingDescription": listing_form.description.data,
         "listingPolicies": {
@@ -366,41 +388,59 @@ def create_ebay_listing(api, listing_form):
         "pricingSummary": {
             "price": {
                 "currency": "USD",
-                "value": "34.99"
+                "value": str(listing_form.price.data)
             }
         },
         "quantityLimitPerBuyer": 1,
         "includeCatalogProductDetails": True,
     }
 
+    condition = listing_form.condition.data
+    if condition == 'used':
+        condition = "USED_GOOD"
+    elif condition == 'new':
+        condition = "NEW"
 
-    item_data = {"condition": "USED_GOOD", "packageWeightAndSize": {
-        "dimensions": {
-            "height": 6,
-            "length": 2,
-            "width": 1,
-            "unit": "INCH"
-        },
-        "weight": {
-            "value": 1,
-            "unit": "POUND"
-        }
-    }, "availability": {
-        "shipToLocationAvailability": {
-            "quantity": 1
-        }
-    }, 'product': {}}
+    item_data = {
+        "condition": condition,
+        "packageWeightAndSize": {
+            "dimensions": {
+                "height": 6,
+                "length": 2,
+                "width": 1,
+                "unit": "INCH"
+            },
+            "weight": {
+                "value": 1,
+                "unit": "POUND"
+            }
+        }, "availability": {
+            "shipToLocationAvailability": {
+                "quantity": listing_form.quantity.data
+            }
+        }, 'product': {}}
 
     product_info = item_data['product']
     product_info['title'] = listing_form.title.data
+    # product_info['brand'] = listing_form.brand.data
 
-    # product_info['aspects'] = scraper.get_details()
-    # product_info['imageURLs'] = scraper.get_pictures()
+    if isinstance(listing_form, ClothingForm):
+        product_info['aspects'] = {
+            "Size": [listing_form.size.data],
+        }
 
-    ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data)
-    # sql.prompt_user()
-    # Uncomment line below to clear all inventory items, locations, listings, and clear the database
-    # ebay_api.clear_entities(api
+    elif isinstance(listing_form, TechForm):
+        product_info['aspects'] = {
+            "Model": [listing_form.model.data],
+            "Processor Brand": [listing_form.processor_brand.data],
+            "Operating System": [listing_form.os_name.data],
+            "Line": [listing_form.line.data]
+        }
+
+    product_info['aspects']['Color'] = [listing_form.color.data]
+    product_info['aspects']['brand'] = [listing_form.brand.data]
+
+    return ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data)
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -529,15 +569,6 @@ def validate_ebay_login():
 
 
 
-@app.route('/profile/edit', methods=['GET', 'POST'])
-def edit_profile():
-    pass
-
-'''
-@app.route("/listings")
-def listings():
-    return render_template("listings.html")
-'''
 
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():

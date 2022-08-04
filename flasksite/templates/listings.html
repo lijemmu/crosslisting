@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="content-section">
-        <div class="d-flex justify-content-between mb-4">
-            <h2>My Listings</h2>
+    <div class="content-section col-10 mx-auto mt-5" style="border-radius:10px">
+        <div class="d-flex justify-content-between">
+            <h2 style="color: black">My Listings</h2>
 
             {% if cookie_exist %}
 
@@ -24,7 +24,7 @@
             {% for listing in listings %}
             <div class="col-md-6 col-lg-4 mb-3 flex-row align-items-stretch">
                 <div class="card" id="{{ listing.id }}">
-                    <img src="{{ url_for('static', filename=listing.listing_pic)  }}" class="card-img-top">
+                    <img src="{{  url_for('static', filename='assets/{}/{}'.format(current_user.id,listing.listing_pic))  }}" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">
                             {{  listing.title  }}
@@ -39,6 +39,7 @@
                             <button class="btn btn-light" data-bs-toggle="dropdown">&vellip;</button>
                             <div class="dropdown-menu">
                                 <button data-bs-toggle="modal" data-bs-target="#delete{{  listing.id  }}Modal" class="dropdown-item">Delete</button>
+                                <a class="dropdown-item" href="{{ listing.ebay_url }}" target="_blank" rel="noopener noreferrer">Go to eBay listing</a>
                             </div>
                         </div>
                     </div>
@@ -75,7 +76,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ url_for('listings') }}" enctype=”multipart/form-data”>
+                <form method="POST" action="{{ url_for('listings') }}" enctype="multipart/form-data">
                     {{ listing_form.hidden_tag() }}
                     <fieldset class="form-group">
                         <div class="form-group">
@@ -292,7 +293,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('create_tech') }}" enctype=”multipart/form-data”>
+                    <form method="POST" action="{{ url_for('create_tech') }}" enctype="multipart/form-data">
                         {{ tech_form.hidden_tag() }}
                         <fieldset class="form-group">
                             <div class="form-group">
