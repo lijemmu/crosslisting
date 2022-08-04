@@ -386,3 +386,14 @@ h2 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+
+#lForm {
+  position: absolute;
+  width: 546px;
+  height: 42%;
+  left: 34%;
+  top: 235px;
+  background: #FFFFFF;
+  border-radius: 20px;
+}
