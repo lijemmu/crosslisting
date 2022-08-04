@@ -1,45 +1,45 @@
 {% extends "layout.html" %} {% block content %}
-
-
-
-<div class="content-section mx-auto col-4 mt-5" id="lForm" style="border-radius: 10px">
-  <h2 class="text-dark">Login</h2>
-  <form method="POST" action="">
-    {{ login_form.hidden_tag() }}
-    <fieldset class="form-group">
-      <div class="form-group">
-        {{ login_form.existing_email.label(class="form-control-label") }} {% if
-        login_form.existing_email.errors %} {{
-        login_form.existing_email(class="form-control form-control-lg
-        is-invalid") }}
-        <div class="invalid-feedback">
-          {% for error in login_form.existing_email.errors %}
-          <span>{{error}}</span>
-          {% endfor %}
-        </div>
-        {% else %} {{ login_form.existing_email(class="form-control
-        form-control-lg") }} {% endif %}
-      </div>
-
-      <div class="form-group">
-        {{ login_form.existing_pass.label(class="form-control-label") }} {% if
-        login_form.existing_pass.errors %} {{
-        login_form.existing_pass(class="form-control form-control-lg
-        is-invalid") }}
-        <div class="invalid-feedback">
-          {% for error in login_form.existing_pass.errors%}
-          <span>{{error}}</span>
-          {% endfor %}
-        </div>
-        {% else %} {{ login_form.existing_pass(class="form-control
-        form-control-lg") }} {% endif %}
-      </div>
+<div id="login_page" class="justify-content-center">
+  <div class="content-section">
+    <div class="text-form">
+      <h3 class="justify-content-center">Welcome!</h3>
+      <h4 class="justify-content-center">Hi! Enter your details to log in.</h4>
+    </div>
+    <form method="POST" action="">
+      {{ login_form.hidden_tag() }}
+      <fieldset class="form-group">
         <div class="form-group">
-            {{ login_form.login(class="btn btn-primary") }}
+          {{ login_form.existing_email.label(class="form-control-label") }} {%
+          if login_form.existing_email.errors %} {{
+          login_form.existing_email(class="form-control form-control-lg
+          is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in login_form.existing_email.errors %}
+            <span>{{error}}</span>
+            {% endfor %}
+          </div>
+          {% else %} {{ login_form.existing_email(class="form-control
+          form-control-lg") }} {% endif %}
         </div>
-    </fieldset>
 
-  </form>
+        <div class="form-group">
+          {{ login_form.existing_pass.label(class="form-control-label") }} {% if
+          login_form.existing_pass.errors %} {{
+          login_form.existing_pass(class="form-control form-control-lg
+          is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in login_form.existing_pass.errors%}
+            <span>{{error}}</span>
+            {% endfor %}
+          </div>
+          {% else %} {{ login_form.existing_pass(class="form-control
+          form-control-lg") }} {% endif %}
+        </div>
+      </fieldset>
+      <div class="form-group">
+        {{ login_form.login(class="btn yellowbutton") }}
+      </div>
+    </form>
+  </div>
 </div>
-
 {% endblock content %}

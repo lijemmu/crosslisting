@@ -203,9 +203,11 @@ def create_tech():
             except:
                 flash("Unable to create eBay listing.", 'danger')
 
+        url = ""
+
         if request.cookies.get("at"):
             try:
-                create_mercadolibre_listing(tech_form)
+                url = create_mercadolibre_listing(tech_form)
             except Exception as e:
                 print(e)
                 flash("Unable to create Mercado Libre listing.", 'danger')
@@ -223,7 +225,8 @@ def create_tech():
                           line=tech_form.line.data,
                           os_name=tech_form.os_name.data,
                           processor_brand=tech_form.processor_brand.data,
-                          ebay_url=ebay_listing_url
+                          ebay_url=ebay_listing_url,
+                          mercadolibre_url = url,
                           )
 
         db.session.add(listing)
@@ -275,11 +278,14 @@ def create_clothing():
             except:
                 flash("Unable to create eBay listing.", 'danger')
 
+        url = ""
 
 
         if request.cookies.get("at"):
             try:
-                create_mercadolibre_listing(clothing_form)
+                url = create_mercadolibre_listing(clothing_form)
+
+
             except Exception as e: 
                 print(e)
                 flash("Unable to create Mercado Libre listing.", 'danger')
@@ -294,7 +300,8 @@ def create_clothing():
                           brand=clothing_form.brand.data,
                           color=clothing_form.color.data,
                           size=clothing_form.size.data,
-                          ebay_url=ebay_listing_url
+                          ebay_url=ebay_listing_url,
+                          mercadolibre_url = url,
                           )
 
         db.session.add(listing)
@@ -368,9 +375,11 @@ def create_mercadolibre_listing(form):
 
 
     if isinstance(form, ClothingForm):
-        api.post_listing_clothes(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.color.data, form.size.data)
+        url = api.post_listing_clothes(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.color.data, form.size.data)
     else:
-        api.post_listing_tech(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.line.data, form.model.data, form.color.data, form.os_name.data,form.processor_brand.data)
+        url = api.post_listing_tech(form.title.data, form.description.data, str(form.price.data), form.quantity.data, form.condition.data, "6 meses", form.brand.data, form.line.data, form.model.data, form.color.data, form.os_name.data,form.processor_brand.data)
+
+    return url
         
 def create_ebay_listing(api, listing_form):
     offer_data = {
@@ -572,7 +581,7 @@ def validate_ebay_login():
 
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():
-    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://3dda-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile"
+    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://a4a3-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile"
     return redirect(url, code=302)
 
 def is_safe_url(target):
