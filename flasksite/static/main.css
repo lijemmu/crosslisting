@@ -1,11 +1,6 @@
 body {
   color: #333333;
-  background: linear-gradient(
-    246.1deg,
-    #1647cb 30.2%,
-    #42a1ec 66.75%,
-    #67cfee 94.17%
-  );
+  background: linear-gradient(63.69deg, rgba(104, 208, 239, 0.22) 7.92%, #EDF5F8 95.59%);
   margin-top: 5rem;
 }
 
@@ -183,7 +178,7 @@ h2 {
 #CS {
   position: absolute;
   width: 1310px;
-  height: 700px;
+  height: 71%;
   left: 10%;
   top: 221px;
 
@@ -385,4 +380,15 @@ h2 {
     background: linear-gradient(0deg, #060606, #060606);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+
+#lForm {
+  position: absolute;
+  width: 546px;
+  height: 42%;
+  left: 34%;
+  top: 235px;
+  background: #FFFFFF;
+  border-radius: 20px;
 }
