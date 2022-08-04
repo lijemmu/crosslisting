@@ -65,6 +65,12 @@ def register():
 
         db.session.add(user)
         db.session.commit()
+        os.mkdir(os.path.join(
+            'flasksite',
+            'static',
+            'assets',
+            str(current_user.id)
+        ))
         login_user(user)
         flash(f'Account created for {reg_form.first_name.data} {reg_form.last_name.data}!', 'success')
         return redirect(url_for('home'))
