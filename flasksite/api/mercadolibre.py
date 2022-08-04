@@ -7,12 +7,12 @@ APP_ID = "5200906880853734"
 ACCESS_TOKEN = "APP_USR-5200906880853734-080121-469ea48695b6b0362d4e2ee66c13b62d-534966925"
 SERVER_CODE = "https://github.com/lijemmu/crosslisting?code=TG-62e2f0dee9602a001375917b-534966925&state="
 REFRESH_TOKEN = "TG-62e2f7508c8e400013fa8912-534966925"
-REDIRECT_URI = 'https://491a-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile'
+REDIRECT_URI = 'https://51ff-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile'
 
 
 class MercadoLibreAPI:
 
-    def __init__(self, code):
+    def __init__(self, code="user_code"):
 
         self.client_secret = CLIENT_SECRET
         self.app_id = APP_ID

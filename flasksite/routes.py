@@ -10,7 +10,7 @@ from sqlalchemy import or_
 
 from flasksite import app, bcrypt, db
 # from flask_bcrypt import Bcrypt
-from flasksite.forms import ListingForm, RegistrationForm, LoginForm, SearchForm, TechForm, ClothingForm, UpdateAccountForm
+from flasksite.forms import RegistrationForm, LoginForm, SearchForm, ListingForm, UpdateAccountForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
 from flasksite.api import ebay_api
@@ -130,10 +130,6 @@ def logout():
     return redirect(url_for('home'))
 
 def create_ebay_inventory_location(api):
-    my_country = current_user.country
-    if current_user.country == "United States":
-        my_country = 'US'
-
     merchant_location_data = {
         "location": {
             "address": {
@@ -142,7 +138,7 @@ def create_ebay_inventory_location(api):
                 "city": current_user.city,
                 "stateOrProvince": current_user.state,
                 "postalCode": current_user.zipcode,
-                "country": my_country
+                "country": current_user.country
             }
         },
         "locationInstructions": "Items ship from here.",
@@ -156,61 +152,53 @@ def create_ebay_inventory_location(api):
     merchant_loc_key = f"LOC{current_user.zipcode}"
     ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
 
-@app.route("/listings", methods=['GET'])
+@app.route("/listings", methods=['GET', 'POST'])
 def listings():
-    listing_form = ListingForm()
-    tech_form = TechForm()
-    clothing_form = ClothingForm()
+    form = ListingForm()
     user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
-    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
-
-@app.route("/listings/create/tech", methods=['POST'])
-def create_tech():
-    listing_form = ListingForm()
-    tech_form = TechForm()
-    clothing_form = ClothingForm()
-    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
-    if tech_form.validate_on_submit():
+    if form.validate_on_submit():
         listing = Listing(username=current_user.first_name + " " + current_user.last_name,
-                          profile_pic=current_user.profile_pic, title=tech_form.title.data,
-                          description=tech_form.description.data)
+                          profile_pic=current_user.profile_pic, title=form.title.data,
+                          description=form.description.data)
+        
         ebay_api_obj = ebay_init()
 
         try:
             create_ebay_inventory_location(ebay_api_obj)
-            create_ebay_listing(ebay_api_obj, tech_form)
-        except:
+            create_ebay_listing(ebay_api_obj, form)
+         except:
             flash("Unable to create eBay listing.", 'danger')
+        
+        # try:
+        #     create_mercadolibre_listing(form)
+
+        # except:
+        #     flash("Unable to create Mercado Libre listing.", "danger")
+        
 
         db.session.add(listing)
         db.session.commit()
         return redirect(url_for('listings'))
 
-    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
+    return render_template('listings.html', listing_form=form, listings=user_listings)
 
-@app.route("/listings/create/clothing", methods=['POST'])
-def create_clothing():
-    listing_form = ListingForm()
-    tech_form = TechForm()
-    clothing_form = ClothingForm()
-    user_listings = Listing.query.filter_by(username=current_user.first_name+" "+current_user.last_name).all()
-    if clothing_form.validate_on_submit():
-        listing = Listing(username=current_user.first_name + " " + current_user.last_name,
-                          profile_pic=current_user.profile_pic, title=clothing_form.title.data,
-                          description=clothing_form.description.data)
-        ebay_api_obj = ebay_init()
 
-        try:
-            create_ebay_inventory_location(ebay_api_obj)
-            create_ebay_listing(ebay_api_obj, clothing_form)
-        except:
-            flash("Unable to create eBay listing.", 'danger')
+def create_mercadolibre_listing(form):
+    pass
+    # form.title.data
 
-        db.session.add(listing)
-        db.session.commit()
-        return redirect(url_for('listings'))
 
-    return render_template('listings.html', listing_form=listing_form, tech_form=tech_form, clothing_form=clothing_form, listings=user_listings)
+
+    # def post_listing_tech(title, description, price, quantity,condition, warranty_time, brand, line, model, color, os, processor):
+
+
+    # access_token = request.cookies.get("at")
+    # api = MercadoLibreAPI()
+    # api.update_access_token(access_token)
+    # api.post_listing_clothes()
+
+
+
 
 @app.route("/<int:id>/delete", methods=["POST"])
 @login_required
@@ -276,7 +264,7 @@ def create_ebay_listing(api, listing_form):
         "format": "FIXED_PRICE",
         "availableQuantity": 1,
         "categoryId": "30120",
-        "listingDescription": listing_form.description.data,
+        "listingDescription": listing_form.content.data,
         "listingPolicies": {
             "fulfillmentPolicyId": "3*********0",
             "paymentPolicyId": "3*********0",
@@ -459,7 +447,7 @@ def listings():
 
 @app.route("/mercadolibre_oauth", methods=['GET'])
 def mercadolibreoauth():
-    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://491a-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile"
+    url = "https://auth.mercadolibre.com.pe/authorization?response_type=code&client_id=" + MERCADOLIBRE_APP_ID + "&redirect_uri=https://51ff-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/profile"
     return redirect(url, code=302)
 
 

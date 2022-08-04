@@ -12,7 +12,7 @@
             {% for listing in listings %}
             <div class="col-md-6 col-lg-4 mb-3 flex-row align-items-stretch">
                 <div class="card" id="{{ listing.id }}">
-                    <img src="https://via.placeholder.com/150" class="card-img-top">
+                    <img src="{{ url_for('static', filename=listing.listing_pic)  }}" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">
                             {{  listing.title  }}
@@ -63,7 +63,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ url_for('listings') }}">
+                <form method="POST" action="{{ url_for('listings') }}" enctype=”multipart/form-data”>
                     {{ listing_form.hidden_tag() }}
                     <fieldset class="form-group">
                         <div class="form-group">
@@ -129,7 +129,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('create_clothing') }}">
+                    <form method="POST" action="{{ url_for('create_clothing') }}" enctype="multipart/form-data">
                         {{ clothing_form.hidden_tag() }}
                         <fieldset class="form-group">
                             <div class="form-group">
@@ -280,7 +280,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('create_tech') }}">
+                    <form method="POST" action="{{ url_for('create_tech') }}" enctype=”multipart/form-data”>
                         {{ tech_form.hidden_tag() }}
                         <fieldset class="form-group">
                             <div class="form-group">
