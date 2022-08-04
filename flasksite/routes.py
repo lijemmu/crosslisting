@@ -150,7 +150,7 @@ def listings():
     listing_form = ListingForm()
     tech_form = TechForm()
     clothing_form = ClothingForm()
-    user_listings = Listing.query.filter_by(user_id=current_user.id).all()
+    user_listings = Listing.query.filter_by(user_id=current_user.id).order_by(Listing.id.desc())
 
     cookie_exist = False
 
@@ -193,6 +193,23 @@ def create_tech():
             filename
         )
         image.save(os.path.join('flasksite', 'static', filepath))
+
+        ebay_listing_url = ""
+        if session.get('ebayUsername') and session.get('ebayPassword'):
+            ebay_api_obj = ebay_init()
+            try:
+                create_ebay_inventory_location(ebay_api_obj)
+                ebay_listing_url = create_ebay_listing(ebay_api_obj, tech_form)
+            except:
+                flash("Unable to create eBay listing.", 'danger')
+
+        if request.cookies.get("at"):
+            try:
+                create_mercadolibre_listing(tech_form)
+            except Exception as e:
+                print(e)
+                flash("Unable to create Mercado Libre listing.", 'danger')
+
         listing = Listing(user_id=current_user.id,
                           listing_pic=filename,
                           title=tech_form.title.data,
@@ -205,23 +222,9 @@ def create_tech():
                           model=tech_form.model.data,
                           line=tech_form.line.data,
                           os_name=tech_form.os_name.data,
-                          processor_brand=tech_form.processor_brand.data
+                          processor_brand=tech_form.processor_brand.data,
+                          ebay_url=ebay_listing_url
                           )
-        ebay_api_obj = ebay_init()
-
-        if session.get('ebayUsername') and session.get('ebayPassword'):
-            try:
-                create_ebay_inventory_location(ebay_api_obj)
-                create_ebay_listing(ebay_api_obj, clothing_form)
-            except:
-                flash("Unable to create eBay listing.", 'danger')
-
-        if request.cookies.get("at"):
-            try:
-                create_mercadolibre_listing(clothing_form)
-            except Exception as e: 
-                print(e)
-                flash("Unable to create Mercado Libre listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
@@ -260,6 +263,27 @@ def create_clothing():
             filename
         )
         image.save(os.path.join('flasksite', 'static', filepath))
+
+        ebay_api_obj = ebay_init()
+
+        ebay_listing_url = ""
+
+        if session.get('ebayUsername') and session.get('ebayPassword'):
+            try:
+                create_ebay_inventory_location(ebay_api_obj)
+                ebay_listing_url = create_ebay_listing(ebay_api_obj, clothing_form)
+            except:
+                flash("Unable to create eBay listing.", 'danger')
+
+
+
+        if request.cookies.get("at"):
+            try:
+                create_mercadolibre_listing(clothing_form)
+            except Exception as e: 
+                print(e)
+                flash("Unable to create Mercado Libre listing.", 'danger')
+
         listing = Listing(user_id=current_user.id,
                           listing_pic=filename,
                           title=clothing_form.title.data,
@@ -269,23 +293,9 @@ def create_clothing():
                           condition=clothing_form.condition.data,
                           brand=clothing_form.brand.data,
                           color=clothing_form.color.data,
-                          size=clothing_form.size.data
+                          size=clothing_form.size.data,
+                          ebay_url=ebay_listing_url
                           )
-        ebay_api_obj = ebay_init()
-
-        if session.get('ebayUsername') and session.get('ebayPassword'):
-            try:
-                create_ebay_inventory_location(ebay_api_obj)
-                create_ebay_listing(ebay_api_obj, clothing_form)
-            except:
-                flash("Unable to create eBay listing.", 'danger')
-
-        if request.cookies.get("at"):
-            try:
-                create_mercadolibre_listing(clothing_form)
-            except Exception as e: 
-                print(e)
-                flash("Unable to create Mercado Libre listing.", 'danger')
 
         db.session.add(listing)
         db.session.commit()
@@ -302,7 +312,7 @@ def delete(id):
     listing_to_delete = Listing.query.filter_by(id=id).first()
     user_is_authorized = listing_to_delete.user_id == current_user.id
     if listing_to_delete and user_is_authorized:
-        os.remove(os.path.join('flasksite', 'static', listing_to_delete.listing_pic))
+        # os.remove(os.path.join('flasksite', 'static', listing_to_delete.listing_pic))
         db.session.delete(listing_to_delete)
         db.session.commit()
     return redirect(url_for('listings'))
@@ -430,7 +440,7 @@ def create_ebay_listing(api, listing_form):
     product_info['aspects']['Color'] = [listing_form.color.data]
     product_info['aspects']['brand'] = [listing_form.brand.data]
 
-    ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data)
+    return ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data)
 
 
 @app.route("/profile", methods=['GET', 'POST'])
