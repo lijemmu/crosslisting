@@ -1,7 +1,9 @@
+from tokenize import String
 import requests
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, DecimalField, IntegerField, RadioField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NoneOf
 
 from flasksite.api import country
@@ -76,9 +78,32 @@ class SearchForm(FlaskForm):
 
 
 class ListingForm(FlaskForm):
+    image = FileField("Image", validators=[
+                               FileRequired(),
+                               FileAllowed(['jpg', 'jpeg', 'png'], 'Images only!')])
     title = StringField("Title", validators=[DataRequired()])
+    price = DecimalField("Price", validators=[DataRequired()], places=2)
+    quantity = IntegerField("Quantity", validators=[DataRequired()])
+    condition = SelectField("Condition", choices=[('new', 'New'), ('used', 'Used')], validators=[DataRequired()])
     description = TextAreaField("Description", validators=[DataRequired()])
+    brand = StringField("Brand", validators=[DataRequired()])
+    color = StringField("Color", validators=[DataRequired()])
     post_btn = SubmitField("Post")
+
+class TechForm(ListingForm):
+    model = StringField("Model", validators=[DataRequired()])
+    line = StringField("Line", validators=[DataRequired()])
+    os_name = StringField("OS Name", validators=[DataRequired()])
+    processor_brand = StringField("Processor Brand", validators=[DataRequired()])
+
+class ClothingForm(ListingForm):
+    size = SelectField("Size", validators=[DataRequired()], choices=[('xxs', 'XXS'),
+                                                                     ('xs', 'XS'),
+                                                                     ('s', 'S'),
+                                                                     ('m', 'M'),
+                                                                     ('l', 'L'),
+                                                                     ('xl', 'XL'),
+                                                                     ('xxl', 'XXL')])
 
 
 
