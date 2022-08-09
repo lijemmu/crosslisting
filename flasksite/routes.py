@@ -1,5 +1,6 @@
 import json
 import os
+import random
 from urllib.parse import urlparse, urljoin
 
 """Ref https://github.com/matecsaj/ebay_rest for selenium install and ebay_rest setup"""
@@ -9,17 +10,17 @@ from flask import render_template, url_for, flash, redirect, request, session, g
 from flask_login import login_user, logout_user, current_user, login_required
 from sqlalchemy import or_
 
-from flasksite import app, bcrypt, db
+from flasksite import app, bcrypt, db, ebayAPI
 # from flask_bcrypt import Bcrypt
 from flasksite.forms import ListingForm, RegistrationForm, LoginForm, SearchForm, TechForm, ClothingForm, \
     UpdateAccountForm
 # from flask_behind_proxy import FlaskBehindProxy
 # from flask_sqlalchemy import SQLAlchemy
-from flasksite.api import ebay_api, ebay
+# from flasksite.api import ebay_api
 from flasksite.model import User, Listing
 from flasksite.api import country
-import ebay_rest.a_p_i
-from ebay_rest import Error
+# import ebay_rest.a_p_i
+# from ebay_rest import Error
 from werkzeug.utils import secure_filename
 from flasksite.api.mercadolibre import MercadoLibreAPI
 
@@ -119,15 +120,6 @@ def logout():
     return redirect(url_for('home'))
 
 
-def create_ebay_inventory_location(access_token):
-    my_country = current_user.country
-    if current_user.country == "United States":
-        my_country = 'US'
-
-    merchant_loc_key = f"LOC{current_user.zipcode}"
-    # ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
-    print(ebay.create_inventory_location(access_token, merchant_loc_key, current_user.street_address, current_user.address_line2, current_user.city, current_user.state, current_user.zipcode, my_country))
-
 
 @app.route("/listings", methods=['GET'])
 def listings():
@@ -138,7 +130,8 @@ def listings():
 
     cookie_exist = False
 
-    if request.cookies.get("at") or (session.get('ebayUsername') and session.get('ebayPassword')):
+    if request.cookies.get("at") or ('ebay_access_token' in session):
+        ebayAPI.set_access_token(session['ebay_access_token'])
         cookie_exist = True
         print(cookie_exist)
 
@@ -179,11 +172,9 @@ def create_tech():
         image.save(os.path.join('flasksite', 'static', filepath))
 
         ebay_listing_url = ""
-        if session.get('ebayUsername') and session.get('ebayPassword'):
-            ebay_api_obj = ebay_init()
+        if 'ebay_access_token' in session:
             try:
-                create_ebay_inventory_location(ebay_api_obj)
-                ebay_listing_url = create_ebay_listing(ebay_api_obj, tech_form, f"{current_user.id}/{filename}")
+                ebay_listing_url = create_ebay_listing(tech_form, f"{current_user.id}/{filename}")
             except:
                 flash("Unable to create eBay listing.", 'danger')
 
@@ -251,14 +242,12 @@ def create_clothing():
         )
         image.save(os.path.join('flasksite', 'static', filepath))
 
-        ebay_api_obj = ebay_init()
 
         ebay_listing_url = ""
 
-        if session.get('ebayUsername') and session.get('ebayPassword'):
+        if 'ebay_access_token' in session:
             try:
-                create_ebay_inventory_location(ebay_api_obj)
-                ebay_listing_url = create_ebay_listing(ebay_api_obj, clothing_form, f"{current_user.id}/{filename}")
+                ebay_listing_url = create_ebay_listing(clothing_form, f"{current_user.id}/{filename}")
             except:
                 flash("Unable to create eBay listing.", 'danger')
 
@@ -310,48 +299,48 @@ def delete(id):
     return redirect(url_for('listings'))
 
 
-def ebay_init():  # sets up ebay api credentials
-    application = {
-        "app_id": "AlbertTe-Resellin-SBX-db14cffb5-cfd1ac3b",
-        "cert_id": "SBX-b14cffb5e502-9d55-4736-8403-4947",
-        "dev_id": "85b11c14-7d19-40e2-8452-afd0f7687b58",
-        "redirect_uri": "Albert_Terc-AlbertTe-Resell-zeijgqsp"
-    }
-
-    try:
-        username = session['ebayUsername']
-        password = session['ebayPassword']
-    except KeyError:
-        flash("Please connect to your eBay account on the Profile page before creating a listing.", 'danger')
-        return
-
-    user = {
-        "email_or_username": session['ebayUsername'],
-        "password": session["ebayPassword"],
-        "refresh_token": "",
-        "refresh_token_expiry": ""
-    }
-
-    header = {
-        "accept_language": "en-US",
-        "affiliate_campaign_id": "",
-        "affiliate_reference_id": "",
-        "content_language": "en-US",
-        "country": "US",
-        "currency": "USD",
-        "device_id": "",
-        "marketplace_id": "EBAY_US",
-        "zip": ""
-    }
-
-    try:
-        api = ebay.API(application=application, user=user, header=header)
-    except Error as error:
-        print(f'Error {error.number} is {error.reason}  {error.detail}.\n')
-    else:
-        return api
-
-        # item_data = set_item_data()
+# def ebay_init():  # sets up ebay api credentials
+#     application = {
+#         "app_id": "AlbertTe-Resellin-SBX-db14cffb5-cfd1ac3b",
+#         "cert_id": "SBX-b14cffb5e502-9d55-4736-8403-4947",
+#         "dev_id": "85b11c14-7d19-40e2-8452-afd0f7687b58",
+#         "redirect_uri": "Albert_Terc-AlbertTe-Resell-zeijgqsp"
+#     }
+#
+#     try:
+#         username = session['ebayUsername']
+#         password = session['ebayPassword']
+#     except KeyError:
+#         flash("Please connect to your eBay account on the Profile page before creating a listing.", 'danger')
+#         return
+#
+#     user = {
+#         "email_or_username": session['ebayUsername'],
+#         "password": session["ebayPassword"],
+#         "refresh_token": "",
+#         "refresh_token_expiry": ""
+#     }
+#
+#     header = {
+#         "accept_language": "en-US",
+#         "affiliate_campaign_id": "",
+#         "affiliate_reference_id": "",
+#         "content_language": "en-US",
+#         "country": "US",
+#         "currency": "USD",
+#         "device_id": "",
+#         "marketplace_id": "EBAY_US",
+#         "zip": ""
+#     }
+#
+#     try:
+#         api = ebay.API(application=application, user=user, header=header)
+#     except Error as error:
+#         print(f'Error {error.number} is {error.reason}  {error.detail}.\n')
+#     else:
+#         return api
+#
+#         # item_data = set_item_data()
 
 
 def create_mercadolibre_listing(form, image_url):
@@ -371,77 +360,66 @@ def create_mercadolibre_listing(form, image_url):
     return url
 
 
-def create_ebay_listing(api, listing_form, image_url):
-    offer_data = {
-        "sku": "234234BH",
-        "marketplaceId": "EBAY_US",
-        "format": "FIXED_PRICE",
-        "availableQuantity": listing_form.quantity.data,
-        "categoryId": "30120",
-        "listingDescription": listing_form.description.data,
-        "listingPolicies": {
-            "fulfillmentPolicyId": "3*********0",
-            "paymentPolicyId": "3*********0",
-            "returnPolicyId": "3*********0"
-        },
-        "pricingSummary": {
-            "price": {
-                "currency": "USD",
-                "value": str(listing_form.price.data)
-            }
-        },
-        "quantityLimitPerBuyer": 1,
-        "includeCatalogProductDetails": True,
-    }
+def create_ebay_inventory_location():
+    my_country = current_user.country
+    if current_user.country == "United States":
+        my_country = 'US'
 
+    merchant_loc_key = f"LOC{current_user.zipcode}"
+    # ebay_api.create_inventory_location(api, location_data=merchant_location_data, loc_key=merchant_loc_key)
+    print(ebayAPI.create_inventory_location(merchant_loc_key, current_user.street_address, current_user.address_line2,
+                                            current_user.city, current_user.state, current_user.zipcode, my_country))
+
+
+def create_ebay_listing(listing_form, image_url):
     condition = listing_form.condition.data
     if condition == 'used':
         condition = "USED_GOOD"
     elif condition == 'new':
         condition = "NEW"
 
-    item_data = {
-        "condition": condition,
-        "packageWeightAndSize": {
-            "dimensions": {
-                "height": 6,
-                "length": 2,
-                "width": 1,
-                "unit": "INCH"
-            },
-            "weight": {
-                "value": 1,
-                "unit": "POUND"
-            }
-        }, "availability": {
-            "shipToLocationAvailability": {
-                "quantity": listing_form.quantity.data
-            }
-        }, 'product': {}}
-
-    product_info = item_data['product']
-    product_info['title'] = listing_form.title.data
-    product_info['image_urls'] = [
-        "https://a4a3-2800-200-e630-3495-5d11-6913-5f0-5295.ngrok.io/static/assets/" + image_url]
-    # product_info['brand'] = listing_form.brand.data
+    product_aspects = {}
 
     if isinstance(listing_form, ClothingForm):
-        product_info['aspects'] = {
+        product_aspects = {
             "Size": [listing_form.size.data],
         }
-
     elif isinstance(listing_form, TechForm):
-        product_info['aspects'] = {
+        product_aspects = {
             "Model": [listing_form.model.data],
             "Processor Brand": [listing_form.processor_brand.data],
             "Operating System": [listing_form.os_name.data],
             "Line": [listing_form.line.data]
         }
 
-    product_info['aspects']['Color'] = [listing_form.color.data]
-    product_info['aspects']['brand'] = [listing_form.brand.data]
+    product_aspects['Color'] = [listing_form.color.data]
+    product_aspects['Brand'] = [listing_form.brand.data]
 
-    return ebay_api.create_listing(api, offer_data['sku'], item_data, offer_data)
+    sku = create_sku(listing_form.brand.data, listing_form.color.data, condition, listing_form.quantity.data)
+    print(ebayAPI.create_inventory_item(sku, condition, listing_form.quantity.data, listing_form.title.data, image_url, product_aspects))
+
+    policy_ids = {
+        "fulfillmentPolicyId": ebayAPI.extract_policy_id("fulfillment"),
+        "paymentPolicyId": ebayAPI.extract_policy_id("payment"),
+        "returnPolicyId": ebayAPI.extract_policy_id("return")
+    }
+    offer_json = ebayAPI.create_offer(policy_ids, sku, listing_form.quantity.data, listing_form.description.data, listing_form.price.data)
+    offer_id = offer_json['offerId']
+    publishing_json = ebayAPI.publish_offer(offer_id)
+    listing_id = publishing_json['listingId']
+    return f"https://sandbox.ebay.com/itm/{listing_id}"
+
+
+
+
+
+def create_sku(brand, color, condition, quantity):
+    brand_color = brand + color
+    clean_brand_color = brand_color.upper().replace(" ", "")
+    title_part = "".join(random.choices(clean_brand_color, k=4))
+    if len(condition) > 3:
+        condition = condition[:3]
+    return title_part + condition + str(quantity)
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -454,7 +432,7 @@ def profile():
     updateForm = UpdateAccountForm()
     ebayLogin = LoginForm()
 
-    ebay_auth_url = ebay.AUTH_URL
+    ebay_auth_url = ebayAPI.auth_url
 
     resp = make_response(render_template("profile.html", subtitle=subtitle, user=user,
                                          profile_pic=profile_pic, login_form=ebayLogin,
@@ -484,7 +462,7 @@ def ebay_login():
 
     if 'code' in request.args:
         auth_code = request.args['code']
-        token_json = ebay.get_access_token(auth_code)
+        token_json = ebayAPI.get_access_token(auth_code)
         try:
             access_token = token_json['access_token']
             print(access_token)
@@ -495,15 +473,15 @@ def ebay_login():
             # print("new access token")
             # print(new_access_token)
 
-            # create_ebay_inventory_location(access_token)
-            print(json.dumps(ebay.get_inventory_locations(access_token), indent=2))
+            create_ebay_inventory_location()
+            print(json.dumps(ebayAPI.get_inventory_locations(), indent=2))
+            print(json.dumps(ebayAPI.get_inventory_items(), indent=2))
+
 
         except KeyError:
             flash("Unable to connect to eBay. Please try again.", 'danger')
-
-
-
-
+        else:
+            session['ebay_access_token'] = access_token
 
     return render_template("profile.html", subtitle=subtitle, user=user,
                            profile_pic=profile_pic, update_form=updateForm)
