@@ -43,9 +43,10 @@
                     <div class="justify-content-between" id="apiBtnGrp">
                         <div class="row">
                             <div class="col-5 d-grid gap-3">
-                                <button type="button" class="btn fernandaBtn"
-                                        data-bs-target="#ebayModal" data-bs-toggle="modal">Ebay
-                                </button>
+{#                                <button type="button" class="btn fernandaBtn"#}
+{#                                        data-bs-target="#ebayModal" data-bs-toggle="modal">Ebay#}
+{#                                </button>#}
+                                <a href="{{ ebay_auth_url }}" class="btn fernandaBtn" role="button">eBay</a>
                                 <a href="mercadolibre_oauth" class="btn fernandaBtn" role="button">Mercado Libre</a>
                             </div>
                             <div class="col-5 d-grid gap-3">
@@ -253,58 +254,7 @@
  
  
  
-    <div class="modal fade" id="ebayModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
- 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Log in to Ebay</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
- 
- 
-                <div class="modal-body">
-                    <form name="ebayForm" method="POST" action="{{ url_for('ebay_login') }}" id="ebayForm">
-                        {{ login_form.hidden_tag() }}
- 
-                        <fieldset class="form-group">
-                            <div class="form-group">
-                                {{ login_form.existing_email.label(class="form-control-label") }}
-                                {% if login_form.existing_email.errors %}
-                                    {{ login_form.existing_email(class="form-control form-control-lg is-invalid") }}
-                                    <div class="invalid-feedback">
-                                        {% for error in login_form.existing_email.errors %}
-                                            <span>{{ error }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    {{ login_form.existing_email(class="form-control form-control-lg") }}
-                                {% endif %}
-                            </div>
- 
-                            <div class="form-group">
-                                {{ login_form.existing_pass.label(class="form-control-label") }}
-                                {% if login_form.existing_pass.errors %}
-                                    {{ login_form.existing_pass(class="form-control form-control-lg is-invalid") }}
-                                    <div class="invalid-feedback">
-                                        {% for error in login_form.existing_pass.errors %}
-                                            <span>{{ error }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    {{ login_form.existing_pass(class="form-control form-control-lg") }}
-                                {% endif %}
-                            </div>
-                        </fieldset>
-                        <div class="form-group">
-                            {{ login_form.login(class="btn btn-primary") }}
-                        </div>
-                    </form>
-                </div>
- 
-            </div>
-        </div>
-    </div>
+    >
 {% endblock content %}
  
 {% block script %}
