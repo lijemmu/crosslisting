@@ -137,7 +137,7 @@ class EbayAPI:
             },
             'product': {
                 "title": title,
-                # "image_urls": image_urls,
+                "imageUrls": ["https://i.sandbox.ebayimg.com/00/s/NzM4WDEzMTI=/z/FBAAAOSwfkxi8xTL/$_1.JPG?set_id=2"],
                 "aspects": aspects
             }
         }
